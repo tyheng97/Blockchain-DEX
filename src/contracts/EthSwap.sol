@@ -105,14 +105,14 @@ contract EthSwap {
         uint256 coolAmount = _secondAmount / secondRate;
 
         // Check that there is enough cool Token in ethSwap
-        require(secondToken.balanceOf(address(this)) >= coolAmount);
+        require(token.balanceOf(address(this)) >= coolAmount);
 
         // Check if there is sufficient second token in buyer acc
-        require(token.balanceOf(msg.sender) >= _secondAmount);
+        require(secondToken.balanceOf(msg.sender) >= _secondAmount);
 
         // Perform sale
         secondToken.transferFrom(msg.sender, address(this), _secondAmount);
-        token.transferFrom(address(this), msg.sender, coolAmount);
+        token.transfer(msg.sender, coolAmount);
 
         // Emit an event
         emit SecondTokensSold(

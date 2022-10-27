@@ -169,4 +169,39 @@ contract("EthSwap", ([deployer, investor]) => {
       assert.equal(event.rate.toString(), "5");
     });
   });
+
+  /////////////////////// Sell SecondTokens /////////////////////////////////////////
+
+  describe("sellSecondTokens()", async () => {
+    let result;
+
+    before(async () => {
+      // Investor must approve cool tokens before the purchase
+      await secondtoken.approve(ethSwap.address, tokens("500"), {
+        from: investor,
+      });
+      // Investor buys second tokens using cool tokens
+      result = await ethSwap.sellSecondTokens(tokens("500"), {
+        from: investor,
+      });
+    });
+
+    it("Allows user to instantly purchase second tokens from ethSwap for a fixed cool token", async () => {
+      // Check investor token balance after purchase
+      let investorBalance = await secondtoken.balanceOf(investor);
+      assert.equal(investorBalance.toString(), tokens("0"));
+      // Check ethSwap balance after purchase
+      let ethSwapBalance;
+      ethSwapBalance = await secondtoken.balanceOf(ethSwap.address);
+      assert.equal(ethSwapBalance.toString(), tokens("10000000"));
+      ethSwapBalance = await token.balanceOf(ethSwap.address);
+      assert.equal(ethSwapBalance.toString(), tokens("999900"));
+      // Check logs to ensure event was emitted with correct data
+      const event = result.logs[0].args;
+      assert.equal(event.account, investor);
+      assert.equal(event.token, secondtoken.address);
+      assert.equal(event.amount.toString(), tokens("500").toString());
+      assert.equal(event.rate.toString(), "5");
+    });
+  });
 });
