@@ -1,9 +1,12 @@
 // Write tests before contract deployed on blockchain
 // Tests written in js
 
+const { assert } = require("chai");
+
 //import the contracts first
 const Token = artifacts.require("Token");
 const EthSwap = artifacts.require("EthSwap");
+const SecondToken = artifacts.require("SecondToken");
 
 // library used for testing
 require("chai")
@@ -17,14 +20,16 @@ function tokens(n) {
 
 // test
 contract("EthSwap", ([deployer, investor]) => {
-  let token, ethSwap;
+  let token, ethSwap, secondtoken;
 
   // before testing starts
   before(async () => {
     token = await Token.new();
-    ethSwap = await EthSwap.new(token.address);
+    secondtoken = await SecondToken.new();
+    ethSwap = await EthSwap.new(token.address, secondtoken.address);
     // Transfer all tokens to EthSwap (1 million)
     await token.transfer(ethSwap.address, tokens("1000000"));
+    await secondtoken.transfer(ethSwap.address, tokens("10000000"));
   });
 
   /////////////////////// Deploy Token /////////////////////////////////////////
@@ -32,7 +37,9 @@ contract("EthSwap", ([deployer, investor]) => {
   describe("Token deployment", async () => {
     it("contract has a name", async () => {
       const name = await token.name();
-      assert.equal(name, "DApp Token");
+      assert.equal(name, "Cool Token");
+      const secondName = await secondtoken.name();
+      assert.equal(secondName, "Second Token");
     });
   });
 
@@ -47,6 +54,8 @@ contract("EthSwap", ([deployer, investor]) => {
     it("contract has tokens", async () => {
       let balance = await token.balanceOf(ethSwap.address);
       assert.equal(balance.toString(), tokens("1000000"));
+      let secondBalance = await secondtoken.balanceOf(ethSwap.address);
+      assert.equal(secondBalance.toString(), tokens("10000000"));
     });
   });
 
@@ -118,6 +127,41 @@ contract("EthSwap", ([deployer, investor]) => {
       // FAILURE: investor can't sell more tokens than they have
       await ethSwap.sellTokens(tokens("500"), { from: investor }).should.be
         .rejected;
+    });
+  });
+
+  /////////////////////// Buy SecondTokens /////////////////////////////////////////
+
+  describe("buySecondTokens()", async () => {
+    let result;
+
+    before(async () => {
+      // Investor must approve tokens before the purchase
+      await secondtoken.approve(ethSwap.address, tokens("5"), {
+        from: investor,
+      });
+      // Investor buys second tokens
+      result = await ethSwap.buySecondTokens(tokens("5"), {
+        from: investor,
+      });
+    });
+
+    it("Allows user to instantly purchase second tokens from ethSwap for a fixed cool token", async () => {
+      // Check investor token balance after purchase
+      let investorBalance = await secondtoken.balanceOf(investor);
+      assert.equal(investorBalance.toString(), tokens("5"));
+      // Check ethSwap balance after purchase
+      let ethSwapBalance;
+      ethSwapBalance = await secondtoken.balanceOf(ethSwap.address);
+      assert.equal(ethSwapBalance.toString(), tokens("9999995"));
+      ethSwapBalance = await token.getBalance(ethSwap.address);
+      assert.equal(ethSwapBalance.toString(), tokens("1000001"));
+      // Check logs to ensure event was emitted with correct data
+      const event = result.logs[0].args;
+      assert.equal(event.account, investor);
+      assert.equal(event.token, token.address);
+      assert.equal(event.amount.toString(), tokens("5").toString());
+      assert.equal(event.rate.toString(), "5");
     });
   });
 });

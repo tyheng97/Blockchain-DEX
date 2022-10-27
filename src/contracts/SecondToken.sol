@@ -1,9 +1,9 @@
 pragma solidity ^0.5.0;
 
-contract Token {
+contract SecondToken {
     string public name = "Second Token";
     string public symbol = "SECOND";
-    uint256 public totalSupply = 1000000000000000000000000; // 1 million tokens
+    uint256 public totalSupply = 10000000000000000000000000; // 10 million tokens
     uint8 public decimals = 18; // 1.000000...18decimal palces
     // wei = 1000000000000000000
 
