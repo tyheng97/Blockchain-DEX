@@ -88,7 +88,8 @@ contract EthSwap {
         require(secondToken.balanceOf(address(this)) >= secondAmount);
 
         // Perform sale (this 2 method might be the problem)
-        secondToken.transferFrom(address(this), msg.sender, secondAmount);
+        // secondToken.transferFrom(address(this), msg.sender, secondAmount);
+        secondToken.transfer(msg.sender, secondAmount);
         token.transferFrom(msg.sender, address(this), _coolAmount);
         // Emit an event
         emit SecondTokensPurchased(

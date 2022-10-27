@@ -141,11 +141,11 @@ contract("EthSwap", ([deployer, investor]) => {
         from: investor,
         value: web3.utils.toWei("1", "ether"),
       });
-      // Investor must approve tokens before the purchase
-      await secondtoken.approve(ethSwap.address, tokens("100"), {
+      // Investor must approve cool tokens before the purchase
+      await token.approve(ethSwap.address, tokens("100"), {
         from: investor,
       });
-      // Investor buys second tokens
+      // Investor buys second tokens using cool tokens
       result = await ethSwap.buySecondTokens(tokens("100"), {
         from: investor,
       });
@@ -159,14 +159,14 @@ contract("EthSwap", ([deployer, investor]) => {
       let ethSwapBalance;
       ethSwapBalance = await secondtoken.balanceOf(ethSwap.address);
       assert.equal(ethSwapBalance.toString(), tokens("9999500"));
-      ethSwapBalance = await token.getBalance(ethSwap.address);
+      ethSwapBalance = await token.balanceOf(ethSwap.address);
       assert.equal(ethSwapBalance.toString(), tokens("1000000"));
       // Check logs to ensure event was emitted with correct data
       const event = result.logs[0].args;
       assert.equal(event.account, investor);
-      assert.equal(event.token, token.address);
+      assert.equal(event.token, secondtoken.address);
       assert.equal(event.amount.toString(), tokens("500").toString());
-      assert.equal(event.rate.toString(), "500");
+      assert.equal(event.rate.toString(), "5");
     });
   });
 });
