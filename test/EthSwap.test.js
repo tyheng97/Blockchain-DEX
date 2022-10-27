@@ -186,7 +186,7 @@ contract("EthSwap", ([deployer, investor]) => {
       });
     });
 
-    it("Allows user to instantly purchase second tokens from ethSwap for a fixed cool token", async () => {
+    it("Allows user to instantly sell second tokens from ethSwap for a fixed cool token", async () => {
       // Check investor token balance after purchase
       let investorBalance = await secondtoken.balanceOf(investor);
       assert.equal(investorBalance.toString(), tokens("0"));
