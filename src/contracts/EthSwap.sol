@@ -87,7 +87,7 @@ contract EthSwap {
         // Check that there is enough seocond Token in ethSwap
         require(secondToken.balanceOf(address(this)) >= secondAmount);
 
-        // Perform sale
+        // Perform sale (this 2 method might be the problem)
         secondToken.transferFrom(address(this), msg.sender, secondAmount);
         token.transferFrom(msg.sender, address(this), _coolAmount);
         // Emit an event
