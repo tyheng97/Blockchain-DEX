@@ -75,12 +75,21 @@ class App extends Component {
 
   limitBuyCoolTokens = (rate, etherAmount) => {
     this.setState({ loading: true });
-    this.state.ethSwap.methods
-      .limitBuyCoolTokens(rate)
-      .send({ value: etherAmount, from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.setState({ loading: false });
-      });
+    try {
+      this.state.ethSwap.methods
+        .limitBuyCoolTokens(rate)
+        .send({ value: etherAmount, from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("inside here", err);
+          this.setState({ loading: false });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
   };
 
   sellCoolTokens = (tokenAmount) => {
@@ -97,19 +106,29 @@ class App extends Component {
           });
       });
   };
+
   limitSellCoolTokens = (rate, tokenAmount) => {
     this.setState({ loading: true });
-    this.state.token.methods
-      .approve(this.state.ethSwap.address, tokenAmount)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.ethSwap.methods
-          .limitSellCoolTokens(tokenAmount, rate)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          });
-      });
+    try {
+      this.state.token.methods
+        .approve(this.state.ethSwap.address, tokenAmount)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.ethSwap.methods
+            .limitSellCoolTokens(tokenAmount, rate)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            })
+            .on("error", (err) => {
+              console.log("inside here", err);
+              this.setState({ loading: false });
+            });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
   };
 
   constructor(props) {
@@ -149,14 +168,14 @@ class App extends Component {
     return (
       <div>
         <Navbar account={this.state.account} />
-        <div className="container-fluid mt-5">
+        <div className="mt-5 container-fluid">
           <div className="row">
             <main
               role="main"
-              className="col-lg-12 ml-auto mr-auto"
+              className="ml-auto mr-auto col-lg-12"
               style={{ maxWidth: "600px" }}
             >
-              <div className="content mr-auto ml-auto">{content}</div>
+              <div className="ml-auto mr-auto content">{content}</div>
             </main>
           </div>
         </div>
