@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Web3 from "web3"; // import web3
-import Token from "../abis/Token.json";
+import CoolToken from "../abis/CoolToken.json";
+import SecondToken from "../abis/SecondToken.json";
 import EthSwap from "../abis/EthSwap.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
@@ -23,9 +24,9 @@ class App extends Component {
 
     // Load Token
     const networkId = await web3.eth.net.getId();
-    const tokenData = Token.networks[networkId];
+    const tokenData = CoolToken.networks[networkId];
     if (tokenData) {
-      const token = new web3.eth.Contract(Token.abi, tokenData.address);
+      const token = new web3.eth.Contract(CoolToken.abi, tokenData.address);
       this.setState({ token });
       let tokenBalance = await token.methods
         .balanceOf(this.state.account)
@@ -60,24 +61,34 @@ class App extends Component {
     }
   }
 
-  buyTokens = (etherAmount) => {
+  buyCoolTokens = (etherAmount) => {
     this.setState({ loading: true });
     this.state.ethSwap.methods
-      .buyTokens()
+      .buyCoolTokens()
       .send({ value: etherAmount, from: this.state.account })
       .on("transactionHash", (hash) => {
         this.setState({ loading: false });
       });
   };
 
-  sellTokens = (tokenAmount) => {
+  limitBuyCoolTokens = (rate, etherAmount) => {
+    this.setState({ loading: true });
+    this.state.ethSwap.methods
+      .limitBuyCoolTokens(111)
+      .send({ value: etherAmount, from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+      });
+  };
+
+  sellCoolTokens = (tokenAmount) => {
     this.setState({ loading: true });
     this.state.token.methods
       .approve(this.state.ethSwap.address, tokenAmount)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .sellTokens(tokenAmount)
+          .sellCoolTokens(tokenAmount)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
@@ -110,8 +121,9 @@ class App extends Component {
         <Main
           ethBalance={this.state.ethBalance}
           tokenBalance={this.state.tokenBalance}
-          buyTokens={this.buyTokens}
-          sellTokens={this.sellTokens}
+          buyCoolTokens={this.buyCoolTokens}
+          sellCoolTokens={this.sellCoolTokens}
+          limitBuyCoolTokens={this.limitBuyCoolTokens}
         />
       );
     }
