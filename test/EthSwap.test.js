@@ -147,6 +147,7 @@ contract("EthSwap", ([deployer, investor]) => {
       result = await ethSwap.limitBuyCoolTokens(80, {
         from: investor,
         value: web3.utils.toWei("1", "ether"),
+        rate: 10,
       });
     });
 

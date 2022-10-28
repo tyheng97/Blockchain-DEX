@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Web3 from "web3"; // import web3
-import Token from "../abis/Token.json";
+import CoolToken from "../abis/CoolToken.json";
+import SecondToken from "../abis/SecondToken.json";
 import EthSwap from "../abis/EthSwap.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
@@ -23,14 +24,16 @@ class App extends Component {
 
     // Load Token
     const networkId = await web3.eth.net.getId();
-    const tokenData = Token.networks[networkId];
+    const tokenData = CoolToken.networks[networkId];
     if (tokenData) {
-      const token = new web3.eth.Contract(Token.abi, tokenData.address);
+      const token = new web3.eth.Contract(CoolToken.abi, tokenData.address);
       this.setState({ token });
-      let tokenBalance = await token.methods
+      let coolTokenName = await token.methods.name.call();
+      let coolTokenBalance = await token.methods
         .balanceOf(this.state.account)
         .call();
-      this.setState({ tokenBalance: tokenBalance.toString() });
+      this.setState({ coolTokenBalance: coolTokenBalance.toString() });
+      this.setState({ coolTokenName: coolTokenName.toString() });
     } else {
       window.alert("Token contract not deployed to detected network.");
     }
@@ -60,24 +63,48 @@ class App extends Component {
     }
   }
 
-  buyTokens = (etherAmount) => {
+  buyCoolTokens = (etherAmount) => {
     this.setState({ loading: true });
     this.state.ethSwap.methods
-      .buyTokens()
+      .buyCoolTokens()
       .send({ value: etherAmount, from: this.state.account })
       .on("transactionHash", (hash) => {
         this.setState({ loading: false });
       });
   };
 
-  sellTokens = (tokenAmount) => {
+  limitBuyCoolTokens = (rate, etherAmount) => {
+    this.setState({ loading: true });
+    this.state.ethSwap.methods
+      .limitBuyCoolTokens(rate)
+      .send({ value: etherAmount, from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+      });
+  };
+
+  sellCoolTokens = (tokenAmount) => {
     this.setState({ loading: true });
     this.state.token.methods
       .approve(this.state.ethSwap.address, tokenAmount)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .sellTokens(tokenAmount)
+          .sellCoolTokens(tokenAmount)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          });
+      });
+  };
+  limitSellCoolTokens = (rate, tokenAmount) => {
+    this.setState({ loading: true });
+    this.state.token.methods
+      .approve(this.state.ethSwap.address, tokenAmount)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.ethSwap.methods
+          .limitSellCoolTokens(tokenAmount, rate)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
@@ -92,7 +119,7 @@ class App extends Component {
       token: {},
       ethSwap: {},
       ethBalance: "0",
-      tokenBalance: "0",
+      coolTokenBalance: "0",
       loading: true,
     };
   }
@@ -108,10 +135,13 @@ class App extends Component {
     } else {
       content = (
         <Main
+          coolTokenName={this.state.coolTokenName}
           ethBalance={this.state.ethBalance}
-          tokenBalance={this.state.tokenBalance}
-          buyTokens={this.buyTokens}
-          sellTokens={this.sellTokens}
+          coolTokenBalance={this.state.coolTokenBalance}
+          buyCoolTokens={this.buyCoolTokens}
+          sellCoolTokens={this.sellCoolTokens}
+          limitBuyCoolTokens={this.limitBuyCoolTokens}
+          limitSellCoolTokens={this.limitSellCoolTokens}
         />
       );
     }
@@ -126,15 +156,7 @@ class App extends Component {
               className="col-lg-12 ml-auto mr-auto"
               style={{ maxWidth: "600px" }}
             >
-              <div className="content mr-auto ml-auto">
-                <a
-                  href="http://www.dappuniversity.com/bootcamp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                ></a>
-
-                {content}
-              </div>
+              <div className="content mr-auto ml-auto">{content}</div>
             </main>
           </div>
         </div>
