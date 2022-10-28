@@ -21,7 +21,7 @@ class BuyForm extends Component {
           let etherAmount;
           etherAmount = this.state.input.toString();
 
-          const rate = 111; //parseInt(this.state.rate, 18);
+          const rate = this.state.rate;
           etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
 
           if (this.props.isLimitOrder) {
@@ -29,7 +29,6 @@ class BuyForm extends Component {
           } else {
             this.props.buyCoolTokens(etherAmount);
           }
-          // window.location.reload();
         }}
       >
         <div>
@@ -102,7 +101,7 @@ class BuyForm extends Component {
           </label>
           <span className="float-right text-muted">
             Balance:{" "}
-            {window.web3.utils.fromWei(this.props.tokenBalance, "Ether")}
+            {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
           </span>
         </div>
         <div className="input-group mb-2">
@@ -116,7 +115,7 @@ class BuyForm extends Component {
           <div className="input-group-append">
             <div className="input-group-text">
               <img src={tokenLogo} height="32" alt="" />
-              &nbsp; DApp
+              &nbsp; {this.props.coolTokenName}
             </div>
           </div>
         </div>

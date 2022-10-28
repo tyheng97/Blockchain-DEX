@@ -14,6 +14,7 @@ class Main extends Component {
   render() {
     let buttonStyle = "btn-light";
     let buyButtonStyle = "btn-light";
+    let sellButtonStyle = "btn-light";
 
     if (this.state.limitOrder) {
       buttonStyle = "btn-success";
@@ -23,8 +24,9 @@ class Main extends Component {
     if (this.state.currentForm === "buy") {
       content = (
         <BuyForm
+          coolTokenName={this.props.coolTokenName}
           ethBalance={this.props.ethBalance}
-          tokenBalance={this.props.tokenBalance}
+          coolTokenBalance={this.props.coolTokenBalance}
           buyCoolTokens={this.props.buyCoolTokens}
           isLimitOrder={this.state.limitOrder}
           limitBuyCoolTokens={this.props.limitBuyCoolTokens}
@@ -34,11 +36,15 @@ class Main extends Component {
     } else {
       content = (
         <SellForm
+          coolTokenName={this.props.coolTokenName}
           ethBalance={this.props.ethBalance}
-          tokenBalance={this.props.tokenBalance}
+          coolTokenBalance={this.props.coolTokenBalance}
           sellCoolTokens={this.props.sellCoolTokens}
+          isLimitOrder={this.state.limitOrder}
+          limitSellCoolTokens={this.props.limitSellCoolTokens}
         />
       );
+      sellButtonStyle = "btn-success";
     }
 
     return (
@@ -63,7 +69,7 @@ class Main extends Component {
           </button>
 
           <button
-            className="btn btn-light"
+            className={`btn ${sellButtonStyle}`}
             onClick={(event) => {
               this.setState({ currentForm: "sell" });
             }}

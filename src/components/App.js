@@ -28,10 +28,12 @@ class App extends Component {
     if (tokenData) {
       const token = new web3.eth.Contract(CoolToken.abi, tokenData.address);
       this.setState({ token });
-      let tokenBalance = await token.methods
+      let coolTokenName = await token.methods.name.call();
+      let coolTokenBalance = await token.methods
         .balanceOf(this.state.account)
         .call();
-      this.setState({ tokenBalance: tokenBalance.toString() });
+      this.setState({ coolTokenBalance: coolTokenBalance.toString() });
+      this.setState({ coolTokenName: coolTokenName.toString() });
     } else {
       window.alert("Token contract not deployed to detected network.");
     }
@@ -74,7 +76,7 @@ class App extends Component {
   limitBuyCoolTokens = (rate, etherAmount) => {
     this.setState({ loading: true });
     this.state.ethSwap.methods
-      .limitBuyCoolTokens(111)
+      .limitBuyCoolTokens(rate)
       .send({ value: etherAmount, from: this.state.account })
       .on("transactionHash", (hash) => {
         this.setState({ loading: false });
@@ -95,6 +97,20 @@ class App extends Component {
           });
       });
   };
+  limitSellCoolTokens = (rate, tokenAmount) => {
+    this.setState({ loading: true });
+    this.state.token.methods
+      .approve(this.state.ethSwap.address, tokenAmount)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.ethSwap.methods
+          .limitSellCoolTokens(tokenAmount, rate)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          });
+      });
+  };
 
   constructor(props) {
     super(props);
@@ -103,7 +119,7 @@ class App extends Component {
       token: {},
       ethSwap: {},
       ethBalance: "0",
-      tokenBalance: "0",
+      coolTokenBalance: "0",
       loading: true,
     };
   }
@@ -119,11 +135,13 @@ class App extends Component {
     } else {
       content = (
         <Main
+          coolTokenName={this.state.coolTokenName}
           ethBalance={this.state.ethBalance}
-          tokenBalance={this.state.tokenBalance}
+          coolTokenBalance={this.state.coolTokenBalance}
           buyCoolTokens={this.buyCoolTokens}
           sellCoolTokens={this.sellCoolTokens}
           limitBuyCoolTokens={this.limitBuyCoolTokens}
+          limitSellCoolTokens={this.limitSellCoolTokens}
         />
       );
     }

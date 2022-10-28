@@ -6,6 +6,8 @@ class SellForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      input: "0",
+      rate: "10",
       output: "0",
     };
   }
@@ -17,10 +19,15 @@ class SellForm extends Component {
         onSubmit={(event) => {
           event.preventDefault();
           let etherAmount;
-          etherAmount = this.input.value.toString();
+          etherAmount = this.state.input.toString();
+          const rate = this.state.rate;
           etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
-          this.props.sellCoolTokens(etherAmount);
-          window.location.reload();
+
+          if (this.props.isLimitOrder) {
+            this.props.limitSellCoolTokens(rate, etherAmount);
+          } else {
+            this.props.sellCoolTokens(etherAmount);
+          }
         }}
       >
         <div>
@@ -29,16 +36,17 @@ class SellForm extends Component {
           </label>
           <span className="float-right text-muted">
             Balance:{" "}
-            {window.web3.utils.fromWei(this.props.tokenBalance, "Ether")}
+            {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
           </span>
         </div>
         <div className="input-group mb-4">
           <input
             type="text"
             onChange={(event) => {
-              const tokenAmount = this.input.value.toString();
+              const tokenAmount = event.target.value.toString();
               this.setState({
                 output: tokenAmount / 100,
+                input: tokenAmount,
               });
             }}
             ref={(input) => {
@@ -51,10 +59,39 @@ class SellForm extends Component {
           <div className="input-group-append">
             <div className="input-group-text">
               <img src={tokenLogo} height="32" alt="" />
-              &nbsp; DApp
+              &nbsp; {this.props.coolTokenName}
             </div>
           </div>
         </div>
+        <>
+          {this.props.isLimitOrder && (
+            <>
+              {" "}
+              <div>
+                <label className="float-left">
+                  <b>Rate</b>
+                </label>
+              </div>
+              <div className="input-group mb-4">
+                <input
+                  type="text"
+                  onChange={(e) => {
+                    const newRate = e.target.value.toString();
+                    console.log(newRate);
+                    this.setState({
+                      rate: newRate,
+                    });
+                  }}
+                  ref={(rate) => {
+                    this.rate = rate;
+                  }}
+                  className="form-control form-control-lg"
+                  placeholder="10"
+                />
+              </div>
+            </>
+          )}
+        </>
         <div>
           <label className="float-left">
             <b>Output</b>

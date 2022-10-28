@@ -16807,12 +16807,13 @@
         }
       },
       "links": {},
-      "address": "0x53d6c56dbec69CB39283E2a2f38662f13B4Aef86",
-      "transactionHash": "0x1c6369c41c84c3a34b403e124eadf2f81b4d16864eb99b6f3cfe8f6ffc7f1b3d"
+      "address": "0x158C0096c24Ad8c0f9F3ba5A62d9f51d1898C908",
+      "transactionHash": "0x80d9ffa39edc6058cf9696e31f032de6ec69aeef56f176a7a4b0c17911fdc2f0"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-10-28T10:10:45.607Z",
+  "updatedAt": "2022-10-28T12:48:52.332Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
