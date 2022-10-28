@@ -47,7 +47,7 @@ contract EthSwap {
         secondToken = _secondToken;
     }
 
-    function buyTokens(uint256 _rate) public payable {
+    function buyTokens(uint256 _amount, uint256 _rate) public payable {
         require(rate >= _rate, "fail");
         // Calculate the number of tokens to buy
         uint256 tokenAmount = msg.value * rate; //msg.value = how much ether was sent
