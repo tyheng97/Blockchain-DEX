@@ -47,7 +47,8 @@ contract EthSwap {
         secondToken = _secondToken;
     }
 
-    function buyTokens() public payable {
+    function buyTokens(uint256 _rate) public payable {
+        require(rate >= _rate, "fail");
         // Calculate the number of tokens to buy
         uint256 tokenAmount = msg.value * rate; //msg.value = how much ether was sent
 
@@ -61,7 +62,8 @@ contract EthSwap {
         emit TokensPurchased(msg.sender, address(token), tokenAmount, rate);
     }
 
-    function sellTokens(uint256 _amount) public {
+    function sellTokens(uint256 _amount, uint256 _rate) public {
+        require(rate <= _rate, "fail");
         // User can't sell more tokens than they have
         require(token.balanceOf(msg.sender) >= _amount);
 
@@ -79,7 +81,8 @@ contract EthSwap {
         emit TokensSold(msg.sender, address(token), _amount, rate);
     }
 
-    function buySecondTokens(uint256 _coolAmount) public {
+    function buySecondTokens(uint256 _coolAmount, uint256 _secondRate) public {
+        require(secondRate >= _secondRate, "fail");
         // Check if there is sufficient cool token in buyer acc
         require(token.balanceOf(msg.sender) >= _coolAmount);
         // Calculate the amount of cool token to redeem
@@ -100,7 +103,10 @@ contract EthSwap {
         );
     }
 
-    function sellSecondTokens(uint256 _secondAmount) public {
+    function sellSecondTokens(uint256 _secondAmount, uint256 _secondRate)
+        public
+    {
+        require(secondRate <= _secondRate, "fail");
         // Calculate the amount of cool token to redeem
         uint256 coolAmount = _secondAmount / secondRate;
 

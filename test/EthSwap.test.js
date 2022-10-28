@@ -66,7 +66,7 @@ contract("EthSwap", ([deployer, investor]) => {
 
     before(async () => {
       // Purchase tokens before each example
-      result = await ethSwap.buyTokens({
+      result = await ethSwap.buyTokens(99, {
         from: investor,
         value: web3.utils.toWei("1", "ether"),
       });
@@ -90,6 +90,14 @@ contract("EthSwap", ([deployer, investor]) => {
       assert.equal(event.token, token.address);
       assert.equal(event.amount.toString(), tokens("100").toString());
       assert.equal(event.rate.toString(), "100");
+
+      //should be rejected
+      await ethSwap
+        .buyTokens(101, {
+          from: investor,
+          value: web3.utils.toWei("1", "ether"),
+        })
+        .should.be.rejectedWith("fail");
     });
   });
 
@@ -102,7 +110,7 @@ contract("EthSwap", ([deployer, investor]) => {
       // Investor must approve tokens before the purchase
       await token.approve(ethSwap.address, tokens("100"), { from: investor });
       // Investor sells tokens
-      result = await ethSwap.sellTokens(tokens("100"), { from: investor });
+      result = await ethSwap.sellTokens(tokens("100"), 101, { from: investor });
     });
 
     it("Allows user to instantly sell tokens to ethSwap for a fixed price", async () => {
@@ -125,8 +133,12 @@ contract("EthSwap", ([deployer, investor]) => {
       assert.equal(event.rate.toString(), "100");
 
       // FAILURE: investor can't sell more tokens than they have
-      await ethSwap.sellTokens(tokens("500"), { from: investor }).should.be
+      await ethSwap.sellTokens(tokens("500"), 101, { from: investor }).should.be
         .rejected;
+      // FAILURE: Limit Order did not go through
+      await ethSwap
+        .sellTokens(tokens("500"), 99, { from: investor })
+        .should.be.rejectedWith("fail");
     });
   });
 
@@ -137,7 +149,7 @@ contract("EthSwap", ([deployer, investor]) => {
 
     before(async () => {
       // buy 100 cool tokens
-      await ethSwap.buyTokens({
+      await ethSwap.buyTokens(99, {
         from: investor,
         value: web3.utils.toWei("1", "ether"),
       });
@@ -146,7 +158,7 @@ contract("EthSwap", ([deployer, investor]) => {
         from: investor,
       });
       // Investor buys second tokens using cool tokens
-      result = await ethSwap.buySecondTokens(tokens("100"), {
+      result = await ethSwap.buySecondTokens(tokens("100"), 4, {
         from: investor,
       });
     });
@@ -167,6 +179,13 @@ contract("EthSwap", ([deployer, investor]) => {
       assert.equal(event.token, secondtoken.address);
       assert.equal(event.amount.toString(), tokens("500").toString());
       assert.equal(event.rate.toString(), "5");
+
+      //FAILURE: Limit order did not go through
+      await ethSwap
+        .buySecondTokens(tokens("100"), 6, {
+          from: investor,
+        })
+        .should.be.rejectedWith("fail");
     });
   });
 
@@ -181,7 +200,7 @@ contract("EthSwap", ([deployer, investor]) => {
         from: investor,
       });
       // Investor buys second tokens using cool tokens
-      result = await ethSwap.sellSecondTokens(tokens("500"), {
+      result = await ethSwap.sellSecondTokens(tokens("500"), 6, {
         from: investor,
       });
     });
@@ -202,6 +221,14 @@ contract("EthSwap", ([deployer, investor]) => {
       assert.equal(event.token, secondtoken.address);
       assert.equal(event.amount.toString(), tokens("500").toString());
       assert.equal(event.rate.toString(), "5");
+
+      //FAILURE: Limit order did not go through
+
+      await ethSwap
+        .sellSecondTokens(tokens("500"), 4, {
+          from: investor,
+        })
+        .should.be.rejectedWith("fail");
     });
   });
 });
