@@ -84,7 +84,7 @@ class App extends Component {
         })
         .on("error", (err) => {
           console.log("inside here", err);
-          this.setState({ loading: false });
+          this.setState({ limitError: true });
         });
     } catch (err) {
       console.log("here is the errrr look heree", err);
@@ -122,13 +122,18 @@ class App extends Component {
             })
             .on("error", (err) => {
               console.log("inside here", err);
-              this.setState({ loading: false });
+              this.setState({ limitError: true });
             });
         });
     } catch (err) {
       console.log("here is the errrr look heree", err);
       this.setState({ loading: false });
     }
+  };
+
+  retryLimitOrder = () => {
+    this.setState({ limitError: false });
+    this.setState({ loading: false });
   };
 
   constructor(props) {
@@ -140,16 +145,29 @@ class App extends Component {
       ethBalance: "0",
       coolTokenBalance: "0",
       loading: true,
+      limitError: false,
     };
   }
 
   render() {
     let content;
-    if (this.state.loading) {
+    if (this.state.loading && this.state.limitError == false) {
       content = (
         <p id="loader" className="text-center">
           Loading...
         </p>
+      );
+    } else if (this.state.limitError) {
+      content = (
+        <div>
+          <p className="text-center">Limit Order Failed</p>
+          <button
+            onClick={this.retryLimitOrder}
+            className="btn btn-primary btn-block btn-lg"
+          >
+            Click to Retry again
+          </button>
+        </div>
       );
     } else {
       content = (
