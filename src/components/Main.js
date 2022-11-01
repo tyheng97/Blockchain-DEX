@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import BuyForm from "./BuyForm";
+import BuySecond from "./BuySecond";
 import SellForm from "./SellForm";
 
 class Main extends Component {
@@ -30,6 +31,12 @@ class Main extends Component {
           buyCoolTokens={this.props.buyCoolTokens}
           isLimitOrder={this.state.limitOrder}
           limitBuyCoolTokens={this.props.limitBuyCoolTokens}
+          coolTokenRate={this.props.coolTokenRate}
+          secondTokenName={this.props.secondTokenName}
+          secondTokenRate={this.props.secondTokenRate}
+          secondTokenBalance={this.props.secondTokenBalance}
+          buySecondTokens={this.props.buySecondTokens}
+          sellSecondTokens={this.props.sellSecondTokens}
         />
       );
       buyButtonStyle = "btn-success";
@@ -42,6 +49,7 @@ class Main extends Component {
           sellCoolTokens={this.props.sellCoolTokens}
           isLimitOrder={this.state.limitOrder}
           limitSellCoolTokens={this.props.limitSellCoolTokens}
+          coolTokenRate={this.props.coolTokenRate}
         />
       );
       sellButtonStyle = "btn-success";

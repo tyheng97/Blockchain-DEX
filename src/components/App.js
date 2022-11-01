@@ -6,6 +6,7 @@ import EthSwap from "../abis/EthSwap.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
 import "./App.css";
+import NewForm from "./NewForm";
 
 class App extends Component {
   async componentWillMount() {
@@ -22,27 +23,51 @@ class App extends Component {
     const ethBalance = await web3.eth.getBalance(this.state.account);
     this.setState({ ethBalance });
 
-    // Load Token
+    /////////////////////// Load SecondToken balance name ///////////////////////
     const networkId = await web3.eth.net.getId();
+
+    const secondTokenData = SecondToken.networks[networkId];
+    if (secondTokenData) {
+      const secondToken = new web3.eth.Contract(
+        SecondToken.abi,
+        secondTokenData.address
+      );
+      this.setState({ secondToken });
+      let secondTokenName = await secondToken.methods.symbol.call();
+      let secondTokenBalance = await secondToken.methods
+        .balanceOf(this.state.account)
+        .call();
+      this.setState({ secondTokenBalance: secondTokenBalance.toString() });
+      this.setState({ secondTokenName: secondTokenName.toString() });
+    } else {
+      window.alert("Token contract not deployed to detected network.");
+    }
+
+    /////////////////////// Load CoolToken balance name ///////////////////////
     const tokenData = CoolToken.networks[networkId];
     if (tokenData) {
       const token = new web3.eth.Contract(CoolToken.abi, tokenData.address);
       this.setState({ token });
-      let coolTokenName = await token.methods.name.call();
+      let coolTokenName = await token.methods.symbol.call();
       let coolTokenBalance = await token.methods
         .balanceOf(this.state.account)
         .call();
+
       this.setState({ coolTokenBalance: coolTokenBalance.toString() });
       this.setState({ coolTokenName: coolTokenName.toString() });
     } else {
       window.alert("Token contract not deployed to detected network.");
     }
 
-    // Load EthSwap
+    /////////////////////// Load EthSwap ///////////////////////
     const ethSwapData = EthSwap.networks[networkId];
     if (ethSwapData) {
       const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address);
       this.setState({ ethSwap });
+      let secondTokenRate = await ethSwap.methods.secondRate.call();
+      this.setState({ secondTokenRate: secondTokenRate.toString() });
+      let coolTokenRate = await ethSwap.methods.coolRate.call();
+      this.setState({ coolTokenRate: coolTokenRate.toString() });
     } else {
       window.alert("EthSwap contract not deployed to detected network.");
     }
@@ -62,6 +87,74 @@ class App extends Component {
       );
     }
   }
+
+  /////////////////////// Order book placeBuyOrder EthSwap ///////////////////////
+
+  placeBuyOrder = (price, quantity) => {
+    this.setState({ loading: true });
+
+    try {
+      this.state.ethSwap.methods
+        .placeBuyOrder(price, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("inside here", err);
+          this.setState({ limitError: true });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
+  };
+
+  placeSellOrder = (price, quantity) => {
+    this.setState({ loading: true });
+    this.state.ethSwap.methods
+      .placeSellOrder(price, quantity)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+      });
+  };
+  /////////////////////// secondToken EthSwap ///////////////////////
+
+  buySecondTokens = (etherAmount) => {
+    this.setState({ loading: true });
+    try {
+      this.state.ethSwap.methods
+        .buySecondTokens()
+        .send({ value: etherAmount, from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("inside here", err);
+          this.setState({ limitError: true });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
+  };
+
+  sellSecondTokens = (tokenAmount) => {
+    this.setState({ loading: true });
+    this.state.token.methods
+      .approve(this.state.ethSwap.address, tokenAmount)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.ethSwap.methods
+          .sellCoolTokens(tokenAmount)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          });
+      });
+  };
+  /////////////////////// coolToken EthSwap ///////////////////////
 
   buyCoolTokens = (etherAmount) => {
     this.setState({ loading: true });
@@ -131,6 +224,7 @@ class App extends Component {
     }
   };
 
+  //////////////////// Error handling /////////////////////////////
   retryLimitOrder = () => {
     this.setState({ limitError: false });
     this.setState({ loading: false });
@@ -144,6 +238,7 @@ class App extends Component {
       ethSwap: {},
       ethBalance: "0",
       coolTokenBalance: "0",
+      secondTokenBalance: "0",
       loading: true,
       limitError: false,
     };
@@ -151,7 +246,7 @@ class App extends Component {
 
   render() {
     let content;
-    if (this.state.loading && this.state.limitError == false) {
+    if (this.state.loading && this.state.limitError === false) {
       content = (
         <p id="loader" className="text-center">
           Loading...
@@ -171,15 +266,33 @@ class App extends Component {
       );
     } else {
       content = (
-        <Main
-          coolTokenName={this.state.coolTokenName}
-          ethBalance={this.state.ethBalance}
-          coolTokenBalance={this.state.coolTokenBalance}
-          buyCoolTokens={this.buyCoolTokens}
-          sellCoolTokens={this.sellCoolTokens}
-          limitBuyCoolTokens={this.limitBuyCoolTokens}
-          limitSellCoolTokens={this.limitSellCoolTokens}
-        />
+        <>
+          <Main
+            coolTokenName={this.state.coolTokenName}
+            ethBalance={this.state.ethBalance}
+            coolTokenBalance={this.state.coolTokenBalance}
+            buyCoolTokens={this.buyCoolTokens}
+            sellCoolTokens={this.sellCoolTokens}
+            limitBuyCoolTokens={this.limitBuyCoolTokens}
+            limitSellCoolTokens={this.limitSellCoolTokens}
+            coolTokenRate={this.state.coolTokenRate}
+            secondTokenRate={this.state.secondTokenRate}
+            secondTokenName={this.state.secondTokenName}
+            secondTokenBalance={this.state.secondTokenBalance}
+            buySecondTokens={this.buySecondTokens}
+            sellSecondTokens={this.sellSecondTokens}
+          />
+          <NewForm
+            buyorsell="buy"
+            placeBuyOrder={this.placeBuyOrder}
+            placeSellOrder={this.placeSellOrder}
+          />
+          <NewForm
+            buyorsell="sell"
+            placeBuyOrder={this.placeBuyOrder}
+            placeSellOrder={this.placeSellOrder}
+          />
+        </>
       );
     }
 
