@@ -15,10 +15,10 @@ interface IOrderBook {
         uint256 amount;
     }
 
-    event placeBuyOrder (
+    function placeBuyOrder (
         uint256 price,
         uint256 amountOfBaseToken
-    ); 
+    ) external; 
 
     function placeSellOrder (
         uint256 price,

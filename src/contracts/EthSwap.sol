@@ -295,52 +295,54 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
 
-    function placeBuyOrder (uint256 price, uint256 amountOfBaseToken) public payable {
+    function placeBuyOrder (
+        uint256 price,
+        uint256 amountOfBaseToken
+    ) external override nonReentrant {
         secondToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
-    }
-
-        // /**
-        //  * @notice if has order in sell book, and price >= min sell price
-        //  */
-        // uint256 sellPricePointer = minSellPrice;
-        // uint256 amountReflect = amountOfBaseToken;
-        // if (minSellPrice > 0 && price >= minSellPrice) {
-        //     while (amountReflect > 0 && sellPricePointer <= price && sellPricePointer != 0) {
-        //         uint8 i = 1;
-        //         uint256 higherPrice = sellSteps[sellPricePointer].higherPrice;
-        //         while (i <= sellOrdersInStepCounter[sellPricePointer] && amountReflect > 0) {
-        //             if (amountReflect >= sellOrdersInStep[sellPricePointer][i].amount) {
-        //                 //if the last order has been matched, delete the step
-        //                 if (i == sellOrdersInStepCounter[sellPricePointer]) {
-        //                     if (higherPrice > 0)
-        //                     sellSteps[higherPrice].lowerPrice = 0;
-        //                     delete sellSteps[sellPricePointer];
-        //                     minSellPrice = higherPrice;
-        //                 }
-
-        //                 amountReflect = amountReflect.sub(sellOrdersInStep[sellPricePointer][i].amount);
-
-        //                 // delete order from storage
-        //                 delete sellOrdersInStep[sellPricePointer][i];
-        //                 sellOrdersInStepCounter[sellPricePointer] -= 1;
-        //             } else {
-        //                 sellSteps[sellPricePointer].amount = sellSteps[sellPricePointer].amount.sub(amountReflect);
-        //                 sellOrdersInStep[sellPricePointer][i].amount = sellOrdersInStep[sellPricePointer][i].amount.sub(amountReflect);
-        //                 amountReflect = 0;
-        //             }
-        //             i += 1;
-        //         }
-        //         sellPricePointer = higherPrice;
-        //     }
-        // }
-        // /**
-        //  * @notice draw to buy book the rest
-        //  */
-        // if (amountReflect > 0) {
-        //     _drawToBuyBook(price, amountReflect);
-        // }
     
+        /**
+         * @notice if has order in sell book, and price >= min sell price
+         */
+        uint256 sellPricePointer = minSellPrice;
+        uint256 amountReflect = amountOfBaseToken;
+        if (minSellPrice > 0 && price >= minSellPrice) {
+            while (amountReflect > 0 && sellPricePointer <= price && sellPricePointer != 0) {
+                uint8 i = 1;
+                uint256 higherPrice = sellSteps[sellPricePointer].higherPrice;
+                while (i <= sellOrdersInStepCounter[sellPricePointer] && amountReflect > 0) {
+                    if (amountReflect >= sellOrdersInStep[sellPricePointer][i].amount) {
+                        //if the last order has been matched, delete the step
+                        if (i == sellOrdersInStepCounter[sellPricePointer]) {
+                            if (higherPrice > 0)
+                            sellSteps[higherPrice].lowerPrice = 0;
+                            delete sellSteps[sellPricePointer];
+                            minSellPrice = higherPrice;
+                        }
+
+                        amountReflect = amountReflect.sub(sellOrdersInStep[sellPricePointer][i].amount);
+
+                        // delete order from storage
+                        delete sellOrdersInStep[sellPricePointer][i];
+                        sellOrdersInStepCounter[sellPricePointer] -= 1;
+                    } else {
+                        sellSteps[sellPricePointer].amount = sellSteps[sellPricePointer].amount.sub(amountReflect);
+                        sellOrdersInStep[sellPricePointer][i].amount = sellOrdersInStep[sellPricePointer][i].amount.sub(amountReflect);
+                        amountReflect = 0;
+                    }
+                    i += 1;
+                }
+                sellPricePointer = higherPrice;
+            }
+        }
+        /**
+         * @notice draw to buy book the rest
+         */
+        if (amountReflect > 0) {
+            _drawToBuyBook(price, amountReflect);
+        }
+    }
 
     /**
      * @notice Place buy order.
