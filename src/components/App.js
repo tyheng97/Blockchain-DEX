@@ -68,6 +68,10 @@ class App extends Component {
       this.setState({ secondTokenRate: secondTokenRate.toString() });
       let coolTokenRate = await ethSwap.methods.coolRate.call();
       this.setState({ coolTokenRate: coolTokenRate.toString() });
+      let maxBuyPrice = await ethSwap.methods.maxBuyPrice.call();
+      this.setState({ maxBuyPrice: maxBuyPrice.toString() });
+      let minSellPrice = await ethSwap.methods.minSellPrice.call();
+      this.setState({ minSellPrice: minSellPrice.toString() });
     } else {
       window.alert("EthSwap contract not deployed to detected network.");
     }
@@ -303,6 +307,9 @@ class App extends Component {
             placeBuyOrder={this.placeBuyOrder}
             placeSellOrder={this.placeSellOrder}
           />
+          <div>Max Buy Price: {this.state.maxBuyPrice}</div>
+          <div>Min Sell Price: {this.state.minSellPrice}</div>
+          <div>Max Buy Price: {this.state.maxBuyPrice}</div>
         </>
       );
     }
