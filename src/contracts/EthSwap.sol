@@ -2,14 +2,14 @@ pragma solidity >=0.6.8;
 
 import "./CoolToken.sol";
 import "./SecondToken.sol";
-import { IOrderBook } from "./interfaces/IOrderBook.sol";
-import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import { SafeMath } from "@openzeppelin/contracts/math/SafeMath.sol";
-import { Math } from "@openzeppelin/contracts/math/Math.sol";
-import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IOrderBook} from "./interfaces/IOrderBook.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {SafeMath} from "@openzeppelin/contracts/math/SafeMath.sol";
+import {Math} from "@openzeppelin/contracts/math/Math.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract EthSwap is IOrderBook, ReentrancyGuard{
+contract EthSwap is IOrderBook, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeMath for uint8;
     using Math for uint256;
@@ -25,7 +25,6 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
     // It requires constructor
     SecondToken public secondToken;
     uint256 public secondRate = 5; //uint means unsigned, no decimal and positive
-
 
     ///////////////////////////
     mapping(uint256 => mapping(uint8 => Order)) public buyOrdersInStep;
@@ -75,7 +74,9 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
 
     function random() internal returns (uint256) {
         uint256 randomnumber = uint256(
-            keccak256(abi.encodePacked(block.timestamp, msg.sender, block.timestamp))
+            keccak256(
+                abi.encodePacked(block.timestamp, msg.sender, block.timestamp)
+            )
         ) % 10;
         randomnumber = randomnumber + 90;
         return randomnumber;
@@ -275,6 +276,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
             secondRate
         );
     }
+
     function sellSecondTokens(uint256 _amount) public {
         // User can't sell more tokens than they have
         require(secondToken.balanceOf(msg.sender) >= _amount);
@@ -295,40 +297,59 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
 
-    function placeBuyOrder (
-        uint256 price,
-        uint256 amountOfBaseToken
-    ) external override nonReentrant {
+    function placeBuyOrder(uint256 price, uint256 amountOfBaseToken)
+        external
+        override
+        nonReentrant
+    {
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
-    
+
         /**
          * @notice if has order in sell book, and price >= min sell price
          */
         uint256 sellPricePointer = minSellPrice;
         uint256 amountReflect = amountOfBaseToken;
         if (minSellPrice > 0 && price >= minSellPrice) {
-            while (amountReflect > 0 && sellPricePointer <= price && sellPricePointer != 0) {
+            while (
+                amountReflect > 0 &&
+                sellPricePointer <= price &&
+                sellPricePointer != 0
+            ) {
                 uint8 i = 1;
                 uint256 higherPrice = sellSteps[sellPricePointer].higherPrice;
-                while (i <= sellOrdersInStepCounter[sellPricePointer] && amountReflect > 0) {
-                    if (amountReflect >= sellOrdersInStep[sellPricePointer][i].amount) {
+                while (
+                    i <= sellOrdersInStepCounter[sellPricePointer] &&
+                    amountReflect > 0
+                ) {
+                    if (
+                        amountReflect >=
+                        sellOrdersInStep[sellPricePointer][i].amount
+                    ) {
                         //if the last order has been matched, delete the step
                         if (i == sellOrdersInStepCounter[sellPricePointer]) {
                             if (higherPrice > 0)
-                            sellSteps[higherPrice].lowerPrice = 0;
+                                sellSteps[higherPrice].lowerPrice = 0;
                             delete sellSteps[sellPricePointer];
                             minSellPrice = higherPrice;
                         }
 
-                        amountReflect = amountReflect.sub(sellOrdersInStep[sellPricePointer][i].amount);
+                        amountReflect = amountReflect.sub(
+                            sellOrdersInStep[sellPricePointer][i].amount
+                        );
 
                         // delete order from storage
                         delete sellOrdersInStep[sellPricePointer][i];
                         sellOrdersInStepCounter[sellPricePointer] -= 1;
+                        secondToken.transfer(msg.sender, amountOfBaseToken);
                     } else {
-                        sellSteps[sellPricePointer].amount = sellSteps[sellPricePointer].amount.sub(amountReflect);
-                        sellOrdersInStep[sellPricePointer][i].amount = sellOrdersInStep[sellPricePointer][i].amount.sub(amountReflect);
+                        sellSteps[sellPricePointer].amount = sellSteps[
+                            sellPricePointer
+                        ].amount.sub(amountReflect);
+                        sellOrdersInStep[sellPricePointer][i]
+                            .amount = sellOrdersInStep[sellPricePointer][i]
+                            .amount
+                            .sub(amountReflect);
                         amountReflect = 0;
                     }
                     i += 1;
@@ -347,10 +368,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
     /**
      * @notice Place buy order.
      */
-    function placeSellOrder (
-        uint256 price,
-        uint256 amountOfTradeToken
-    ) external override nonReentrant {
+    function placeSellOrder(uint256 price, uint256 amountOfTradeToken)
+        external
+        override
+        nonReentrant
+    {
         secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
@@ -360,27 +382,44 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
         uint256 buyPricePointer = maxBuyPrice;
         uint256 amountReflect = amountOfTradeToken;
         if (maxBuyPrice > 0 && price <= maxBuyPrice) {
-            while (amountReflect > 0 && buyPricePointer >= price && buyPricePointer != 0) {
+            while (
+                amountReflect > 0 &&
+                buyPricePointer >= price &&
+                buyPricePointer != 0
+            ) {
                 uint8 i = 1;
                 uint256 lowerPrice = buySteps[buyPricePointer].lowerPrice;
-                while (i <= buyOrdersInStepCounter[buyPricePointer] && amountReflect > 0) {
-                    if (amountReflect >= buyOrdersInStep[buyPricePointer][i].amount) {
+                while (
+                    i <= buyOrdersInStepCounter[buyPricePointer] &&
+                    amountReflect > 0
+                ) {
+                    if (
+                        amountReflect >=
+                        buyOrdersInStep[buyPricePointer][i].amount
+                    ) {
                         //if the last order has been matched, delete the step
                         if (i == buyOrdersInStepCounter[buyPricePointer]) {
                             if (lowerPrice > 0)
-                            buySteps[lowerPrice].higherPrice = 0;
+                                buySteps[lowerPrice].higherPrice = 0;
                             delete buySteps[buyPricePointer];
                             maxBuyPrice = lowerPrice;
                         }
 
-                        amountReflect = amountReflect - (buyOrdersInStep[buyPricePointer][i].amount);
+                        amountReflect =
+                            amountReflect -
+                            (buyOrdersInStep[buyPricePointer][i].amount);
 
                         // delete order from storage
                         delete buyOrdersInStep[buyPricePointer][i];
                         buyOrdersInStepCounter[buyPricePointer] -= 1;
+                        coolToken.transfer(msg.sender, amountOfTradeToken);
                     } else {
-                        buySteps[buyPricePointer].amount = buySteps[buyPricePointer].amount - (amountReflect);
-                        buyOrdersInStep[buyPricePointer][i].amount = buyOrdersInStep[buyPricePointer][i].amount - (amountReflect);
+                        buySteps[buyPricePointer].amount =
+                            buySteps[buyPricePointer].amount -
+                            (amountReflect);
+                        buyOrdersInStep[buyPricePointer][i].amount =
+                            buyOrdersInStep[buyPricePointer][i].amount -
+                            (amountReflect);
                         amountReflect = 0;
                     }
                     i += 1;
@@ -399,15 +438,15 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
     /**
      * @notice draw buy order.
      */
-    function _drawToBuyBook (
-        uint256 price,
-        uint256 amount
-    ) internal {
+    function _drawToBuyBook(uint256 price, uint256 amount) internal {
         require(price > 0, "Can not place order with price equal 0");
 
         buyOrdersInStepCounter[price] += 1;
-        buyOrdersInStep[price][buyOrdersInStepCounter[price]] = Order(msg.sender, amount);
-        buySteps[price].amount = buySteps[price].amount+ (amount);
+        buyOrdersInStep[price][buyOrdersInStepCounter[price]] = Order(
+            msg.sender,
+            amount
+        );
+        buySteps[price].amount = buySteps[price].amount + (amount);
         emit DrawToBuyBook(msg.sender, price, amount);
 
         if (maxBuyPrice == 0) {
@@ -443,14 +482,14 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
     /**
      * @notice draw sell order.
      */
-    function _drawToSellBook (
-        uint256 price,
-        uint256 amount
-    ) internal {
+    function _drawToSellBook(uint256 price, uint256 amount) internal {
         require(price > 0, "Can not place order with price equal 0");
 
         sellOrdersInStepCounter[price] += 1;
-        sellOrdersInStep[price][sellOrdersInStepCounter[price]] = Order(msg.sender, amount);
+        sellOrdersInStep[price][sellOrdersInStepCounter[price]] = Order(
+            msg.sender,
+            amount
+        );
         sellSteps[price].amount += amount;
         emit DrawToSellBook(msg.sender, price, amount);
 
@@ -471,7 +510,10 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
         }
 
         uint256 sellPricePointer = minSellPrice;
-        while (price >= sellPricePointer && sellSteps[sellPricePointer].higherPrice != 0) {
+        while (
+            price >= sellPricePointer &&
+            sellSteps[sellPricePointer].higherPrice != 0
+        ) {
             sellPricePointer = sellSteps[sellPricePointer].higherPrice;
         }
 
@@ -480,11 +522,16 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
             sellSteps[sellPricePointer].higherPrice = price;
         }
 
-        if (sellPricePointer > price && price > sellSteps[sellPricePointer].lowerPrice) {
-            sellSteps[price].lowerPrice = sellSteps[sellPricePointer].lowerPrice;
+        if (
+            sellPricePointer > price &&
+            price > sellSteps[sellPricePointer].lowerPrice
+        ) {
+            sellSteps[price].lowerPrice = sellSteps[sellPricePointer]
+                .lowerPrice;
             sellSteps[price].higherPrice = sellPricePointer;
 
-            sellSteps[sellSteps[sellPricePointer].lowerPrice].higherPrice = price;
+            sellSteps[sellSteps[sellPricePointer].lowerPrice]
+                .higherPrice = price;
             sellSteps[sellPricePointer].lowerPrice = price;
         }
     }
