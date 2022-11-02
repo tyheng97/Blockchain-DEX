@@ -307,6 +307,8 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
 
+        uint256 togive = price * 1 ether;
+
         price = amount / price;
 
         /**
@@ -315,7 +317,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         //minSellPrice
         //
         uint256 sellPricePointer = minSellPrice;
-        uint256 amountReflect = amountOfBaseToken;
+        uint256 amountReflect = togive;
         if (minSellPrice > 0 && price >= minSellPrice) {
             while (
                 amountReflect > 0 &&
@@ -353,7 +355,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         delete sellOrdersInStep[sellPricePointer][i];
                         sellOrdersInStepCounter[sellPricePointer] -= 1;
                         ///////////////////////////////
-                        secondToken.transfer(msg.sender, amountOfBaseToken);
+                        secondToken.transfer(msg.sender, togive);
 
                         //token.transferFrom(ethswap to other party)
                     } else {
@@ -390,13 +392,14 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
+        uint256 togive = price * 1 ether;
         price = price / amount;
 
         /**
          * @notice if has order in buy book, and price <= max buy price
          */
         uint256 buyPricePointer = maxBuyPrice;
-        uint256 amountReflect = amountOfTradeToken;
+        uint256 amountReflect = togive;
         if (maxBuyPrice > 0 && price <= maxBuyPrice) {
             while (
                 amountReflect > 0 &&
@@ -435,7 +438,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         buyOrdersInStepCounter[buyPricePointer] -= 1;
 
                         ///////
-                        coolToken.transfer(msg.sender, amountOfTradeToken);
+                        coolToken.transfer(msg.sender, togive);
                     } else {
                         buySteps[buyPricePointer].amount =
                             buySteps[buyPricePointer].amount -
