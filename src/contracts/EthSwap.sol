@@ -299,7 +299,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
         uint256 price,
         uint256 amountOfBaseToken
     ) external override nonReentrant {
-        secondToken.transfer(address(this), amountOfBaseToken);
+        coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
     
         /**
@@ -351,7 +351,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard{
         uint256 price,
         uint256 amountOfTradeToken
     ) external override nonReentrant {
-        coolToken.transfer(address(this), amountOfTradeToken);
+        secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
         /**

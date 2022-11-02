@@ -93,36 +93,41 @@ class App extends Component {
   placeBuyOrder = (price, quantity) => {
     this.setState({ loading: true });
 
-    try {
-      this.state.ethSwap.methods
-        .placeBuyOrder(price, quantity)
-        .send({ from: this.state.account })
-        .on("transactionHash", (hash) => {
-          this.setState({ loading: false });
-        })
-        .on("error", (err) => {
-          console.log("inside here", err);
-          this.setState({ limitError: true });
-        });
-    } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
-    }
+    this.state.token.methods
+      .approve(this.state.ethSwap.address, quantity)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.ethSwap.methods
+          .placeBuyOrder(price, quantity)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          })
+          .on("error", (err) => {
+            console.log("inside here", err);
+            this.setState({ limitError: true });
+          });
+      });
   };
 
   placeSellOrder = (price, quantity) => {
     this.setState({ loading: true });
-    try {
-      this.state.ethSwap.methods
-        .placeSellOrder(price, quantity)
-        .send({ from: this.state.account })
-        .on("transactionHash", (hash) => {
-          this.setState({ loading: false });
-        });
-    } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
-    }
+
+    this.state.secondToken.methods
+      .approve(this.state.ethSwap.address, quantity)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.ethSwap.methods
+          .placeSellOrder(price, quantity)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          })
+          .on("error", (err) => {
+            console.log("inside here", err);
+            this.setState({ limitError: true });
+          });
+      });
   };
   /////////////////////// secondToken EthSwap ///////////////////////
 
@@ -292,6 +297,7 @@ class App extends Component {
             placeBuyOrder={this.placeBuyOrder}
             placeSellOrder={this.placeSellOrder}
           />
+
           <NewForm
             buyorsell="sell"
             placeBuyOrder={this.placeBuyOrder}
