@@ -20,13 +20,16 @@ class NewForm extends Component {
           className="mb-3"
           onSubmit={(event) => {
             event.preventDefault();
-            const quantity = this.state.input;
+            let quantity = this.state.input;
+            quantity = window.web3.utils.toWei(quantity, "Ether");
+
             const price = this.state.price;
-            console.log(price, quantity);
-            // etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
+
             if (this.props.buyorsell === "buy") {
+              console.log("BUY", price, quantity);
               this.props.placeBuyOrder(price, quantity);
             } else {
+              console.log("SELL", price, quantity);
               this.props.placeSellOrder(price, quantity);
             }
           }}

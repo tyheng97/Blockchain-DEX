@@ -112,12 +112,17 @@ class App extends Component {
 
   placeSellOrder = (price, quantity) => {
     this.setState({ loading: true });
-    this.state.ethSwap.methods
-      .placeSellOrder(price, quantity)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.setState({ loading: false });
-      });
+    try {
+      this.state.ethSwap.methods
+        .placeSellOrder(price, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
   };
   /////////////////////// secondToken EthSwap ///////////////////////
 
