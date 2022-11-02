@@ -6,7 +6,6 @@ import EthSwap from "../abis/EthSwap.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
 import "./App.css";
-import NewForm from "./NewForm";
 
 class App extends Component {
   async componentWillMount() {

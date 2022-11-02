@@ -3,7 +3,7 @@ import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
 import BuySecond from "./BuySecond.js";
 
-class NewForm extends Component {
+class NewBuyForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,10 +38,21 @@ class NewForm extends Component {
             <label className="float-left">
               <b>Input</b>
             </label>
-            <span className="float-right text-muted"></span>
+            <span className="float-right text-muted">
+              CoolBalance:{" "}
+              {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
+            </span>
+            <span>{"  "}</span>
+            <span className="float-right text-muted">
+              SecondBalance:{" "}
+              {window.web3.utils.fromWei(
+                this.props.secondTokenBalance,
+                "Ether"
+              )}
+            </span>
           </div>
           <div className="input-group mb-4">
-            COOLToken Quantity
+            <div>COOL Tokens you want to sell</div>
             <input
               type="text"
               onChange={(event) => {
@@ -65,7 +76,7 @@ class NewForm extends Component {
             <>
               <div>
                 <label className="float-left">
-                  <b>price</b>
+                  <b>Number of SecondTokens you want</b>
                 </label>
               </div>
               <div className="input-group mb-4">
@@ -98,4 +109,4 @@ class NewForm extends Component {
   }
 }
 
-export default NewForm;
+export default NewBuyForm;

@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import BuyForm from "./BuyForm";
-import BuySecond from "./BuySecond";
-import NewForm from "./NewForm";
+import NewSellForm from "./NewSellForm";
+import NewBuyForm from "./NewBuyForm";
+
 import SellForm from "./SellForm";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentForm: "buy",
+      currentForm: "orderbook",
       limitOrder: false,
-      orderbook: false,
     };
   }
 
@@ -63,16 +63,20 @@ class Main extends Component {
     } else {
       content = (
         <div>
-          <NewForm
+          <NewBuyForm
             buyorsell="buy"
             placeBuyOrder={this.props.placeBuyOrder}
             placeSellOrder={this.props.placeSellOrder}
+            coolTokenBalance={this.props.coolTokenBalance}
+            secondTokenBalance={this.props.secondTokenBalance}
           />
 
-          <NewForm
+          <NewSellForm
             buyorsell="sell"
             placeBuyOrder={this.props.placeBuyOrder}
             placeSellOrder={this.props.placeSellOrder}
+            coolTokenBalance={this.props.coolTokenBalance}
+            secondTokenBalance={this.props.secondTokenBalance}
           />
           <div>Max Buy Price: {this.props.maxBuyPrice}</div>
           <div>Min Sell Price: {this.props.minSellPrice}</div>

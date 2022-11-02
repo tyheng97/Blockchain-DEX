@@ -19,12 +19,12 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
 
     string public name = "EthSwap Instant Exchange";
     CoolToken public coolToken; // variable that represents token smart contract.
-    uint256 public coolRate = 100; //uint means unsigned, no decimal and positive
+    uint256 public coolRate = 1000; //uint means unsigned, no decimal and positive
 
     // This is just the code, does not tell us where the smart contract is.
     // It requires constructor
     SecondToken public secondToken;
-    uint256 public secondRate = 5; //uint means unsigned, no decimal and positive
+    uint256 public secondRate = 1000; //uint means unsigned, no decimal and positive
 
     ///////////////////////////
     mapping(uint256 => mapping(uint8 => Order)) public buyOrdersInStep;
@@ -296,12 +296,16 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     }
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
-
+    // price = number of second u want
+    // amount of baseToken = coolToken
+    // buying second using cool 
     function placeBuyOrder(uint256 price, uint256 amountOfBaseToken)
         external
         override
         nonReentrant
     {
+        require(coolToken.balanceOf(msg.sender) >= amountOfBaseToken);
+
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
 
