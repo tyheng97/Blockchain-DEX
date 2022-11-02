@@ -295,21 +295,11 @@ class App extends Component {
             secondTokenBalance={this.state.secondTokenBalance}
             buySecondTokens={this.buySecondTokens}
             sellSecondTokens={this.sellSecondTokens}
-          />
-          <NewForm
-            buyorsell="buy"
             placeBuyOrder={this.placeBuyOrder}
             placeSellOrder={this.placeSellOrder}
+            maxBuyPrice={this.state.maxBuyPrice}
+            minSellPrice={this.state.minSellPrice}
           />
-
-          <NewForm
-            buyorsell="sell"
-            placeBuyOrder={this.placeBuyOrder}
-            placeSellOrder={this.placeSellOrder}
-          />
-          <div>Max Buy Price: {this.state.maxBuyPrice}</div>
-          <div>Min Sell Price: {this.state.minSellPrice}</div>
-          <div>Max Buy Price: {this.state.maxBuyPrice}</div>
         </>
       );
     }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import BuyForm from "./BuyForm";
 import BuySecond from "./BuySecond";
+import NewForm from "./NewForm";
 import SellForm from "./SellForm";
 
 class Main extends Component {
@@ -9,6 +10,7 @@ class Main extends Component {
     this.state = {
       currentForm: "buy",
       limitOrder: false,
+      orderbook: false,
     };
   }
 
@@ -16,9 +18,14 @@ class Main extends Component {
     let buttonStyle = "btn-light";
     let buyButtonStyle = "btn-light";
     let sellButtonStyle = "btn-light";
+    let orderBookButtonStyle = "btn-light";
 
     if (this.state.limitOrder) {
       buttonStyle = "btn-success";
+    }
+
+    if (this.state.currentForm === "orderbook") {
+      orderBookButtonStyle = "btn-success";
     }
 
     let content;
@@ -40,7 +47,7 @@ class Main extends Component {
         />
       );
       buyButtonStyle = "btn-success";
-    } else {
+    } else if (this.state.currentForm === "sell") {
       content = (
         <SellForm
           coolTokenName={this.props.coolTokenName}
@@ -53,6 +60,24 @@ class Main extends Component {
         />
       );
       sellButtonStyle = "btn-success";
+    } else {
+      content = (
+        <div>
+          <NewForm
+            buyorsell="buy"
+            placeBuyOrder={this.props.placeBuyOrder}
+            placeSellOrder={this.props.placeSellOrder}
+          />
+
+          <NewForm
+            buyorsell="sell"
+            placeBuyOrder={this.props.placeBuyOrder}
+            placeSellOrder={this.props.placeSellOrder}
+          />
+          <div>Max Buy Price: {this.props.maxBuyPrice}</div>
+          <div>Min Sell Price: {this.props.minSellPrice}</div>
+        </div>
+      );
     }
 
     return (
@@ -76,6 +101,14 @@ class Main extends Component {
             Limit Order
           </button>
 
+          <button
+            className={`btn ${orderBookButtonStyle}`}
+            onClick={(event) => {
+              this.setState({ currentForm: "orderbook" });
+            }}
+          >
+            Orderbook
+          </button>
           <button
             className={`btn ${sellButtonStyle}`}
             onClick={(event) => {
