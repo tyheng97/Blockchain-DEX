@@ -71,6 +71,23 @@ class App extends Component {
       this.setState({ maxBuyPrice: maxBuyPrice.toString() });
       let minSellPrice = await ethSwap.methods.minSellPrice.call();
       this.setState({ minSellPrice: minSellPrice.toString() });
+
+      // let buyOrdersInStepCounter = await ethSwap.methods.buyOrdersInStepCounter.call();
+
+      // ethSwap.methods.buyOrdersInStepCounter.call(0).then(function(tester) {
+      //   console.log("tester", tester);
+      // });
+
+      // this.setState({
+      //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
+      // });
+
+      // let buySteps = await ethSwap.methods.buySteps.call();
+      // this.setState({ buySteps: buySteps.toString() });
+      // let buyOrdersInStepCounter = await ethSwap.methods.buyOrdersInStepCounter.call();
+      // this.setState({
+      //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
+      // });
     } else {
       window.alert("EthSwap contract not deployed to detected network.");
     }
@@ -298,6 +315,9 @@ class App extends Component {
             placeSellOrder={this.placeSellOrder}
             maxBuyPrice={this.state.maxBuyPrice}
             minSellPrice={this.state.minSellPrice}
+            // buyOrdersInStep={this.state.buyOrdersInStep}
+            // buySteps={this.state.buySteps}
+            // buyOrdersInStepCounter={this.state.buyOrdersInStepCounter}
           />
         </>
       );
