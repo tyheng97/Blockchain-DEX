@@ -93,7 +93,7 @@ class App extends Component {
 
   /////////////////////// Order book placeBuyOrder EthSwap ///////////////////////
 
-  placeBuyOrder = (price, quantity) => {
+  placeBuyOrder = (price, quantity, amt) => {
     this.setState({ loading: true });
 
     this.state.token.methods
@@ -101,7 +101,7 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .placeBuyOrder(price, quantity)
+          .placeBuyOrder(price, quantity, amt)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
@@ -113,7 +113,7 @@ class App extends Component {
       });
   };
 
-  placeSellOrder = (price, quantity) => {
+  placeSellOrder = (price, quantity, amt) => {
     this.setState({ loading: true });
 
     this.state.secondToken.methods
@@ -121,7 +121,7 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .placeSellOrder(price, quantity)
+          .placeSellOrder(price, quantity, amt)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
