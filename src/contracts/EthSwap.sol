@@ -317,14 +317,22 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     uint256[] public sellrateid;
     uint256[] public buyrateid;
 
+    function getbuyrate() public returns (uint256[] memory) {
+        return buyrateid;
+    }
+
+    function getsellrate() public returns (uint256[] memory) {
+        return sellrateid;
+    }
+
     //buy B using A
     function atob(uint256 b, uint256 a) external override nonReentrant {
         require(coolToken.balanceOf(msg.sender) >= a, "hello error here atob");
 
         coolToken.transferFrom(msg.sender, address(this), a);
         // emit PlaceBuyOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
-        b = b * 1 ether;
-        a = a * 1 ether;
+        // b = b * 1 ether;
+        // a = a * 1 ether;
         uint256 rate = a / b;
         uint256 sellRate = minSellRate;
         uint256 amountSold = a;
@@ -344,17 +352,14 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     secondToken.transfer(msg.sender, a);
-                }
-
-                if (newSellOrderBook[idOfSellRate].amount == a) {
+                } else if (newSellOrderBook[idOfSellRate].amount == a) {
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     secondToken.transfer(msg.sender, a);
                     // update the minSellRate
                     delete newSellOrderBook[idOfSellRate];
                     delete sellrateid[i];
-                }
-                if (newSellOrderBook[idOfSellRate].amount < a) {
+                } else if (newSellOrderBook[idOfSellRate].amount < a) {
                     coolToken.transfer(
                         newSellOrderBook[idOfSellRate].maker,
                         newSellOrderBook[idOfSellRate].amount
@@ -398,8 +403,8 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         uint256 sellRate = minSellRate;
         uint256 amountSold = b;
         bool toAdd = true;
-        b = b * 1 ether;
-        a = a * 1 ether;
+        // b = b * 1 ether;
+        // a = a * 1 ether;
         for (uint256 i = 0; i < buyrateid.length; i++) {
             idOfBuyRate = buyrateid[i];
             maxBuyRate = newBuyOrderBook[idOfBuyRate].rate;
@@ -412,16 +417,14 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     // transfer
                     coolToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
                     secondToken.transfer(msg.sender, b);
-                }
-
-                if (newBuyOrderBook[idOfBuyRate].amount == b) {
+                } else if (newBuyOrderBook[idOfBuyRate].amount == b) {
                     // transfer
                     coolToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
                     secondToken.transfer(msg.sender, b);
                     // update the minSellRate
                     delete newBuyOrderBook[idOfBuyRate];
-                }
-                if (newBuyOrderBook[idOfBuyRate].amount < b) {
+                    delete buyrateid[i];
+                } else if (newBuyOrderBook[idOfBuyRate].amount < b) {
                     coolToken.transfer(
                         newBuyOrderBook[idOfBuyRate].maker,
                         newBuyOrderBook[idOfBuyRate].amount

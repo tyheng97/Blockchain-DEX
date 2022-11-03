@@ -72,6 +72,13 @@ class App extends Component {
       let minSellPrice = await ethSwap.methods.minSellPrice.call();
       this.setState({ minSellPrice: minSellPrice.toString() });
 
+      let sellrateid = await ethSwap.methods.getsellrate.call();
+      let buyrateid = await ethSwap.methods.getbuyrate.call();
+
+      console.log("sellrateid", sellrateid);
+
+      console.log("buyrateid", buyrateid);
+
       // let buyOrdersInStepCounter = await ethSwap.methods.buyOrdersInStepCounter.call();
 
       // ethSwap.methods.buyOrdersInStepCounter.call(0).then(function(tester) {
