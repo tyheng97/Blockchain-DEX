@@ -297,7 +297,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     // price = number of second u want
     // amount of baseToken = coolToken
     // buying second using cool 
-    function placeBuyOrder(uint256 price, uint256 amountOfBaseToken, uint256 amount)
+    function placeBuyOrder(uint256 tradeAmount, uint256 amountOfBaseToken, uint256 amount)
         external
         override
         nonReentrant
@@ -305,7 +305,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         require(coolToken.balanceOf(msg.sender) >= amountOfBaseToken);
 
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
-        emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
+        emit PlaceBuyOrder(msg.sender, tradeAmount, amountOfBaseToken);
 
         /**
          * @notice if has order in sell book, and price >= min sell price
@@ -314,11 +314,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
          //
         uint256 sellPricePointer = minSellPrice;
         uint256 amountReflect = amountOfBaseToken;
-        if (minSellPrice > 0 && price >= minSellPrice) {
+        if (minSellPrice > 0 && tradeAmount >= minSellPrice) {
             
             while (
                 amountReflect > 0 &&
-                sellPricePointer <= price &&
+                sellPricePointer <= tradeAmount &&
                 sellPricePointer != 0
             ) {
                 uint8 i = 1;
@@ -371,7 +371,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
          * @notice draw to buy book the rest
          */
         if (amountReflect > 0) {
-            _drawToBuyBook(price, amountReflect);
+            _drawToBuyBook(tradeAmount, amountReflect);
         }
     }
 
@@ -385,7 +385,6 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     {
         secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
-
 
         /**
          * @notice if has order in buy book, and price <= max buy price
