@@ -36,6 +36,17 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     uint256 public minSellPrice;
     ////////////////////////////
 
+    uint256 public buyCounter = 0;
+    uint256 public minSellRate;
+    mapping(uint256=> NewOrder) public newBuyOrderBook;
+    uint256 public idOfBuyRate;
+
+    uint256 public sellCounter = 0;
+    mapping(uint256=> NewOrder) public newSellOrderBook;
+    uint256 public idOfSellRate;
+    uint256 public maxBuyRate;
+    uint256 public selltx = 0;
+    //////////////
     event TokensPurchased(
         address account,
         address token,
@@ -297,6 +308,140 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     // price = number of second u want
     // amount of baseToken = coolToken
     // buying second using cool
+    // function newplaceBuyOrder(uint256 amountOfBuyToken, uint256 amountOfSellToken, uint256 amount) external override nonReentrant{
+    //     require(coolToken.balanceOf(msg.sender) >= amountOfSellToken);
+    //     coolToken.transferFrom(msg.sender, address(this), amountOfSellToken);
+    //     emit PlaceBuyOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
+
+    //     uint256 rate = amount/amountOfBuyToken;
+    //     uint256 sellRate = minSellRate;
+    //     uint256 amountSold = amount;
+        // if (rate >= minSellRate && minSellRate > 0){
+        //     //give best order
+        //     if (newSellOrderBook[idOfSellRate].amount > amount){
+        //         uint256 newAmount = newSellOrderBook[idOfSellRate].amount - amount;
+        //         newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
+        //         // transfer 
+        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
+        //         secondToken.transfer(msg.sender, amount);
+        //     }
+
+        //     if (newSellOrderBook[idOfSellRate].amount == amount){
+        //         // transfer 
+        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
+        //         secondToken.transfer(msg.sender, amount);
+        //         // update the minSellRate
+        //         delete newSellOrderBook[idOfSellRate];
+
+        //         uint8 i = 0;
+        //         uint256 nextPrice = 0;
+        //         minSellRate = 
+        //         while(i < selltx){
+        //             if(newSellOrderBook[i].rate<)
+        //         }
+
+
+        //     }
+        //     if (newSellOrderBook[idOfSellRate].amount < amount){
+        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
+        //         secondToken.transfer(msg.sender, amount);
+        //     }
+
+
+
+
+    //     }
+    //     if (amountSold > 0){
+    //         _addToBuyBook(rate, amountSold);
+    //     }
+    // }
+
+
+    // function maxNumber(uint256 a, uint256 b) internal pure returns (uint256) {
+    //     return a >= b ? a : b;
+    // }
+    // function minNumber(uint256 a, uint256 b) internal pure returns (uint256) {
+    //     return a <= b ? a : b;
+    // }
+
+    // function _addToBuyBook(uint256 rate, uint256 amountSold) internal{
+    //     require(rate > 0);
+    //     buyCounter += 1;
+    //     maxBuyRate = maxNumber(maxBuyRate, rate);
+    //     if (maxBuyRate == rate){
+    //         idOfBuyRate = buyCounter;
+    //     }
+
+    //     newBuyOrderBook[buyCounter] = NewOrder(msg.sender, amountSold, rate);
+    //     selltx += 1;
+
+    //     emit DrawToBuyBook(msg.sender, rate, amountSold);
+
+
+    // }
+
+    // function newplaceSellOrder(uint256 amountOfBuyToken, uint256 amountOfSellToken, uint256 amount) external override nonReentrant{
+    //     require(secondToken.balanceOf(msg.sender) >= amountOfSellToken);
+    //     secondToken.transferFrom(msg.sender, address(this), amountOfSellToken);
+    //     emit PlaceSellOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
+
+    //     uint256 rate = amount/amountOfBuyToken;
+    //     rate = 1/rate;
+    //     uint256 sellRate = minSellRate;
+    //     uint256 amountSold = amount;
+    //     if (rate <= maxBuyRate && maxBuyRate>0){
+            
+    //         if (newSellOrderBook[idOfSellRate].amount > amount){
+    //             uint256 newAmount = newSellOrderBook[idOfSellRate].amount - amount;
+    //             newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
+    //             // transfer 
+    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
+    //             secondToken.transfer(msg.sender, amount);
+    //         }
+
+    //         if (newSellOrderBook[idOfSellRate].amount == amount){
+    //             // transfer 
+    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
+    //             secondToken.transfer(msg.sender, amount);
+    //             // update the minSellRate
+    //             delete newSellOrderBook[idOfSellRate];
+
+    //             uint8 i = 0;
+    //             uint256 nextPrice = 0;
+    //             // minSellRate = 
+    //             // while(i < selltx){
+    //             //     if(newSellOrderBook[i].rate<)
+    //             // }
+
+
+    //         }
+    //         if (newSellOrderBook[idOfSellRate].amount < amount){
+    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
+    //             secondToken.transfer(msg.sender, amount);
+    //         }
+    //     }
+    //     if (amountSold > 0){
+    //         _addToSellBook(rate, amountSold);
+    //     }
+    // }
+
+    // function _addToSellBook(uint256 rate, uint256 amountSold) internal{
+    //     require(rate > 0);
+    //     sellCounter += 1;
+    //     minSellRate = minNumber(minSellRate, rate);
+    //     if (minSellRate == rate){
+    //         idOfSellRate = sellCounter;
+    //     }
+
+    //     newSellOrderBook[sellCounter] = NewOrder(msg.sender, amountSold, rate);
+    //     emit DrawToSellBook(msg.sender, rate, amountSold);
+
+
+    // }
+
+
+
+
     function placeBuyOrder(
         uint256 price,
         uint256 amountOfBaseToken,
@@ -305,11 +450,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         require(coolToken.balanceOf(msg.sender) >= amountOfBaseToken);
 
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
-        emit PlaceBuyOrder(msg.sender, tradeAmount, amountOfBaseToken);
-
-        uint256 togive = price * 1 ether;
-
-        price = amount / price;
+        emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
 
         /**
          * @notice if has order in sell book, and price >= min sell price
@@ -317,11 +458,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         //minSellPrice
         //
         uint256 sellPricePointer = minSellPrice;
-        uint256 amountReflect = togive;
+        uint256 amountReflect = amountOfBaseToken;
         if (minSellPrice > 0 && price >= minSellPrice) {
             while (
                 amountReflect > 0 &&
-                sellPricePointer <= tradeAmount &&
+                sellPricePointer <= price &&
                 sellPricePointer != 0
             ) {
                 uint8 i = 1;
@@ -355,7 +496,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         delete sellOrdersInStep[sellPricePointer][i];
                         sellOrdersInStepCounter[sellPricePointer] -= 1;
                         ///////////////////////////////
-                        secondToken.transfer(msg.sender, togive);
+                        secondToken.transfer(msg.sender, sellPricePointer);
 
                         //token.transferFrom(ethswap to other party)
                     } else {
@@ -377,7 +518,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
          * @notice draw to buy book the rest
          */
         if (amountReflect > 0) {
-            _drawToBuyBook(tradeAmount, amountReflect);
+            _drawToBuyBook(price, amountReflect);
         }
     }
 
@@ -392,14 +533,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
-        uint256 togive = price * 1 ether;
-        price = price / amount;
-
         /**
          * @notice if has order in buy book, and price <= max buy price
          */
         uint256 buyPricePointer = maxBuyPrice;
-        uint256 amountReflect = togive;
+        uint256 amountReflect = amountOfTradeToken;
         if (maxBuyPrice > 0 && price <= maxBuyPrice) {
             while (
                 amountReflect > 0 &&
@@ -438,7 +576,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         buyOrdersInStepCounter[buyPricePointer] -= 1;
 
                         ///////
-                        coolToken.transfer(msg.sender, togive);
+                        coolToken.transfer(msg.sender, buyPricePointer);
                     } else {
                         buySteps[buyPricePointer].amount =
                             buySteps[buyPricePointer].amount -

@@ -9,6 +9,12 @@ interface IOrderBook {
         uint256 amount;
     }
 
+    struct NewOrder{
+        address maker;
+        uint256 amount;
+        uint256 rate;
+    }
+
     struct Step {
         uint256 higherPrice;
         uint256 lowerPrice;
@@ -21,6 +27,16 @@ interface IOrderBook {
         uint256 amount
     ) external; 
 
+    // function newplaceBuyOrder (
+    //     uint256 price,
+    //     uint256 amountOfBaseToken,
+    //     uint256 amount
+    // ) external;
+    // function newplaceSellOrder (
+    //     uint256 price,
+    //     uint256 amountOfBaseToken,
+    //     uint256 amount
+    // ) external;
     function placeSellOrder (
         uint256 price,
         uint256 amountOfTradeToken,
