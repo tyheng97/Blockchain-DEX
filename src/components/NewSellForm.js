@@ -53,7 +53,7 @@ class NewSellForm extends Component {
               type="text"
               onChange={(event) => {
                 const etherAmount = event.target.value.toString();
-                console.log(etherAmount);
+                console.log("hererere", etherAmount);
 
                 this.setState({
                   input: etherAmount,

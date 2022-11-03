@@ -75,6 +75,10 @@ class App extends Component {
       let sellrateid = await ethSwap.methods.getsellrate.call();
       let buyrateid = await ethSwap.methods.getbuyrate.call();
 
+      let getamountbuy = await ethSwap.methods.getamountbuy.call();
+
+      console.log("getamountbuy", getamountbuy);
+
       console.log("sellrateid", sellrateid);
 
       console.log("buyrateid", buyrateid);
@@ -145,7 +149,7 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .btoa(quantity, price)
+          .btoa(price, quantity)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });

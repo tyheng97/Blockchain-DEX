@@ -317,12 +317,19 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     uint256[] public sellrateid;
     uint256[] public buyrateid;
 
+    uint256[] public amountsell;
+    uint256[] public amountbuy;
+
     function getbuyrate() public returns (uint256[] memory) {
         return buyrateid;
     }
 
     function getsellrate() public returns (uint256[] memory) {
         return sellrateid;
+    }
+
+    function getamountbuy() public returns (uint256[] memory) {
+        return amountbuy;
     }
 
     //buy B using A
@@ -334,8 +341,6 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         // b = b * 1 ether;
         // a = a * 1 ether;
         uint256 rate = a / b;
-        uint256 sellRate = minSellRate;
-        uint256 amountSold = a;
         bool toAdd = true;
 
         for (uint256 i = 0; i < sellrateid.length; i++) {
@@ -351,20 +356,32 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
-                    secondToken.transfer(msg.sender, a);
+                    secondToken.transfer(msg.sender, a / minSellRate);
                 } else if (newSellOrderBook[idOfSellRate].amount == a) {
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
-                    secondToken.transfer(msg.sender, a);
+                    secondToken.transfer(msg.sender, a / minSellRate);
                     // update the minSellRate
                     delete newSellOrderBook[idOfSellRate];
-                    delete sellrateid[i];
+                    for (uint256 j = i; j < sellrateid.length - 1; j++) {
+                        sellrateid[j] = sellrateid[j + 1];
+                    }
+                    sellrateid.pop();
                 } else if (newSellOrderBook[idOfSellRate].amount < a) {
                     coolToken.transfer(
                         newSellOrderBook[idOfSellRate].maker,
                         newSellOrderBook[idOfSellRate].amount
                     );
-                    secondToken.transfer(msg.sender, a);
+                    secondToken.transfer(
+                        msg.sender,
+                        newSellOrderBook[idOfSellRate].amount / minSellRate
+                    );
+                    delete newSellOrderBook[idOfSellRate];
+                    for (uint256 j = i; j < sellrateid.length - 1; j++) {
+                        sellrateid[j] = sellrateid[j + 1];
+                    }
+                    sellrateid.pop();
+                    _atobBook(rate, a - newSellOrderBook[idOfSellRate].amount);
                 }
                 break;
             }
@@ -391,17 +408,17 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     }
 
     // buy A using b
-    function btoa(uint256 b, uint256 a) external override nonReentrant {
+    function btoa(uint256 a, uint256 b) external override nonReentrant {
         require(
             secondToken.balanceOf(msg.sender) >= b,
             "Hello error here btoa"
         );
+        amountbuy.push(b);
+        amountbuy.push(a);
         secondToken.transferFrom(msg.sender, address(this), b);
         // emit PlaceSellOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
 
         uint256 rate = a / b;
-        uint256 sellRate = minSellRate;
-        uint256 amountSold = b;
         bool toAdd = true;
         // b = b * 1 ether;
         // a = a * 1 ether;
@@ -411,25 +428,40 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
 
             if (rate <= maxBuyRate && maxBuyRate > 0) {
                 toAdd = false;
-                if (newBuyOrderBook[idOfBuyRate].amount > b) {
-                    uint256 newAmount = newBuyOrderBook[idOfBuyRate].amount - b;
+                if (newBuyOrderBook[idOfBuyRate].amount > a) {
+                    amountbuy.push(newBuyOrderBook[idOfBuyRate].amount);
+                    amountbuy.push(b);
+                    uint256 newAmount = newBuyOrderBook[idOfBuyRate].amount - a;
                     newBuyOrderBook[idOfBuyRate].amount = newAmount; //replace old amount with new
+                    amountbuy.push(newBuyOrderBook[idOfBuyRate].amount);
                     // transfer
-                    coolToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    secondToken.transfer(msg.sender, b);
-                } else if (newBuyOrderBook[idOfBuyRate].amount == b) {
+                    secondToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                    coolToken.transfer(msg.sender, b * maxBuyRate);
+                } else if (newBuyOrderBook[idOfBuyRate].amount == a) {
                     // transfer
-                    coolToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    secondToken.transfer(msg.sender, b);
+                    secondToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                    coolToken.transfer(msg.sender, b * maxBuyRate);
                     // update the minSellRate
                     delete newBuyOrderBook[idOfBuyRate];
-                    delete buyrateid[i];
-                } else if (newBuyOrderBook[idOfBuyRate].amount < b) {
-                    coolToken.transfer(
+                    for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                        buyrateid[j] = buyrateid[j + 1];
+                    }
+                    buyrateid.pop();
+                } else if (newBuyOrderBook[idOfBuyRate].amount < a) {
+                    secondToken.transfer(
                         newBuyOrderBook[idOfBuyRate].maker,
                         newBuyOrderBook[idOfBuyRate].amount
                     );
-                    secondToken.transfer(msg.sender, b);
+                    coolToken.transfer(
+                        msg.sender,
+                        newBuyOrderBook[idOfBuyRate].amount * maxBuyRate
+                    );
+                    delete newBuyOrderBook[idOfBuyRate];
+                    for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                        buyrateid[j] = buyrateid[j + 1];
+                    }
+                    buyrateid.pop();
+                    _btoaBook(rate, b - newBuyOrderBook[idOfBuyRate].amount);
                 }
                 break;
             }
