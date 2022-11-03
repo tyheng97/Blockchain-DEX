@@ -18,17 +18,15 @@ class NewSellForm extends Component {
           onSubmit={(event) => {
             event.preventDefault();
             let quantity = this.state.input;
-            let amt = this.state.input;
+            let price = this.state.price;
             quantity = window.web3.utils.toWei(quantity, "Ether");
-
-            const price = this.state.price;
-
+            price = window.web3.utils.toWei(price, "Ether");
             if (this.props.buyorsell === "buy") {
               console.log("BUY", price, quantity);
-              this.props.placeBuyOrder(price, quantity, amt);
+              this.props.placeBuyOrder(price, quantity);
             } else {
               console.log("SELL", price, quantity);
-              this.props.placeSellOrder(price, quantity, amt);
+              this.props.placeSellOrder(price, quantity);
             }
           }}
         >

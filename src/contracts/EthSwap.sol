@@ -308,136 +308,127 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     // price = number of second u want
     // amount of baseToken = coolToken
     // buying second using cool
-    // function newplaceBuyOrder(uint256 amountOfBuyToken, uint256 amountOfSellToken, uint256 amount) external override nonReentrant{
-    //     require(coolToken.balanceOf(msg.sender) >= amountOfSellToken);
-    //     coolToken.transferFrom(msg.sender, address(this), amountOfSellToken);
-    //     emit PlaceBuyOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
 
-    //     uint256 rate = amount/amountOfBuyToken;
-    //     uint256 sellRate = minSellRate;
-    //     uint256 amountSold = amount;
-        // if (rate >= minSellRate && minSellRate > 0){
-        //     //give best order
-        //     if (newSellOrderBook[idOfSellRate].amount > amount){
-        //         uint256 newAmount = newSellOrderBook[idOfSellRate].amount - amount;
-        //         newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
-        //         // transfer 
-        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
-        //         secondToken.transfer(msg.sender, amount);
-        //     }
+    // dont gwei in frontend
+    // use price * 1 ether
 
-        //     if (newSellOrderBook[idOfSellRate].amount == amount){
-        //         // transfer 
-        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
-        //         secondToken.transfer(msg.sender, amount);
-        //         // update the minSellRate
-        //         delete newSellOrderBook[idOfSellRate];
+    //b = cool
+    //a = second
 
-        //         uint8 i = 0;
-        //         uint256 nextPrice = 0;
-        //         minSellRate = 
-        //         while(i < selltx){
-        //             if(newSellOrderBook[i].rate<)
-        //         }
+    //buy B using A
+    function atob(uint256 b, uint256 a) external override nonReentrant{
+        require(coolToken.balanceOf(msg.sender) >= a);
 
+        coolToken.transferFrom(msg.sender, address(this), a);
+        // emit PlaceBuyOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
+        b = b * 1 ether;
+        a = a * 1 ether;
+        uint256 rate = a/b;
+        uint256 sellRate = minSellRate;
+        uint256 amountSold = a;
+        if (rate >= minSellRate && minSellRate > 0){
+            //give best order
+            if (newSellOrderBook[idOfSellRate].amount > a){
+                uint256 newAmount = newSellOrderBook[idOfSellRate].amount - a;
+                newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
+                // transfer 
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
+                secondToken.transfer(msg.sender, a);
+            }
 
-        //     }
-        //     if (newSellOrderBook[idOfSellRate].amount < amount){
-        //         coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
-        //         secondToken.transfer(msg.sender, amount);
-        //     }
+            if (newSellOrderBook[idOfSellRate].amount == a){
+                // transfer 
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
+                secondToken.transfer(msg.sender, a);
+                // update the minSellRate
+                delete newSellOrderBook[idOfSellRate];
 
 
+            }
+            if (newSellOrderBook[idOfSellRate].amount < a){
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
+                secondToken.transfer(msg.sender, a);
+            }
+
+        }
+        if (amountSold > 0){
+            _atobBook(rate, a);
+        }
+    }
 
 
-    //     }
-    //     if (amountSold > 0){
-    //         _addToBuyBook(rate, amountSold);
-    //     }
-    // }
+    function maxNumber(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a >= b ? a : b;
+    }
+    function minNumber(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a <= b ? a : b;
+    }
 
 
-    // function maxNumber(uint256 a, uint256 b) internal pure returns (uint256) {
-    //     return a >= b ? a : b;
-    // }
-    // function minNumber(uint256 a, uint256 b) internal pure returns (uint256) {
-    //     return a <= b ? a : b;
-    // }
+    function _atobBook(uint256 rate, uint256 a) internal{
+        require(rate > 0);
+        buyCounter += 1;
+        maxBuyRate = maxNumber(maxBuyRate, rate);
+        if (maxBuyRate == rate){
+            idOfBuyRate = buyCounter;
+        }
 
-    // function _addToBuyBook(uint256 rate, uint256 amountSold) internal{
-    //     require(rate > 0);
-    //     buyCounter += 1;
-    //     maxBuyRate = maxNumber(maxBuyRate, rate);
-    //     if (maxBuyRate == rate){
-    //         idOfBuyRate = buyCounter;
-    //     }
+        newBuyOrderBook[buyCounter] = NewOrder(msg.sender, a, rate);
+        selltx += 1;
 
-    //     newBuyOrderBook[buyCounter] = NewOrder(msg.sender, amountSold, rate);
-    //     selltx += 1;
+    }
+    // buy A using b
+    function btoa(uint256 b, uint256 a) external override nonReentrant{
+        require(secondToken.balanceOf(msg.sender) >= b);
+        secondToken.transferFrom(msg.sender, address(this), b);
+        // emit PlaceSellOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
 
-    //     emit DrawToBuyBook(msg.sender, rate, amountSold);
-
-
-    // }
-
-    // function newplaceSellOrder(uint256 amountOfBuyToken, uint256 amountOfSellToken, uint256 amount) external override nonReentrant{
-    //     require(secondToken.balanceOf(msg.sender) >= amountOfSellToken);
-    //     secondToken.transferFrom(msg.sender, address(this), amountOfSellToken);
-    //     emit PlaceSellOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
-
-    //     uint256 rate = amount/amountOfBuyToken;
-    //     rate = 1/rate;
-    //     uint256 sellRate = minSellRate;
-    //     uint256 amountSold = amount;
-    //     if (rate <= maxBuyRate && maxBuyRate>0){
+        uint256 rate = a/b;
+        uint256 sellRate = minSellRate;
+        uint256 amountSold = b;
+        b = b * 1 ether;
+        a = a * 1 ether;
+        if (rate <= maxBuyRate && maxBuyRate>0){
             
-    //         if (newSellOrderBook[idOfSellRate].amount > amount){
-    //             uint256 newAmount = newSellOrderBook[idOfSellRate].amount - amount;
-    //             newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
-    //             // transfer 
-    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
-    //             secondToken.transfer(msg.sender, amount);
-    //         }
+            if (newSellOrderBook[idOfSellRate].amount > b){
+                uint256 newAmount = newSellOrderBook[idOfSellRate].amount - b;
+                newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
+                // transfer 
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, b);
+                secondToken.transfer(msg.sender, b);
+            }
 
-    //         if (newSellOrderBook[idOfSellRate].amount == amount){
-    //             // transfer 
-    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, amount);
-    //             secondToken.transfer(msg.sender, amount);
-    //             // update the minSellRate
-    //             delete newSellOrderBook[idOfSellRate];
+            if (newSellOrderBook[idOfSellRate].amount == b){
+                // transfer 
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, b);
+                secondToken.transfer(msg.sender, b);
+                // update the minSellRate
+                delete newSellOrderBook[idOfSellRate];
 
-    //             uint8 i = 0;
-    //             uint256 nextPrice = 0;
-    //             // minSellRate = 
-    //             // while(i < selltx){
-    //             //     if(newSellOrderBook[i].rate<)
-    //             // }
+            }
+            if (newSellOrderBook[idOfSellRate].amount < b){
+                coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
+                secondToken.transfer(msg.sender, b);
+            }
+        }
+        if (amountSold > 0){
+            _btoaBook(rate, b);
+        }
+    }
 
+    function _btoaBook(uint256 rate, uint256 b) internal{
+        require(rate > 0);
+        sellCounter += 1;
+        minSellRate = minNumber(minSellRate, rate);
+        if (minSellRate == rate){
+            idOfSellRate = sellCounter;
+        }
 
-    //         }
-    //         if (newSellOrderBook[idOfSellRate].amount < amount){
-    //             coolToken.transfer(newSellOrderBook[idOfSellRate].maker, newSellOrderBook[idOfSellRate].amount);
-    //             secondToken.transfer(msg.sender, amount);
-    //         }
-    //     }
-    //     if (amountSold > 0){
-    //         _addToSellBook(rate, amountSold);
-    //     }
-    // }
-
-    // function _addToSellBook(uint256 rate, uint256 amountSold) internal{
-    //     require(rate > 0);
-    //     sellCounter += 1;
-    //     minSellRate = minNumber(minSellRate, rate);
-    //     if (minSellRate == rate){
-    //         idOfSellRate = sellCounter;
-    //     }
-
-    //     newSellOrderBook[sellCounter] = NewOrder(msg.sender, amountSold, rate);
-    //     emit DrawToSellBook(msg.sender, rate, amountSold);
+        newSellOrderBook[sellCounter] = NewOrder(msg.sender, b, rate);
+        // emit DrawToSellBook(msg.sender, rate, amountSold);
 
 
-    // }
+    }
 
 
 

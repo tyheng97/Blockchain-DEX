@@ -25,11 +25,12 @@ class NewBuyForm extends Component {
 
             quantity = window.web3.utils.toWei(quantity, "Ether");
 
-            const price = this.state.price;
+            let price = this.state.price;
+            price = window.web3.utils.toWei(price, "Ether");
 
             if (this.props.buyorsell === "buy") {
               console.log("BUY", price, quantity);
-              this.props.placeBuyOrder(price, quantity, amt);
+              this.props.placeBuyOrder(price, quantity);
             } else {
               console.log("SELL", price, quantity);
               this.props.placeSellOrder(price, quantity, amt);

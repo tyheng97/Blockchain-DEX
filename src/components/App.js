@@ -110,7 +110,7 @@ class App extends Component {
 
   /////////////////////// Order book placeBuyOrder EthSwap ///////////////////////
 
-  placeBuyOrder = (price, quantity, amt) => {
+  placeBuyOrder = (price, quantity) => {
     this.setState({ loading: true });
 
     this.state.token.methods
@@ -118,19 +118,19 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .placeBuyOrder(price, quantity, amt)
+          .atob(price, quantity)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
           })
           .on("error", (err) => {
-            console.log("inside here", err);
+            console.log(err);
             this.setState({ limitError: true });
           });
       });
   };
 
-  placeSellOrder = (price, quantity, amt) => {
+  placeSellOrder = (price, quantity) => {
     this.setState({ loading: true });
 
     this.state.secondToken.methods
@@ -138,13 +138,13 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
         this.state.ethSwap.methods
-          .placeSellOrder(price, quantity, amt)
+          .btoa(quantity, price)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
           })
           .on("error", (err) => {
-            console.log("inside here", err);
+            console.log(err);
             this.setState({ limitError: true });
           });
       });
