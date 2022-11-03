@@ -78,8 +78,6 @@ class Main extends Component {
             coolTokenBalance={this.props.coolTokenBalance}
             secondTokenBalance={this.props.secondTokenBalance}
           />
-          <div>Max Buy Price: {this.props.maxBuyPrice}</div>
-          <div>Min Sell Price: {this.props.minSellPrice}</div>
         </div>
       );
     }

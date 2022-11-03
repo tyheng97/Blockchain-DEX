@@ -57,7 +57,7 @@ class BuyForm extends Component {
 
                 this.setState({
                   input: etherAmount,
-                  output: etherAmount * 100,
+                  output: etherAmount * 1000,
                 });
               }}
               ref={(input) => {
