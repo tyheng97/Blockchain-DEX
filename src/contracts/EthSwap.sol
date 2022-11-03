@@ -18,10 +18,10 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     IERC20 public baseToken;
 
     string public name = "EthSwap Instant Exchange";
-    CoolToken public coolToken; 
-    uint256 public coolRate = 1000; 
+    CoolToken public coolToken;
+    uint256 public coolRate = 1000;
     SecondToken public secondToken;
-    uint256 public secondRate = 1000; 
+    uint256 public secondRate = 1000;
 
     ///////////////////////////
     //mapping is a hashtable
@@ -296,26 +296,29 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
     // price = number of second u want
     // amount of baseToken = coolToken
-    // buying second using cool 
-    function placeBuyOrder(uint256 tradeAmount, uint256 amountOfBaseToken, uint256 amount)
-        external
-        override
-        nonReentrant
-    {
+    // buying second using cool
+    function placeBuyOrder(
+        uint256 price,
+        uint256 amountOfBaseToken,
+        uint256 amount
+    ) external override nonReentrant {
         require(coolToken.balanceOf(msg.sender) >= amountOfBaseToken);
 
         coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, tradeAmount, amountOfBaseToken);
 
+        uint256 togive = price * 1 ether;
+
+        price = amount / price;
+
         /**
          * @notice if has order in sell book, and price >= min sell price
          */
-         //minSellPrice
-         //
+        //minSellPrice
+        //
         uint256 sellPricePointer = minSellPrice;
-        uint256 amountReflect = amountOfBaseToken;
-        if (minSellPrice > 0 && tradeAmount >= minSellPrice) {
-            
+        uint256 amountReflect = togive;
+        if (minSellPrice > 0 && price >= minSellPrice) {
             while (
                 amountReflect > 0 &&
                 sellPricePointer <= tradeAmount &&
@@ -344,12 +347,15 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         );
                         //send before delete order
 
-                        coolToken.transfer(sellOrdersInStep[sellPricePointer][i].maker, sellOrdersInStep[sellPricePointer][i].amount);
+                        coolToken.transfer(
+                            sellOrdersInStep[sellPricePointer][i].maker,
+                            sellOrdersInStep[sellPricePointer][i].amount
+                        );
                         // delete order from storage
                         delete sellOrdersInStep[sellPricePointer][i];
                         sellOrdersInStepCounter[sellPricePointer] -= 1;
                         ///////////////////////////////
-                        secondToken.transfer(msg.sender, amountOfBaseToken);
+                        secondToken.transfer(msg.sender, togive);
 
                         //token.transferFrom(ethswap to other party)
                     } else {
@@ -378,19 +384,22 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     /**
      * @notice Place buy order.
      */
-    function placeSellOrder(uint256 price, uint256 amountOfTradeToken, uint256 amount)
-        external
-        override
-        nonReentrant
-    {
+    function placeSellOrder(
+        uint256 price,
+        uint256 amountOfTradeToken,
+        uint256 amount
+    ) external override nonReentrant {
         secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
+
+        uint256 togive = price * 1 ether;
+        price = price / amount;
 
         /**
          * @notice if has order in buy book, and price <= max buy price
          */
         uint256 buyPricePointer = maxBuyPrice;
-        uint256 amountReflect = amountOfTradeToken;
+        uint256 amountReflect = togive;
         if (maxBuyPrice > 0 && price <= maxBuyPrice) {
             while (
                 amountReflect > 0 &&
@@ -419,14 +428,17 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                             amountReflect -
                             (buyOrdersInStep[buyPricePointer][i].amount);
                         //send before delete order
-                        secondToken.transfer(buyOrdersInStep[buyPricePointer][i].maker, buyOrdersInStep[buyPricePointer][i].amount);
+                        secondToken.transfer(
+                            buyOrdersInStep[buyPricePointer][i].maker,
+                            buyOrdersInStep[buyPricePointer][i].amount
+                        );
                         // delete order from storage
 
                         delete buyOrdersInStep[buyPricePointer][i];
                         buyOrdersInStepCounter[buyPricePointer] -= 1;
 
                         ///////
-                        coolToken.transfer(msg.sender, amountOfTradeToken);
+                        coolToken.transfer(msg.sender, togive);
                     } else {
                         buySteps[buyPricePointer].amount =
                             buySteps[buyPricePointer].amount -
