@@ -36,6 +36,8 @@ class Main extends Component {
             buyATokens={this.props.buyATokens}
             aTokenRate={this.props.aTokenRate}
           />
+          <br />
+          <br />
           <BuyB
             ethBalance={this.props.ethBalance}
             bTokenName={this.props.bTokenName}
@@ -56,6 +58,8 @@ class Main extends Component {
             sellATokens={this.props.sellATokens}
             aTokenRate={this.props.aTokenRate}
           />
+          <br />
+          <br />
           <SellB
             bTokenName={this.props.bTokenName}
             ethBalance={this.props.ethBalance}
@@ -80,7 +84,8 @@ class Main extends Component {
             sellBook={this.props.sellBook}
             buyBook={this.props.buyBook}
           />
-
+          <br />
+          <br />
           <SwapBoA
             buyorsell="sell"
             placeSellOrder={this.props.placeSellOrder}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import tokenLogo from "../token-logo.png";
-import ethLogo from "../eth-logo.png";
+import BTokenLogo from "../BToken.png";
+import ATokenLogo from "../AToken.png";
+
 import { v4 as uuidv4 } from "uuid";
 
 class SwapAtoB extends Component {
@@ -47,7 +48,7 @@ class SwapAtoB extends Component {
         >
           <div>
             <label className="float-left">
-              <b>Input</b>
+              <b>A Tokens you want to sell</b>
             </label>
 
             <span className="float-right text-muted">
@@ -56,7 +57,11 @@ class SwapAtoB extends Component {
             </span>
           </div>
           <div className="input-group mb-4">
-            <div>A Tokens you want to sell</div>
+            <div className="input-group-append">
+              <div className="input-group-text">
+                <img src={ATokenLogo} height="32" alt="" />
+              </div>
+            </div>
             <input
               type="text"
               onChange={(event) => {
@@ -85,6 +90,11 @@ class SwapAtoB extends Component {
                 </label>
               </div>
               <div className="input-group mb-4">
+                <div className="input-group-append">
+                  <div className="input-group-text">
+                    <img src={BTokenLogo} height="32" alt="" />
+                  </div>
+                </div>
                 <input
                   type="text"
                   onChange={(e) => {
