@@ -37,6 +37,8 @@ class SwapBoA extends Component {
             if (price / quantity >= 1) {
               this.props.placeSellOrder(price, quantity);
             } else {
+              console.log("inverse called");
+
               this.props.placeSellOrderInverse(price, quantity);
             }
           }}

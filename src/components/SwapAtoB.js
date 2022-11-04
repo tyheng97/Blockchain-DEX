@@ -39,6 +39,7 @@ class SwapAtoB extends Component {
             if (quantity / price >= 1) {
               this.props.placeBuyOrder(price, quantity);
             } else {
+              console.log("inverse called");
               this.props.placeBuyOrderInverse(price, quantity);
             }
           }}
