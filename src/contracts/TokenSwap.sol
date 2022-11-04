@@ -466,6 +466,19 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                 i--;
             }
         }
+
+        for (uint256 i = 0; i < buyrateidInv.length; i++) {
+            uint256 key = buyrateidInv[i];
+            if (msg.sender == newBuyOrderBookInv[key].maker) {
+                aToken.transfer(msg.sender, newBuyOrderBookInv[key].amount);
+                delete newBuyOrderBookInv[key];
+                for (uint256 j = i; j < buyrateidInv.length - 1; j++) {
+                    buyrateidInv[j] = buyrateidInv[j + 1];
+                }
+                buyrateidInv.pop();
+                i--;
+            }
+        }
     }
 
     function deleteSellOrders() public {
@@ -478,6 +491,19 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                     sellrateid[j] = sellrateid[j + 1];
                 }
                 sellrateid.pop();
+                i--;
+            }
+        }
+
+        for (uint256 i = 0; i < sellrateidInv.length; i++) {
+            uint256 key = sellrateidInv[i];
+            if (msg.sender == newSellOrderBookInv[key].maker) {
+                bToken.transfer(msg.sender, newSellOrderBookInv[key].amount);
+                delete newSellOrderBookInv[key];
+                for (uint256 j = i; j < sellrateidInv.length - 1; j++) {
+                    sellrateidInv[j] = sellrateidInv[j + 1];
+                }
+                sellrateidInv.pop();
                 i--;
             }
         }
@@ -498,6 +524,16 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             }
         }
 
+        // for (uint256 j = 0; j < buyrateidInv.length; j++) {
+        //     uint256 key = buyrateidInv[j];
+        //     if (account == newBuyOrderBookInv[key].maker) {
+        //         buyorderbookArray.push(
+        //             newBuyOrderBookInv[key].amount *
+        //                 newBuyOrderBookInv[key].rate
+        //         );
+        //     }
+        // }
+
         return buyorderbookArray;
     }
 
@@ -514,6 +550,16 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                 );
             }
         }
+
+        // for (uint256 i = 0; i < sellrateidInv.length; i++) {
+        //     uint256 key = sellrateidInv[i];
+        //     if (account == newSellOrderBookInv[key].maker) {
+        //         sellorderbookArray.push(
+        //             newSellOrderBookInv[key].amount /
+        //                 newSellOrderBookInv[key].rate
+        //         );
+        //     }
+        // }
 
         return sellorderbookArray;
     }

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 class SwapBoA extends Component {
   constructor(props) {
@@ -132,7 +133,7 @@ class SwapBoA extends Component {
           )}
           {this.props.sellBook.map((element) => {
             return (
-              <span className="mr-2" key={element}>
+              <span className="mr-2" key={uuidv4()}>
                 Swap for {element} Token A{" "}
               </span>
             );

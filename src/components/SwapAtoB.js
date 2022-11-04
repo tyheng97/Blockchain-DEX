@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
+import { v4 as uuidv4 } from "uuid";
 
 class SwapAtoB extends Component {
   constructor(props) {
@@ -134,7 +135,7 @@ class SwapAtoB extends Component {
           )}
           {this.props.buyBook.map((element) => {
             return (
-              <span className="mr-2" key={element}>
+              <span className="mr-2" key={uuidv4()}>
                 Swap for {element} Token B{" "}
               </span>
             );
