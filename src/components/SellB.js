@@ -30,7 +30,7 @@ class SellB extends Component {
             <b>Input</b>
           </label>
           <span className="float-right text-muted">
-            {this.props.bTokenName}
+            {" " + this.props.bTokenName + " "}
             Balance:{" "}
             {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
           </span>

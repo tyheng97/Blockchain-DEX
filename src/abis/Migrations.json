@@ -68,7 +68,7 @@
   "sourceMap": "60:480:5:-:0;;;149:50;5:9:-1;2:2;;;27:1;24;17:12;2:2;149:50:5;184:10;176:5;;:18;;;;;;;;;;;;;;;;;;60:480;;;;;;",
   "deployedSourceMap": "60:480:5:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;60:480:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;373:165:5;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;373:165:5;;;;;;;;;;;;;;;;;;;:::i;:::-;;108:36;;;:::i;:::-;;;;;;;;;;;;;;;;;;;84:20;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;266:103;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;266:103:5;;;;;;;;;;;;;;;;;:::i;:::-;;373:165;249:5;;;;;;;;;;;235:19;;:10;:19;;;231:26;;;435:19:::1;468:11;435:45;;486:8;:21;;;508:24;;486:47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24::::0;17:12:::1;2:2;486:47:5;;;;8:9:-1;5:2;;;45:16;42:1;39::::0;24:38:::1;77:16;74:1;67:27;5:2;486:47:5;;;;256:1;231:26:::0;373:165;:::o;108:36::-;;;;:::o;84:20::-;;;;;;;;;;;;;:::o;266:103::-;249:5;;;;;;;;;;;235:19;;:10;:19;;;231:26;;;355:9:::1;328:24;:36;;;;231:26:::0;266:103;:::o",
   "source": "// SPDX-License-Identifier: MIT\n\n\npragma solidity >=0.6.8;\n\ncontract Migrations {\n  address public owner;\n  uint public last_completed_migration;\n\n  constructor() public {\n    owner = msg.sender;\n  }\n\n  modifier restricted() {\n    if (msg.sender == owner) _;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n\n  function upgrade(address new_address) public restricted {\n    Migrations upgraded = Migrations(new_address);\n    upgraded.setCompleted(last_completed_migration);\n  }\n}\n",
-  "sourcePath": "/Users/weerenteo/Desktop/Dex/Blockchain-DEX/src/contracts/Migrations.sol",
+  "sourcePath": "/Users/yiheng/Documents/NTU/Y4S2/CZ4153 Blockchain/crypto_exchange/Blockchain-DEX/src/contracts/Migrations.sol",
   "ast": {
     "absolutePath": "project:/src/contracts/Migrations.sol",
     "exportedSymbols": {
@@ -1509,12 +1509,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x50F9Bc753f0099Bff9752022c80E4778aF5c52EB",
-      "transactionHash": "0x6c8ebd307c87f27cf8d009a20563957053c5d82a408b622f7d5d78452b36436e"
+      "address": "0xb9b2F29711DBe30E27Dd3668226BF166af6B9EB0",
+      "transactionHash": "0xbcb8dcf61115a20e8898fca421b66c0e706f9cb7843388fa4f5ad3a75b60515d"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-04T14:16:22.589Z",
+  "updatedAt": "2022-11-04T16:23:56.987Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

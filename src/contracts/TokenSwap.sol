@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity >=0.6.8;
 
 import "./AToken.sol";
@@ -14,9 +16,9 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
 
     string public name = "TokenSwap Exchange";
     AToken public aToken;
-    uint256 public aRate = 1000;
+    // uint256 public aRate = 1000;
     BToken public bToken;
-    uint256 public bRate = 1000;
+    // uint256 public bRate = 1000;
 
     constructor(AToken _aToken, BToken _bToken) public {
         //pass the address of the Token in
@@ -24,69 +26,69 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
         bToken = _bToken;
     }
 
-    function buyATokens() public payable {
-        // Calculate the number of tokens to buy
-        uint256 tokenAmount = msg.value * aRate; //msg.value = how much ether was sent
+    // function buyATokens() public payable {
+    //     // Calculate the number of tokens to buy
+    //     uint256 tokenAmount = msg.value * aRate; //msg.value = how much ether was sent
 
-        // Require that TokenSwap has enough tokens
-        require(aToken.balanceOf(address(this)) >= tokenAmount);
+    //     // Require that TokenSwap has enough tokens
+    //     require(aToken.balanceOf(address(this)) >= tokenAmount);
 
-        // Transfer tokens to the user
-        aToken.transfer(msg.sender, tokenAmount);
+    //     // Transfer tokens to the user
+    //     aToken.transfer(msg.sender, tokenAmount);
 
-        // // emit an event
-        // emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);
-    }
+    //     // // emit an event
+    //     // emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);
+    // }
 
-    function sellATokens(uint256 _amount) public {
-        // User can't sell more tokens than they have
-        require(aToken.balanceOf(msg.sender) >= _amount);
+    // function sellATokens(uint256 _amount) public {
+    //     // User can't sell more tokens than they have
+    //     require(aToken.balanceOf(msg.sender) >= _amount);
 
-        // Calculate the amount of Ether to redeem
-        uint256 etherAmount = _amount / aRate;
+    //     // Calculate the amount of Ether to redeem
+    //     uint256 etherAmount = _amount / aRate;
 
-        // Require that TokenSwap has enough Ether
-        require(address(this).balance >= etherAmount);
+    //     // Require that TokenSwap has enough Ether
+    //     require(address(this).balance >= etherAmount);
 
-        // Perform sale
-        aToken.transferFrom(msg.sender, address(this), _amount);
-        msg.sender.transfer(etherAmount);
+    //     // Perform sale
+    //     aToken.transferFrom(msg.sender, address(this), _amount);
+    //     msg.sender.transfer(etherAmount);
 
-        // // emit an event
-        // emit TokensSold(msg.sender, address(aToken), _amount, aRate);
-    }
+    //     // // emit an event
+    //     // emit TokensSold(msg.sender, address(aToken), _amount, aRate);
+    // }
 
-    function buyBTokens() public payable {
-        // Calculate the number of tokens to buy
-        uint256 tokenAmount = msg.value * bRate; //msg.value = how much ether was sent
+    // function buyBTokens() public payable {
+    //     // Calculate the number of tokens to buy
+    //     uint256 tokenAmount = msg.value * bRate; //msg.value = how much ether was sent
 
-        // Require that TokenSwap has enough tokens
-        require(bToken.balanceOf(address(this)) >= tokenAmount);
+    //     // Require that TokenSwap has enough tokens
+    //     require(bToken.balanceOf(address(this)) >= tokenAmount);
 
-        // Transfer tokens to the user
-        bToken.transfer(msg.sender, tokenAmount);
+    //     // Transfer tokens to the user
+    //     bToken.transfer(msg.sender, tokenAmount);
 
-        // // emit an event
-        // emit TokensPurchased(msg.sender, address(bToken), tokenAmount, bRate);
-    }
+    //     // // emit an event
+    //     // emit TokensPurchased(msg.sender, address(bToken), tokenAmount, bRate);
+    // }
 
-    function sellBTokens(uint256 _amount) public {
-        // User can't sell more tokens than they have
-        require(bToken.balanceOf(msg.sender) >= _amount);
+    // function sellBTokens(uint256 _amount) public {
+    //     // User can't sell more tokens than they have
+    //     require(bToken.balanceOf(msg.sender) >= _amount);
 
-        // Calculate the amount of Ether to redeem
-        uint256 etherAmount = _amount / bRate;
+    //     // Calculate the amount of Ether to redeem
+    //     uint256 etherAmount = _amount / bRate;
 
-        // Require that TokenSwap has enough Ether
-        require(address(this).balance >= etherAmount);
+    //     // Require that TokenSwap has enough Ether
+    //     require(address(this).balance >= etherAmount);
 
-        // Perform sale
-        bToken.transferFrom(msg.sender, address(this), _amount);
-        msg.sender.transfer(etherAmount);
+    //     // Perform sale
+    //     bToken.transferFrom(msg.sender, address(this), _amount);
+    //     msg.sender.transfer(etherAmount);
 
-        // // emit an event
-        // emit TokensSold(msg.sender, address(bToken), _amount, bRate);
-    }
+    //     // // emit an event
+    //     // emit TokensSold(msg.sender, address(bToken), _amount, bRate);
+    // }
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -524,15 +526,15 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             }
         }
 
-        // for (uint256 j = 0; j < buyrateidInv.length; j++) {
-        //     uint256 key = buyrateidInv[j];
-        //     if (account == newBuyOrderBookInv[key].maker) {
-        //         buyorderbookArray.push(
-        //             newBuyOrderBookInv[key].amount *
-        //                 newBuyOrderBookInv[key].rate
-        //         );
-        //     }
-        // }
+        for (uint256 j = 0; j < buyrateidInv.length; j++) {
+            uint256 key = buyrateidInv[j];
+            if (account == newBuyOrderBookInv[key].maker) {
+                buyorderbookArray.push(
+                    newBuyOrderBookInv[key].amount *
+                        newBuyOrderBookInv[key].rate
+                );
+            }
+        }
 
         return buyorderbookArray;
     }
@@ -551,15 +553,15 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             }
         }
 
-        // for (uint256 i = 0; i < sellrateidInv.length; i++) {
-        //     uint256 key = sellrateidInv[i];
-        //     if (account == newSellOrderBookInv[key].maker) {
-        //         sellorderbookArray.push(
-        //             newSellOrderBookInv[key].amount /
-        //                 newSellOrderBookInv[key].rate
-        //         );
-        //     }
-        // }
+        for (uint256 i = 0; i < sellrateidInv.length; i++) {
+            uint256 key = sellrateidInv[i];
+            if (account == newSellOrderBookInv[key].maker) {
+                sellorderbookArray.push(
+                    newSellOrderBookInv[key].amount /
+                        newSellOrderBookInv[key].rate
+                );
+            }
+        }
 
         return sellorderbookArray;
     }

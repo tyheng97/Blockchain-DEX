@@ -1,6 +1,7 @@
-const AToken = artifacts.require("AToken"); //deploy token contract
-const BToken = artifacts.require("BToken"); //deploy secondtoken contract
-const TokenSwap = artifacts.require("TokenSwap"); // deploy swap contract
+const AToken = artifacts.require("./src/contracts/AToken"); //deploy token contract
+const BToken = artifacts.require("./src/contracts/BToken"); //deploy secondtoken contract
+const EthSwap = artifacts.require("./src/contracts/EthSwap"); // deploy swap contract
+const TokenSwap = artifacts.require("./src/contracts/TokenSwap"); // deploy swap contract
 
 // Migration puts the smart contract on the blockchain using truffle
 module.exports = async function(deployer) {
@@ -15,8 +16,11 @@ module.exports = async function(deployer) {
   // Deploy TokenSwap
   await deployer.deploy(TokenSwap, coolToken.address, secondToken.address);
   const tokenSwap = await TokenSwap.deployed();
+  // Deploy
+  await deployer.deploy(EthSwap, coolToken.address, secondToken.address);
+  const ethSwap = await EthSwap.deployed();
 
   // Transfer all tokens to TokenSwap
-  await coolToken.transfer(tokenSwap.address, "1000000000000000000000000");
-  await secondToken.transfer(tokenSwap.address, "10000000000000000000000000");
+  await coolToken.transfer(ethSwap.address, "1000000000000000000000000");
+  await secondToken.transfer(ethSwap.address, "10000000000000000000000000");
 };

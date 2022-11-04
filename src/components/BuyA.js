@@ -67,7 +67,7 @@ class BuyA extends Component {
               <b>Output</b>
             </label>
             <span className="float-right text-muted">
-              {this.props.aTokenName}
+              {" " + this.props.aTokenName + " "}
               Balance:{" "}
               {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
             </span>

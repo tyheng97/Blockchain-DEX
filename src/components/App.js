@@ -3,6 +3,8 @@ import Web3 from "web3"; // import web3
 import AToken from "../abis/AToken.json";
 import BToken from "../abis/BToken.json";
 import TokenSwap from "../abis/TokenSwap.json";
+import EthSwap from "../abis/EthSwap.json";
+
 import Navbar from "./Navbar";
 import Main from "./Main";
 import "./App.css";
@@ -63,11 +65,6 @@ class App extends Component {
         tokenSwapData.address
       );
       this.setState({ tokenSwap });
-      let bTokenRate = await tokenSwap.methods.bRate.call();
-      this.setState({ bTokenRate: bTokenRate.toString() });
-      let aTokenRate = await tokenSwap.methods.aRate.call();
-      this.setState({ aTokenRate: aTokenRate.toString() });
-
       let sellrateid = await tokenSwap.methods.getsellrate.call();
       let buyrateid = await tokenSwap.methods.getbuyrate.call();
       let sellrateidInv = await tokenSwap.methods.getsellrateInv.call();
@@ -105,6 +102,19 @@ class App extends Component {
       window.alert("TokenSwap contract not deployed to detected network.");
     }
 
+    /////////////////////// Load TokenSwap ///////////////////////
+    const ethSwapData = EthSwap.networks[networkId];
+    if (tokenSwapData) {
+      const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address);
+      this.setState({ ethSwap });
+      let bTokenRate = await ethSwap.methods.bRate.call();
+      this.setState({ bTokenRate: bTokenRate.toString() });
+      let aTokenRate = await ethSwap.methods.aRate.call();
+      this.setState({ aTokenRate: aTokenRate.toString() });
+    } else {
+      window.alert("EthSwap contract not deployed to detected network.");
+    }
+
     this.setState({ loading: false });
   }
 
@@ -125,81 +135,97 @@ class App extends Component {
 
   placeBuyOrder = (price, quantity) => {
     this.setState({ loading: true });
-
-    this.state.token.methods
-      .approve(this.state.tokenSwap.address, quantity)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .atob(price, quantity)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          })
-          .on("error", (err) => {
-            console.log(err);
-            this.setState({ FailError: true });
-          });
-      });
+    try {
+      this.state.token.methods
+        .approve(this.state.tokenSwap.address, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.tokenSwap.methods
+            .atob(price, quantity)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            })
+            .on("error", (err) => {
+              console.log("placeBuyOrder", err);
+              this.setState({ FailError: true });
+            });
+        });
+    } catch (err) {
+      console.log("placeBuyOrderInverse", err);
+      this.setState({ FailError: true });
+    }
   };
   placeBuyOrderInverse = (price, quantity) => {
     this.setState({ loading: true });
-
-    this.state.token.methods
-      .approve(this.state.tokenSwap.address, quantity)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .atobInverseRate(price, quantity)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          })
-          .on("error", (err) => {
-            console.log(err);
-            this.setState({ FailError: true });
-          });
-      });
+    try {
+      this.state.token.methods
+        .approve(this.state.tokenSwap.address, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.tokenSwap.methods
+            .atobInverseRate(price, quantity)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            })
+            .on("error", (err) => {
+              console.log("placeBuyOrderInverse", err);
+              this.setState({ FailError: true });
+            });
+        });
+    } catch (err) {
+      console.log("placeBuyOrderInverse", err);
+      this.setState({ FailError: true });
+    }
   };
 
   placeSellOrder = (price, quantity) => {
     this.setState({ loading: true });
-
-    this.state.bToken.methods
-      .approve(this.state.tokenSwap.address, quantity)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .btoa(price, quantity)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          })
-          .on("error", (err) => {
-            console.log(err);
-            this.setState({ FailError: true });
-          });
-      });
+    try {
+      this.state.bToken.methods
+        .approve(this.state.tokenSwap.address, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.tokenSwap.methods
+            .btoa(price, quantity)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            })
+            .on("error", (err) => {
+              console.log("placeSellOrder", err);
+              this.setState({ FailError: true });
+            });
+        });
+    } catch (err) {
+      console.log("placeSellOrder", err);
+      this.setState({ FailError: true });
+    }
   };
 
   placeSellOrderInverse = (price, quantity) => {
     this.setState({ loading: true });
-
-    this.state.bToken.methods
-      .approve(this.state.tokenSwap.address, quantity)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .btoaInverseRate(price, quantity)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          })
-          .on("error", (err) => {
-            console.log(err);
-            this.setState({ FailError: true });
-          });
-      });
+    try {
+      this.state.bToken.methods
+        .approve(this.state.tokenSwap.address, quantity)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.tokenSwap.methods
+            .btoaInverseRate(price, quantity)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            })
+            .on("error", (err) => {
+              console.log("placeSellOrderInverse", err);
+              this.setState({ FailError: true });
+            });
+        });
+    } catch (err) {
+      console.log("placeSellOrderInverse", err);
+      this.setState({ FailError: true });
+    }
   };
 
   /////////////////////// bToken TokenSwap ///////////////////////
@@ -207,7 +233,7 @@ class App extends Component {
   buyBTokens = (etherAmount) => {
     this.setState({ loading: true });
     try {
-      this.state.tokenSwap.methods
+      this.state.ethSwap.methods
         .buyBTokens()
         .send({ value: etherAmount, from: this.state.account })
         .on("transactionHash", (hash) => {
@@ -218,50 +244,65 @@ class App extends Component {
           this.setState({ FailError: true });
         });
     } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
+      console.log("buyBTokens", err);
+      this.setState({ FailError: true });
     }
   };
 
   sellBTokens = (tokenAmount) => {
     this.setState({ loading: true });
-    this.state.token.methods
-      .approve(this.state.tokenSwap.address, tokenAmount)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .sellATokens(tokenAmount)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          });
-      });
+    try {
+      this.state.bToken.methods
+        .approve(this.state.ethSwap.address, tokenAmount)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.ethSwap.methods
+            .sellBTokens(tokenAmount)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            });
+        });
+    } catch (err) {
+      console.log("sellBTokens", err);
+      this.setState({ FailError: true });
+    }
   };
   /////////////////////// aToken TokenSwap ///////////////////////
 
   buyATokens = (etherAmount) => {
     this.setState({ loading: true });
-    this.state.tokenSwap.methods
-      .buyATokens()
-      .send({ value: etherAmount, from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.setState({ loading: false });
-      });
+    try {
+      this.state.ethSwap.methods
+        .buyATokens()
+        .send({ value: etherAmount, from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        });
+    } catch (err) {
+      console.log("sellBTokens", err);
+      this.setState({ FailError: true });
+    }
   };
 
   sellATokens = (tokenAmount) => {
     this.setState({ loading: true });
-    this.state.token.methods
-      .approve(this.state.tokenSwap.address, tokenAmount)
-      .send({ from: this.state.account })
-      .on("transactionHash", (hash) => {
-        this.state.tokenSwap.methods
-          .sellATokens(tokenAmount)
-          .send({ from: this.state.account })
-          .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
-          });
-      });
+    try {
+      this.state.token.methods
+        .approve(this.state.ethSwap.address, tokenAmount)
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.state.ethSwap.methods
+            .sellATokens(tokenAmount)
+            .send({ from: this.state.account })
+            .on("transactionHash", (hash) => {
+              this.setState({ loading: false });
+            });
+        });
+    } catch (err) {
+      console.log("sellBTokens", err);
+      this.setState({ FailError: true });
+    }
   };
 
   /////////////////////// Delete Orders that were unfulfilled ///////////////////////
@@ -276,12 +317,12 @@ class App extends Component {
           this.setState({ loading: false });
         })
         .on("error", (err) => {
-          console.log("inside here", err);
-          this.setState({ limitError: true });
+          console.log("deleteBuyOrders", err);
+          this.setState({ FailError: true });
         });
     } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
+      console.log("deleteBuyOrders", err);
+      this.setState({ loading: true });
     }
   };
 
@@ -295,12 +336,12 @@ class App extends Component {
           this.setState({ loading: false });
         })
         .on("error", (err) => {
-          console.log("inside here", err);
-          this.setState({ limitError: true });
+          console.log("deleteSellOrders", err);
+          this.setState({ FailError: true });
         });
     } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
+      console.log("deleteSellOrders", err);
+      this.setState({ loading: true });
     }
   };
 
@@ -337,7 +378,9 @@ class App extends Component {
     } else if (this.state.FailError) {
       content = (
         <div>
-          <p className="text-center">Fail Order Failed</p>
+          <p className="text-center">
+            You rejected the request on MetaMask or an error has occurred
+          </p>
           <button
             onClick={this.retryFailOrder}
             className="btn btn-primary btn-block btn-lg"

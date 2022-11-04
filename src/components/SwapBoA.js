@@ -49,9 +49,9 @@ class SwapBoA extends Component {
               <b>Input</b>
             </label>
             <span className="float-right text-muted">
-              {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")} B
+              {" B "}Balance:
+              {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
             </span>
-            <span className="float-right text-muted">Balance:</span>
           </div>
           <div className="input-group mb-4">
             <div>B Tokens you want to sell</div>
