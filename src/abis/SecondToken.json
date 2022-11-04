@@ -5252,12 +5252,12 @@
         }
       },
       "links": {},
-      "address": "0x593BAcfD7521496Cd12FB02083f94475272b23da",
-      "transactionHash": "0x72f399f9a97b6a040e938ec3cec44b7f82b23861218381702d67f0c1b3005b34"
+      "address": "0x136962424DBB5502c8efDc750AD3d9f000cebc92",
+      "transactionHash": "0x399ffa71c6ce1d429446cfc35c2a0deb0af2dc12cdb066fb3386706edccd6e6e"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-03T23:49:44.918Z",
+  "updatedAt": "2022-11-04T00:34:37.606Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
