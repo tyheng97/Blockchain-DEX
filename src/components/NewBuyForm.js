@@ -10,8 +10,19 @@ class NewBuyForm extends Component {
       input: "0",
       output: "0",
       price: "1",
+      disable: true,
     };
   }
+
+  checkdisable = () => {
+    let price = this.state.price;
+    let quantity = this.state.input;
+    if (quantity % price != 0) {
+      this.setState({ disable: true });
+    } else {
+      this.setState({ disable: false });
+    }
+  };
 
   render() {
     return (
@@ -65,6 +76,7 @@ class NewBuyForm extends Component {
                 this.setState({
                   input: etherAmount,
                   output: etherAmount,
+                  disable: true,
                 });
               }}
               ref={(input) => {
@@ -90,6 +102,7 @@ class NewBuyForm extends Component {
                     console.log(newprice);
                     this.setState({
                       price: newprice,
+                      disable: true,
                     });
                   }}
                   ref={(price) => {
@@ -101,10 +114,22 @@ class NewBuyForm extends Component {
               </div>
             </>
           </>
-
-          <button type="submit" className="btn btn-primary btn-block btn-lg">
-            Swap
+          <button
+            type="button"
+            onClick={this.checkdisable}
+            className="btn btn-primary btn-block btn-lg"
+          >
+            Check Rate
           </button>
+          {!this.state.disable && (
+            <button
+              type="submit"
+              disabled={this.state.disable}
+              className="btn btn-primary btn-block btn-lg change"
+            >
+              Swap
+            </button>
+          )}
         </form>
         <></>
       </>

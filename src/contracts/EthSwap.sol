@@ -350,14 +350,14 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
             if (rate >= minSellRate && minSellRate > 0) {
                 //give best order
                 toAdd = false;
-                if (newSellOrderBook[idOfSellRate].amount > a) {
+                if (newSellOrderBook[idOfSellRate].amount > b) {
                     uint256 newAmount = newSellOrderBook[idOfSellRate].amount -
-                        a;
+                        b;
                     newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     secondToken.transfer(msg.sender, a / minSellRate);
-                } else if (newSellOrderBook[idOfSellRate].amount == a) {
+                } else if (newSellOrderBook[idOfSellRate].amount == b) {
                     // transfer
                     coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     secondToken.transfer(msg.sender, a / minSellRate);
@@ -367,7 +367,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         sellrateid[j] = sellrateid[j + 1];
                     }
                     sellrateid.pop();
-                } else if (newSellOrderBook[idOfSellRate].amount < a) {
+                } else if (newSellOrderBook[idOfSellRate].amount < b) {
                     coolToken.transfer(
                         newSellOrderBook[idOfSellRate].maker,
                         newSellOrderBook[idOfSellRate].amount
