@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
-import BuySecond from "./BuySecond.js";
+import BuyB from "./BuyB.js";
 
 class BuyForm extends Component {
   constructor(props) {
@@ -27,9 +27,9 @@ class BuyForm extends Component {
             etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
 
             if (this.props.isLimitOrder) {
-              this.props.limitBuyCoolTokens(rate, etherAmount);
+              this.props.limitBuyATokens(rate, etherAmount);
             } else {
-              this.props.buyCoolTokens(etherAmount);
+              this.props.buyATokens(etherAmount);
             }
           }}
         >
@@ -57,7 +57,7 @@ class BuyForm extends Component {
 
                 this.setState({
                   input: etherAmount,
-                  output: etherAmount * 100,
+                  output: etherAmount * this.props.aTokenRate,
                 });
               }}
               ref={(input) => {
@@ -103,7 +103,7 @@ class BuyForm extends Component {
             </label>
             <span className="float-right text-muted">
               Balance:{" "}
-              {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
+              {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
             </span>
           </div>
           <div className="input-group mb-2">
@@ -111,7 +111,7 @@ class BuyForm extends Component {
               <button className="input-group-append">
                 <div className="input-group-text">
                   <img src={tokenLogo} height="32" alt="" />
-                  &nbsp; {this.props.coolTokenName}
+                  &nbsp; {this.props.aTokenName}
                 </div>
               </button>
             </div>
@@ -127,7 +127,7 @@ class BuyForm extends Component {
             <div className="mb-5">
               <span className="float-left text-muted">Exchange Rate</span>
               <span className="float-right text-muted">
-                1 ETH = {this.props.coolTokenRate} Coins
+                1 ETH = {this.props.aTokenRate} Coins
               </span>
             </div>
           )}
@@ -136,19 +136,19 @@ class BuyForm extends Component {
           </button>
         </form>
         <>
-          <BuySecond
-            coolTokenName={this.props.coolTokenName}
+          <BuyB
+            aTokenName={this.props.aTokenName}
             ethBalance={this.props.ethBalance}
-            coolTokenBalance={this.props.coolTokenBalance}
-            buyCoolTokens={this.props.buyCoolTokens}
+            aTokenBalance={this.props.aTokenBalance}
+            buyATokens={this.props.buyATokens}
             isLimitOrder={this.state.limitOrder}
-            limitBuyCoolTokens={this.props.limitBuyCoolTokens}
-            coolTokenRate={this.props.coolTokenRate}
-            secondTokenName={this.props.secondTokenName}
-            secondTokenRate={this.props.secondTokenRate}
-            secondTokenBalance={this.props.secondTokenBalance}
-            buySecondTokens={this.props.buySecondTokens}
-            sellSecondTokens={this.props.sellSecondTokens}
+            limitBuyATokens={this.props.limitBuyATokens}
+            aTokenRate={this.props.aTokenRate}
+            bTokenName={this.props.bTokenName}
+            bTokenRate={this.props.bTokenRate}
+            bTokenBalance={this.props.bTokenBalance}
+            buyBTokens={this.props.buyBTokens}
+            sellBTokens={this.props.sellBTokens}
           />
         </>
       </>

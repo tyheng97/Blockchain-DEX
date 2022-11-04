@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
 
-class BuySecond extends Component {
+class BuyB extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,11 +22,11 @@ class BuySecond extends Component {
           etherAmount = this.state.input.toString();
 
           etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
-          this.props.buySecondTokens(etherAmount);
+          this.props.buyBTokens(etherAmount);
           //   if (this.props.isLimitOrder) {
-          //     this.props.limitBuyCoolTokens(rate, etherAmount);
+          //     this.props.limitBuyATokens(rate, etherAmount);
           //   } else {
-          //     this.props.buyCoolTokens(etherAmount);
+          //     this.props.buyATokens(etherAmount);
           //   }
         }}
       >
@@ -53,7 +53,7 @@ class BuySecond extends Component {
 
               this.setState({
                 input: etherAmount,
-                output: etherAmount * this.props.secondTokenRate,
+                output: etherAmount * this.props.bTokenRate,
               });
             }}
             ref={(input) => {
@@ -99,7 +99,7 @@ class BuySecond extends Component {
           </label>
           <span className="float-right text-muted">
             Balance:{" "}
-            {window.web3.utils.fromWei(this.props.secondTokenBalance, "Ether")}
+            {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
           </span>
         </div>
         <div className="input-group mb-2">
@@ -107,7 +107,7 @@ class BuySecond extends Component {
             <button className="input-group-append">
               <div className="input-group-text">
                 <img src={tokenLogo} height="32" alt="" />
-                &nbsp; {this.props.secondTokenName}
+                &nbsp; {this.props.bTokenName}
               </div>
             </button>
           </div>
@@ -123,7 +123,7 @@ class BuySecond extends Component {
           <div className="mb-5">
             <span className="float-left text-muted">Exchange Rate</span>
             <span className="float-right text-muted">
-              1 ETH = {this.props.coolTokenRate} Coins
+              1 ETH = {this.props.aTokenRate} Coins
             </span>
           </div>
         )} */}
@@ -135,4 +135,4 @@ class BuySecond extends Component {
   }
 }
 
-export default BuySecond;
+export default BuyB;

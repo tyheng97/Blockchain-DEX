@@ -1,7 +1,7 @@
 pragma solidity >=0.6.8;
 
-import "./CoolToken.sol";
-import "./SecondToken.sol";
+import "./AToken.sol";
+import "./BToken.sol";
 import {IOrderBook} from "./interfaces/IOrderBook.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {SafeMath} from "@openzeppelin/contracts/math/SafeMath.sol";
@@ -9,7 +9,7 @@ import {Math} from "@openzeppelin/contracts/math/Math.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract EthSwap is IOrderBook, ReentrancyGuard {
+contract TokenSwap is IOrderBook, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeMath for uint8;
     using Math for uint256;
@@ -17,11 +17,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     IERC20 public tradeToken;
     IERC20 public baseToken;
 
-    string public name = "EthSwap Instant Exchange";
-    CoolToken public coolToken;
-    uint256 public coolRate = 1000;
-    SecondToken public secondToken;
-    uint256 public secondRate = 1000;
+    string public name = "TokenSwap Instant Exchange";
+    AToken public aToken;
+    uint256 public aRate = 1000;
+    BToken public bToken;
+    uint256 public bRate = 1000;
 
     ///////////////////////////
     //mapping is a hashtable
@@ -54,7 +54,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         uint256 rate
     );
 
-    event SecondTokensPurchased(
+    event BTokensPurchased(
         address account,
         address token,
         uint256 amount,
@@ -68,17 +68,17 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         uint256 rate
     );
 
-    event SecondTokensSold(
+    event BTokensSold(
         address account,
         address token,
         uint256 amount,
         uint256 rate
     );
 
-    constructor(CoolToken _coolToken, SecondToken _secondToken) public {
+    constructor(AToken _aToken, BToken _bToken) public {
         //pass the address of the Token in
-        coolToken = _coolToken;
-        secondToken = _secondToken;
+        aToken = _aToken;
+        bToken = _bToken;
     }
 
     function random() internal returns (uint256) {
@@ -91,229 +91,229 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         return randomnumber;
     }
 
-    function buyCoolTokens() public payable {
+    function buyATokens() public payable {
         // Calculate the number of tokens to buy
-        uint256 tokenAmount = msg.value * coolRate; //msg.value = how much ether was sent
+        uint256 tokenAmount = msg.value * aRate; //msg.value = how much ether was sent
 
-        // Require that EthSwap has enough tokens
-        require(coolToken.balanceOf(address(this)) >= tokenAmount);
+        // Require that TokenSwap has enough tokens
+        require(aToken.balanceOf(address(this)) >= tokenAmount);
 
         // Transfer tokens to the user
-        coolToken.transfer(msg.sender, tokenAmount);
+        aToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
         emit TokensPurchased(
             msg.sender,
-            address(coolToken),
+            address(aToken),
             tokenAmount,
-            coolRate
+            aRate
         );
     }
 
-    function limitBuyCoolTokens(uint256 _rate) public payable {
+    function limitBuyATokens(uint256 _rate) public payable {
         uint256 testrate = random();
 
         require(testrate >= _rate, "fail");
         // Calculate the number of tokens to buy
         uint256 tokenAmount = msg.value * testrate; //msg.value = how much ether was sent
 
-        // Require that EthSwap has enough tokens
-        require(coolToken.balanceOf(address(this)) >= tokenAmount);
+        // Require that TokenSwap has enough tokens
+        require(aToken.balanceOf(address(this)) >= tokenAmount);
 
         // Transfer tokens to the user
-        coolToken.transfer(msg.sender, tokenAmount);
+        aToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
         emit TokensPurchased(
             msg.sender,
-            address(coolToken),
+            address(aToken),
             tokenAmount,
             testrate
         );
     }
 
-    function sellCoolTokens(uint256 _amount) public {
+    function sellATokens(uint256 _amount) public {
         // User can't sell more tokens than they have
-        require(coolToken.balanceOf(msg.sender) >= _amount);
+        require(aToken.balanceOf(msg.sender) >= _amount);
 
         // Calculate the amount of Ether to redeem
-        uint256 etherAmount = _amount / coolRate;
+        uint256 etherAmount = _amount / aRate;
 
-        // Require that EthSwap has enough Ether
+        // Require that TokenSwap has enough Ether
         require(address(this).balance >= etherAmount);
 
         // Perform sale
-        coolToken.transferFrom(msg.sender, address(this), _amount);
+        aToken.transferFrom(msg.sender, address(this), _amount);
         msg.sender.transfer(etherAmount);
 
         // Emit an event
-        emit TokensSold(msg.sender, address(coolToken), _amount, coolRate);
+        emit TokensSold(msg.sender, address(aToken), _amount, aRate);
     }
 
-    // function limitSellCoolTokens(uint256 _amount, uint256 _rate) public {
+    // function limitSellATokens(uint256 _amount, uint256 _rate) public {
     //     uint256 testrate = random();
 
     //     require(testrate <= _rate, "fail");
     //     // User can't sell more tokens than they have
-    //     require(coolToken.balanceOf(msg.sender) >= _amount);
+    //     require(aToken.balanceOf(msg.sender) >= _amount);
 
     //     // // Calculate the amount of Ether to redeem
     //     uint256 etherAmount = _amount / testrate;
 
-    //     // Require that EthSwap has enough Ether
+    //     // Require that TokenSwap has enough Ether
     //     require(address(this).balance >= etherAmount);
 
     //     // Perform sale
-    //     coolToken.transferFrom(msg.sender, address(this), _amount);
+    //     aToken.transferFrom(msg.sender, address(this), _amount);
     //     msg.sender.transfer(etherAmount);
 
     //     // // Emit an event
-    //     emit TokensSold(msg.sender, address(coolToken), _amount, coolRate);
+    //     emit TokensSold(msg.sender, address(aToken), _amount, aRate);
     // }
 
-    // function buySecondTokensFromCool(uint256 _coolAmount) public {
-    //     // Check if there is sufficient cool token in buyer acc
-    //     require(coolToken.balanceOf(msg.sender) >= _coolAmount);
-    //     // Calculate the amount of cool token to redeem
-    //     uint256 secondAmount = _coolAmount * secondRate;
+    // function buyBTokensFromCool(uint256 _aAmount) public {
+    //     // Check if there is sufficient a token in buyer acc
+    //     require(aToken.balanceOf(msg.sender) >= _aAmount);
+    //     // Calculate the amount of a token to redeem
+    //     uint256 bAmount = _aAmount * bRate;
     //     // Check that there is enough seocond Token in ethSwap
-    //     require(secondToken.balanceOf(address(this)) >= secondAmount);
+    //     require(bToken.balanceOf(address(this)) >= bAmount);
 
     //     // Perform sale (this 2 method might be the problem)
-    //     // secondToken.transferFrom(address(this), msg.sender, secondAmount);
-    //     secondToken.transfer(msg.sender, secondAmount);
-    //     coolToken.transferFrom(msg.sender, address(this), _coolAmount);
+    //     // bToken.transferFrom(address(this), msg.sender, bAmount);
+    //     bToken.transfer(msg.sender, bAmount);
+    //     aToken.transferFrom(msg.sender, address(this), _aAmount);
     //     // Emit an event
-    //     emit SecondTokensPurchased(
+    //     emit BTokensPurchased(
     //         msg.sender,
-    //         address(secondToken),
-    //         secondAmount,
-    //         secondRate
+    //         address(bToken),
+    //         bAmount,
+    //         bRate
     //     );
     // }
 
-    // function limitBuySecondTokens(uint256 _coolAmount, uint256 _secondRate)
+    // function limitBuyBTokens(uint256 _aAmount, uint256 _bRate)
     //     public
     // {
     //     uint256 testrate = random();
-    //     require(testrate >= _secondRate, "fail");
-    //     // Check if there is sufficient cool token in buyer acc
-    //     require(coolToken.balanceOf(msg.sender) >= _coolAmount);
-    //     // Calculate the amount of cool token to redeem
-    //     uint256 secondAmount = _coolAmount * testrate;
+    //     require(testrate >= _bRate, "fail");
+    //     // Check if there is sufficient a token in buyer acc
+    //     require(aToken.balanceOf(msg.sender) >= _aAmount);
+    //     // Calculate the amount of a token to redeem
+    //     uint256 bAmount = _aAmount * testrate;
     //     // Check that there is enough seocond Token in ethSwap
-    //     require(secondToken.balanceOf(address(this)) >= secondAmount);
+    //     require(bToken.balanceOf(address(this)) >= bAmount);
 
     //     // Perform sale (this 2 method might be the problem)
-    //     // secondToken.transferFrom(address(this), msg.sender, secondAmount);
-    //     secondToken.transfer(msg.sender, secondAmount);
-    //     coolToken.transferFrom(msg.sender, address(this), _coolAmount);
+    //     // bToken.transferFrom(address(this), msg.sender, bAmount);
+    //     bToken.transfer(msg.sender, bAmount);
+    //     aToken.transferFrom(msg.sender, address(this), _aAmount);
     //     // Emit an event
-    //     emit SecondTokensPurchased(
+    //     emit BTokensPurchased(
     //         msg.sender,
-    //         address(secondToken),
-    //         secondAmount,
+    //         address(bToken),
+    //         bAmount,
     //         testrate
     //     );
     // }
 
-    // function sellSecondTokensFromCool(uint256 _secondAmount) public {
-    //     // Calculate the amount of cool token to redeem
-    //     uint256 coolAmount = _secondAmount / secondRate;
+    // function sellBTokensFromCool(uint256 _bAmount) public {
+    //     // Calculate the amount of a token to redeem
+    //     uint256 aAmount = _bAmount / bRate;
 
-    //     // Check that there is enough cool Token in ethSwap
-    //     require(coolToken.balanceOf(address(this)) >= coolAmount);
+    //     // Check that there is enough a Token in ethSwap
+    //     require(aToken.balanceOf(address(this)) >= aAmount);
 
-    //     // Check if there is sufficient second token in buyer acc
-    //     require(secondToken.balanceOf(msg.sender) >= _secondAmount);
+    //     // Check if there is sufficient b token in buyer acc
+    //     require(bToken.balanceOf(msg.sender) >= _bAmount);
 
     //     // Perform sale
-    //     secondToken.transferFrom(msg.sender, address(this), _secondAmount);
-    //     coolToken.transfer(msg.sender, coolAmount);
+    //     bToken.transferFrom(msg.sender, address(this), _bAmount);
+    //     aToken.transfer(msg.sender, aAmount);
 
     //     // Emit an event
-    //     emit SecondTokensSold(
+    //     emit BTokensSold(
     //         msg.sender,
-    //         address(secondToken),
-    //         _secondAmount,
-    //         secondRate
+    //         address(bToken),
+    //         _bAmount,
+    //         bRate
     //     );
     // }
 
-    // function limitSellSecondTokens(uint256 _secondAmount, uint256 _secondRate)
+    // function limitSellBTokens(uint256 _bAmount, uint256 _bRate)
     //     public
     // {
     //     uint256 testrate = random();
-    //     require(testrate <= _secondRate, "fail");
-    //     // Calculate the amount of cool token to redeem
-    //     uint256 coolAmount = _secondAmount / testrate;
+    //     require(testrate <= _bRate, "fail");
+    //     // Calculate the amount of a token to redeem
+    //     uint256 aAmount = _bAmount / testrate;
 
-    //     // Check that there is enough cool Token in ethSwap
-    //     require(coolToken.balanceOf(address(this)) >= coolAmount);
+    //     // Check that there is enough a Token in ethSwap
+    //     require(aToken.balanceOf(address(this)) >= aAmount);
 
-    //     // Check if there is sufficient second token in buyer acc
-    //     require(secondToken.balanceOf(msg.sender) >= _secondAmount);
+    //     // Check if there is sufficient b token in buyer acc
+    //     require(bToken.balanceOf(msg.sender) >= _bAmount);
 
     //     // Perform sale
-    //     secondToken.transferFrom(msg.sender, address(this), _secondAmount);
-    //     coolToken.transfer(msg.sender, coolAmount);
+    //     bToken.transferFrom(msg.sender, address(this), _bAmount);
+    //     aToken.transfer(msg.sender, aAmount);
 
     //     // Emit an event
-    //     emit SecondTokensSold(
+    //     emit BTokensSold(
     //         msg.sender,
-    //         address(secondToken),
-    //         _secondAmount,
+    //         address(bToken),
+    //         _bAmount,
     //         testrate
     //     );
     // }
 
-    function buySecondTokens() public payable {
+    function buyBTokens() public payable {
         // Calculate the number of tokens to buy
-        uint256 tokenAmount = msg.value * secondRate; //msg.value = how much ether was sent
+        uint256 tokenAmount = msg.value * bRate; //msg.value = how much ether was sent
 
-        // Require that EthSwap has enough tokens
-        require(secondToken.balanceOf(address(this)) >= tokenAmount);
+        // Require that TokenSwap has enough tokens
+        require(bToken.balanceOf(address(this)) >= tokenAmount);
 
         // Transfer tokens to the user
-        secondToken.transfer(msg.sender, tokenAmount);
+        bToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
         emit TokensPurchased(
             msg.sender,
-            address(secondToken),
+            address(bToken),
             tokenAmount,
-            secondRate
+            bRate
         );
     }
 
-    function sellSecondTokens(uint256 _amount) public {
+    function sellBTokens(uint256 _amount) public {
         // User can't sell more tokens than they have
-        require(secondToken.balanceOf(msg.sender) >= _amount);
+        require(bToken.balanceOf(msg.sender) >= _amount);
 
         // Calculate the amount of Ether to redeem
-        uint256 etherAmount = _amount / secondRate;
+        uint256 etherAmount = _amount / bRate;
 
-        // Require that EthSwap has enough Ether
+        // Require that TokenSwap has enough Ether
         require(address(this).balance >= etherAmount);
 
         // Perform sale
-        secondToken.transferFrom(msg.sender, address(this), _amount);
+        bToken.transferFrom(msg.sender, address(this), _amount);
         msg.sender.transfer(etherAmount);
 
         // Emit an event
-        emit TokensSold(msg.sender, address(secondToken), _amount, secondRate);
+        emit TokensSold(msg.sender, address(bToken), _amount, bRate);
     }
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
-    // price = number of second u want
-    // amount of baseToken = coolToken
-    // buying second using cool
+    // price = number of b u want
+    // amount of baseToken = aToken
+    // buying b using a
 
     // dont gwei in frontend
     // use price * 1 ether
 
-    //b = cool
-    //a = second
+    //b = a
+    //a = b
     uint256[] public sellrateid;
     uint256[] public buyrateid;
 
@@ -334,9 +334,9 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
 
     //buy B using A
     function atob(uint256 b, uint256 a) external override nonReentrant {
-        require(coolToken.balanceOf(msg.sender) >= a, "hello error here atob");
+        require(aToken.balanceOf(msg.sender) >= a, "hello error here atob");
 
-        coolToken.transferFrom(msg.sender, address(this), a);
+        aToken.transferFrom(msg.sender, address(this), a);
         // emit PlaceBuyOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
         // b = b * 1 ether;
         // a = a * 1 ether;
@@ -355,12 +355,12 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         a;
                     newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
                     // transfer
-                    coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
-                    secondToken.transfer(msg.sender, a / minSellRate);
+                    aToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
+                    bToken.transfer(msg.sender, a / minSellRate);
                 } else if (newSellOrderBook[idOfSellRate].amount == a) {
                     // transfer
-                    coolToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
-                    secondToken.transfer(msg.sender, a / minSellRate);
+                    aToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
+                    bToken.transfer(msg.sender, a / minSellRate);
                     // update the minSellRate
                     delete newSellOrderBook[idOfSellRate];
                     for (uint256 j = i; j < sellrateid.length - 1; j++) {
@@ -368,11 +368,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     }
                     sellrateid.pop();
                 } else if (newSellOrderBook[idOfSellRate].amount < a) {
-                    coolToken.transfer(
+                    aToken.transfer(
                         newSellOrderBook[idOfSellRate].maker,
                         newSellOrderBook[idOfSellRate].amount
                     );
-                    secondToken.transfer(
+                    bToken.transfer(
                         msg.sender,
                         newSellOrderBook[idOfSellRate].amount / minSellRate
                     );
@@ -410,18 +410,16 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
     // buy A using b
     function btoa(uint256 a, uint256 b) external override nonReentrant {
         require(
-            secondToken.balanceOf(msg.sender) >= b,
+            bToken.balanceOf(msg.sender) >= b,
             "Hello error here btoa"
         );
         amountbuy.push(b);
         amountbuy.push(a);
-        secondToken.transferFrom(msg.sender, address(this), b);
-        // emit PlaceSellOrder(msg.sender, amountOfBuyToken, amountOfSellToken);
+        bToken.transferFrom(msg.sender, address(this), b);
 
         uint256 rate = a / b;
         bool toAdd = true;
-        // b = b * 1 ether;
-        // a = a * 1 ether;
+
         for (uint256 i = 0; i < buyrateid.length; i++) {
             idOfBuyRate = buyrateid[i];
             maxBuyRate = newBuyOrderBook[idOfBuyRate].rate;
@@ -435,12 +433,12 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     newBuyOrderBook[idOfBuyRate].amount = newAmount; //replace old amount with new
                     amountbuy.push(newBuyOrderBook[idOfBuyRate].amount);
                     // transfer
-                    secondToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    coolToken.transfer(msg.sender, b * maxBuyRate);
+                    bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                    aToken.transfer(msg.sender, b * maxBuyRate);
                 } else if (newBuyOrderBook[idOfBuyRate].amount == a) {
                     // transfer
-                    secondToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    coolToken.transfer(msg.sender, b * maxBuyRate);
+                    bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                    aToken.transfer(msg.sender, b * maxBuyRate);
                     // update the minSellRate
                     delete newBuyOrderBook[idOfBuyRate];
                     for (uint256 j = i; j < buyrateid.length - 1; j++) {
@@ -448,11 +446,11 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                     }
                     buyrateid.pop();
                 } else if (newBuyOrderBook[idOfBuyRate].amount < a) {
-                    secondToken.transfer(
+                    bToken.transfer(
                         newBuyOrderBook[idOfBuyRate].maker,
                         newBuyOrderBook[idOfBuyRate].amount
                     );
-                    coolToken.transfer(
+                    aToken.transfer(
                         msg.sender,
                         newBuyOrderBook[idOfBuyRate].amount * maxBuyRate
                     );
@@ -486,9 +484,9 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         uint256 amountOfBaseToken,
         uint256 amount
     ) external override nonReentrant {
-        require(coolToken.balanceOf(msg.sender) >= amountOfBaseToken);
+        require(aToken.balanceOf(msg.sender) >= amountOfBaseToken);
 
-        coolToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
+        aToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
         emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
 
         /**
@@ -527,7 +525,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         );
                         //send before delete order
 
-                        coolToken.transfer(
+                        aToken.transfer(
                             sellOrdersInStep[sellPricePointer][i].maker,
                             sellOrdersInStep[sellPricePointer][i].amount
                         );
@@ -535,7 +533,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         delete sellOrdersInStep[sellPricePointer][i];
                         sellOrdersInStepCounter[sellPricePointer] -= 1;
                         ///////////////////////////////
-                        secondToken.transfer(msg.sender, sellPricePointer);
+                        bToken.transfer(msg.sender, sellPricePointer);
 
                         //token.transferFrom(ethswap to other party)
                     } else {
@@ -569,7 +567,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
         uint256 amountOfTradeToken,
         uint256 amount
     ) external override nonReentrant {
-        secondToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
+        bToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
         emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
         /**
@@ -605,7 +603,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                             amountReflect -
                             (buyOrdersInStep[buyPricePointer][i].amount);
                         //send before delete order
-                        secondToken.transfer(
+                        bToken.transfer(
                             buyOrdersInStep[buyPricePointer][i].maker,
                             buyOrdersInStep[buyPricePointer][i].amount
                         );
@@ -615,7 +613,7 @@ contract EthSwap is IOrderBook, ReentrancyGuard {
                         buyOrdersInStepCounter[buyPricePointer] -= 1;
 
                         ///////
-                        coolToken.transfer(msg.sender, buyPricePointer);
+                        aToken.transfer(msg.sender, buyPricePointer);
                     } else {
                         buySteps[buyPricePointer].amount =
                             buySteps[buyPricePointer].amount -

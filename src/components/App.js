@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Web3 from "web3"; // import web3
-import CoolToken from "../abis/CoolToken.json";
-import SecondToken from "../abis/SecondToken.json";
-import EthSwap from "../abis/EthSwap.json";
+import AToken from "../abis/AToken.json";
+import BToken from "../abis/BToken.json";
+import TokenSwap from "../abis/TokenSwap.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
 import "./App.css";
@@ -22,60 +22,60 @@ class App extends Component {
     const ethBalance = await web3.eth.getBalance(this.state.account);
     this.setState({ ethBalance });
 
-    /////////////////////// Load SecondToken balance name ///////////////////////
+    /////////////////////// Load BToken balance name ///////////////////////
     const networkId = await web3.eth.net.getId();
 
-    const secondTokenData = SecondToken.networks[networkId];
-    if (secondTokenData) {
-      const secondToken = new web3.eth.Contract(
-        SecondToken.abi,
-        secondTokenData.address
-      );
-      this.setState({ secondToken });
-      let secondTokenName = await secondToken.methods.symbol.call();
-      let secondTokenBalance = await secondToken.methods
+    const bTokenData = BToken.networks[networkId];
+    if (bTokenData) {
+      const bToken = new web3.eth.Contract(BToken.abi, bTokenData.address);
+      this.setState({ bToken });
+      let bTokenName = await bToken.methods.symbol.call();
+      let bTokenBalance = await bToken.methods
         .balanceOf(this.state.account)
         .call();
-      this.setState({ secondTokenBalance: secondTokenBalance.toString() });
-      this.setState({ secondTokenName: secondTokenName.toString() });
+      this.setState({ bTokenBalance: bTokenBalance.toString() });
+      this.setState({ bTokenName: bTokenName.toString() });
     } else {
       window.alert("Token contract not deployed to detected network.");
     }
 
-    /////////////////////// Load CoolToken balance name ///////////////////////
-    const tokenData = CoolToken.networks[networkId];
+    /////////////////////// Load AToken balance name ///////////////////////
+    const tokenData = AToken.networks[networkId];
     if (tokenData) {
-      const token = new web3.eth.Contract(CoolToken.abi, tokenData.address);
+      const token = new web3.eth.Contract(AToken.abi, tokenData.address);
       this.setState({ token });
-      let coolTokenName = await token.methods.symbol.call();
-      let coolTokenBalance = await token.methods
+      let aTokenName = await token.methods.symbol.call();
+      let aTokenBalance = await token.methods
         .balanceOf(this.state.account)
         .call();
 
-      this.setState({ coolTokenBalance: coolTokenBalance.toString() });
-      this.setState({ coolTokenName: coolTokenName.toString() });
+      this.setState({ aTokenBalance: aTokenBalance.toString() });
+      this.setState({ aTokenName: aTokenName.toString() });
     } else {
       window.alert("Token contract not deployed to detected network.");
     }
 
-    /////////////////////// Load EthSwap ///////////////////////
-    const ethSwapData = EthSwap.networks[networkId];
-    if (ethSwapData) {
-      const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address);
-      this.setState({ ethSwap });
-      let secondTokenRate = await ethSwap.methods.secondRate.call();
-      this.setState({ secondTokenRate: secondTokenRate.toString() });
-      let coolTokenRate = await ethSwap.methods.coolRate.call();
-      this.setState({ coolTokenRate: coolTokenRate.toString() });
-      let maxBuyPrice = await ethSwap.methods.maxBuyPrice.call();
+    /////////////////////// Load TokenSwap ///////////////////////
+    const tokenSwapData = TokenSwap.networks[networkId];
+    if (tokenSwapData) {
+      const tokenSwap = new web3.eth.Contract(
+        TokenSwap.abi,
+        tokenSwapData.address
+      );
+      this.setState({ tokenSwap });
+      let bTokenRate = await tokenSwap.methods.bRate.call();
+      this.setState({ bTokenRate: bTokenRate.toString() });
+      let aTokenRate = await tokenSwap.methods.aRate.call();
+      this.setState({ aTokenRate: aTokenRate.toString() });
+      let maxBuyPrice = await tokenSwap.methods.maxBuyPrice.call();
       this.setState({ maxBuyPrice: maxBuyPrice.toString() });
-      let minSellPrice = await ethSwap.methods.minSellPrice.call();
+      let minSellPrice = await tokenSwap.methods.minSellPrice.call();
       this.setState({ minSellPrice: minSellPrice.toString() });
 
-      let sellrateid = await ethSwap.methods.getsellrate.call();
-      let buyrateid = await ethSwap.methods.getbuyrate.call();
+      let sellrateid = await tokenSwap.methods.getsellrate.call();
+      let buyrateid = await tokenSwap.methods.getbuyrate.call();
 
-      let getamountbuy = await ethSwap.methods.getamountbuy.call();
+      let getamountbuy = await tokenSwap.methods.getamountbuy.call();
 
       console.log("getamountbuy", getamountbuy);
 
@@ -83,9 +83,9 @@ class App extends Component {
 
       console.log("buyrateid", buyrateid);
 
-      // let buyOrdersInStepCounter = await ethSwap.methods.buyOrdersInStepCounter.call();
+      // let buyOrdersInStepCounter = await tokenSwap.methods.buyOrdersInStepCounter.call();
 
-      // ethSwap.methods.buyOrdersInStepCounter.call(0).then(function(tester) {
+      // tokenSwap.methods.buyOrdersInStepCounter.call(0).then(function(tester) {
       //   console.log("tester", tester);
       // });
 
@@ -93,14 +93,14 @@ class App extends Component {
       //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
       // });
 
-      // let buySteps = await ethSwap.methods.buySteps.call();
+      // let buySteps = await tokenSwap.methods.buySteps.call();
       // this.setState({ buySteps: buySteps.toString() });
-      // let buyOrdersInStepCounter = await ethSwap.methods.buyOrdersInStepCounter.call();
+      // let buyOrdersInStepCounter = await tokenSwap.methods.buyOrdersInStepCounter.call();
       // this.setState({
       //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
       // });
     } else {
-      window.alert("EthSwap contract not deployed to detected network.");
+      window.alert("TokenSwap contract not deployed to detected network.");
     }
 
     this.setState({ loading: false });
@@ -119,16 +119,16 @@ class App extends Component {
     }
   }
 
-  /////////////////////// Order book placeBuyOrder EthSwap ///////////////////////
+  /////////////////////// Order book placeBuyOrder TokenSwap ///////////////////////
 
   placeBuyOrder = (price, quantity) => {
     this.setState({ loading: true });
 
     this.state.token.methods
-      .approve(this.state.ethSwap.address, quantity)
+      .approve(this.state.tokenSwap.address, quantity)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
-        this.state.ethSwap.methods
+        this.state.tokenSwap.methods
           .atob(price, quantity)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
@@ -144,11 +144,11 @@ class App extends Component {
   placeSellOrder = (price, quantity) => {
     this.setState({ loading: true });
 
-    this.state.secondToken.methods
-      .approve(this.state.ethSwap.address, quantity)
+    this.state.bToken.methods
+      .approve(this.state.tokenSwap.address, quantity)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
-        this.state.ethSwap.methods
+        this.state.tokenSwap.methods
           .btoa(price, quantity)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
@@ -160,13 +160,13 @@ class App extends Component {
           });
       });
   };
-  /////////////////////// secondToken EthSwap ///////////////////////
+  /////////////////////// bToken TokenSwap ///////////////////////
 
-  buySecondTokens = (etherAmount) => {
+  buyBTokens = (etherAmount) => {
     this.setState({ loading: true });
     try {
-      this.state.ethSwap.methods
-        .buySecondTokens()
+      this.state.tokenSwap.methods
+        .buyBTokens()
         .send({ value: etherAmount, from: this.state.account })
         .on("transactionHash", (hash) => {
           this.setState({ loading: false });
@@ -181,37 +181,37 @@ class App extends Component {
     }
   };
 
-  sellSecondTokens = (tokenAmount) => {
+  sellBTokens = (tokenAmount) => {
     this.setState({ loading: true });
     this.state.token.methods
-      .approve(this.state.ethSwap.address, tokenAmount)
+      .approve(this.state.tokenSwap.address, tokenAmount)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
-        this.state.ethSwap.methods
-          .sellCoolTokens(tokenAmount)
+        this.state.tokenSwap.methods
+          .sellATokens(tokenAmount)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
           });
       });
   };
-  /////////////////////// coolToken EthSwap ///////////////////////
+  /////////////////////// aToken TokenSwap ///////////////////////
 
-  buyCoolTokens = (etherAmount) => {
+  buyATokens = (etherAmount) => {
     this.setState({ loading: true });
-    this.state.ethSwap.methods
-      .buyCoolTokens()
+    this.state.tokenSwap.methods
+      .buyATokens()
       .send({ value: etherAmount, from: this.state.account })
       .on("transactionHash", (hash) => {
         this.setState({ loading: false });
       });
   };
 
-  limitBuyCoolTokens = (rate, etherAmount) => {
+  limitBuyATokens = (rate, etherAmount) => {
     this.setState({ loading: true });
     try {
-      this.state.ethSwap.methods
-        .limitBuyCoolTokens(rate)
+      this.state.tokenSwap.methods
+        .limitBuyATokens(rate)
         .send({ value: etherAmount, from: this.state.account })
         .on("transactionHash", (hash) => {
           this.setState({ loading: false });
@@ -226,14 +226,14 @@ class App extends Component {
     }
   };
 
-  sellCoolTokens = (tokenAmount) => {
+  sellATokens = (tokenAmount) => {
     this.setState({ loading: true });
     this.state.token.methods
-      .approve(this.state.ethSwap.address, tokenAmount)
+      .approve(this.state.tokenSwap.address, tokenAmount)
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {
-        this.state.ethSwap.methods
-          .sellCoolTokens(tokenAmount)
+        this.state.tokenSwap.methods
+          .sellATokens(tokenAmount)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
@@ -241,15 +241,15 @@ class App extends Component {
       });
   };
 
-  limitSellCoolTokens = (rate, tokenAmount) => {
+  limitSellATokens = (rate, tokenAmount) => {
     this.setState({ loading: true });
     try {
       this.state.token.methods
-        .approve(this.state.ethSwap.address, tokenAmount)
+        .approve(this.state.tokenSwap.address, tokenAmount)
         .send({ from: this.state.account })
         .on("transactionHash", (hash) => {
-          this.state.ethSwap.methods
-            .limitSellCoolTokens(tokenAmount, rate)
+          this.state.tokenSwap.methods
+            .limitSellATokens(tokenAmount, rate)
             .send({ from: this.state.account })
             .on("transactionHash", (hash) => {
               this.setState({ loading: false });
@@ -276,10 +276,10 @@ class App extends Component {
     this.state = {
       account: "",
       token: {},
-      ethSwap: {},
+      tokenSwap: {},
       ethBalance: "0",
-      coolTokenBalance: "0",
-      secondTokenBalance: "0",
+      aTokenBalance: "0",
+      bTokenBalance: "0",
       loading: true,
       limitError: false,
     };
@@ -309,19 +309,19 @@ class App extends Component {
       content = (
         <>
           <Main
-            coolTokenName={this.state.coolTokenName}
+            aTokenName={this.state.aTokenName}
             ethBalance={this.state.ethBalance}
-            coolTokenBalance={this.state.coolTokenBalance}
-            buyCoolTokens={this.buyCoolTokens}
-            sellCoolTokens={this.sellCoolTokens}
-            limitBuyCoolTokens={this.limitBuyCoolTokens}
-            limitSellCoolTokens={this.limitSellCoolTokens}
-            coolTokenRate={this.state.coolTokenRate}
-            secondTokenRate={this.state.secondTokenRate}
-            secondTokenName={this.state.secondTokenName}
-            secondTokenBalance={this.state.secondTokenBalance}
-            buySecondTokens={this.buySecondTokens}
-            sellSecondTokens={this.sellSecondTokens}
+            aTokenBalance={this.state.aTokenBalance}
+            buyATokens={this.buyATokens}
+            sellATokens={this.sellATokens}
+            limitBuyATokens={this.limitBuyATokens}
+            limitSellATokens={this.limitSellATokens}
+            aTokenRate={this.state.aTokenRate}
+            bTokenRate={this.state.bTokenRate}
+            bTokenName={this.state.bTokenName}
+            bTokenBalance={this.state.bTokenBalance}
+            buyBTokens={this.buyBTokens}
+            sellBTokens={this.sellBTokens}
             placeBuyOrder={this.placeBuyOrder}
             placeSellOrder={this.placeSellOrder}
             maxBuyPrice={this.state.maxBuyPrice}

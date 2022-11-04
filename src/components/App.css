@@ -1,1 +1,11 @@
 /* Styles go here */
+button:hover {
+  background-color: red;
+}
+.change {
+  background-color: green;
+}
+
+.change:hover {
+  background-color: green;
+}

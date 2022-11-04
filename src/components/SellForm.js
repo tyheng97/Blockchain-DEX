@@ -24,9 +24,9 @@ class SellForm extends Component {
           etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
 
           if (this.props.isLimitOrder) {
-            this.props.limitSellCoolTokens(rate, etherAmount);
+            this.props.limitSellATokens(rate, etherAmount);
           } else {
-            this.props.sellCoolTokens(etherAmount);
+            this.props.sellATokens(etherAmount);
           }
         }}
       >
@@ -36,14 +36,14 @@ class SellForm extends Component {
           </label>
           <span className="float-right text-muted">
             Balance:{" "}
-            {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
+            {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
           </span>
         </div>
         <div className="input-group mb-4">
           <div className="input-group-append">
             <div className="input-group-text">
               <img src={tokenLogo} height="32" alt="" />
-              &nbsp; {this.props.coolTokenName}
+              &nbsp; {this.props.aTokenName}
             </div>
           </div>
           <input
@@ -119,7 +119,7 @@ class SellForm extends Component {
           <div className="mb-5">
             <span className="float-left text-muted">Exchange Rate</span>
             <span className="float-right text-muted">
-              1 ETH = {this.props.coolTokenRate} Coins
+              1 ETH = {this.props.aTokenRate} Coins
             </span>
           </div>
         )}

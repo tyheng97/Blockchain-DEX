@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
-import BuySecond from "./BuySecond.js";
+import BuyB from "./BuyB.js";
 
 class NewBuyForm extends Component {
   constructor(props) {
@@ -10,8 +10,18 @@ class NewBuyForm extends Component {
       input: "0",
       output: "0",
       price: "1",
+      disable: true,
     };
   }
+  checkdisable = () => {
+    let price = this.state.price;
+    let quantity = this.state.input;
+    if (quantity % price !== 0) {
+      this.setState({ disable: true });
+    } else {
+      this.setState({ disable: false });
+    }
+  };
 
   render() {
     return (
@@ -42,20 +52,17 @@ class NewBuyForm extends Component {
               <b>Input</b>
             </label>
             <span className="float-right text-muted">
-              CoolBalance:{" "}
-              {window.web3.utils.fromWei(this.props.coolTokenBalance, "Ether")}
+              ABalance:{" "}
+              {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
             </span>
             <span>{"  "}</span>
             <span className="float-right text-muted">
-              SecondBalance:{" "}
-              {window.web3.utils.fromWei(
-                this.props.secondTokenBalance,
-                "Ether"
-              )}
+              BBalance:{" "}
+              {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
             </span>
           </div>
           <div className="input-group mb-4">
-            <div>COOL Tokens you want to sell</div>
+            <div>A Tokens you want to sell</div>
             <input
               type="text"
               onChange={(event) => {
@@ -65,6 +72,7 @@ class NewBuyForm extends Component {
                 this.setState({
                   input: etherAmount,
                   output: etherAmount,
+                  disable: true,
                 });
               }}
               ref={(input) => {
@@ -79,7 +87,7 @@ class NewBuyForm extends Component {
             <>
               <div>
                 <label className="float-left">
-                  <b>Number of SecondTokens you want</b>
+                  <b>Number of BTokens you want</b>
                 </label>
               </div>
               <div className="input-group mb-4">
@@ -90,6 +98,7 @@ class NewBuyForm extends Component {
                     console.log(newprice);
                     this.setState({
                       price: newprice,
+                      disable: true,
                     });
                   }}
                   ref={(price) => {
@@ -101,10 +110,22 @@ class NewBuyForm extends Component {
               </div>
             </>
           </>
-
-          <button type="submit" className="btn btn-primary btn-block btn-lg">
-            Swap
+          <button
+            type="button"
+            onClick={this.checkdisable}
+            className="btn btn-primary btn-block btn-lg"
+          >
+            Check Rate
           </button>
+          {!this.state.disable && (
+            <button
+              type="submit"
+              disabled={this.state.disable}
+              className="btn btn-primary btn-block btn-lg change"
+            >
+              Swap
+            </button>
+          )}
         </form>
         <></>
       </>

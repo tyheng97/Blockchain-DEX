@@ -32,31 +32,31 @@ class Main extends Component {
     if (this.state.currentForm === "buy") {
       content = (
         <BuyForm
-          coolTokenName={this.props.coolTokenName}
+          aTokenName={this.props.aTokenName}
           ethBalance={this.props.ethBalance}
-          coolTokenBalance={this.props.coolTokenBalance}
-          buyCoolTokens={this.props.buyCoolTokens}
+          aTokenBalance={this.props.aTokenBalance}
+          buyATokens={this.props.buyATokens}
           isLimitOrder={this.state.limitOrder}
-          limitBuyCoolTokens={this.props.limitBuyCoolTokens}
-          coolTokenRate={this.props.coolTokenRate}
-          secondTokenName={this.props.secondTokenName}
-          secondTokenRate={this.props.secondTokenRate}
-          secondTokenBalance={this.props.secondTokenBalance}
-          buySecondTokens={this.props.buySecondTokens}
-          sellSecondTokens={this.props.sellSecondTokens}
+          limitBuyATokens={this.props.limitBuyATokens}
+          aTokenRate={this.props.aTokenRate}
+          bTokenName={this.props.bTokenName}
+          bTokenRate={this.props.bTokenRate}
+          bTokenBalance={this.props.bTokenBalance}
+          buyBTokens={this.props.buyBTokens}
+          sellBTokens={this.props.sellBTokens}
         />
       );
       buyButtonStyle = "btn-success";
     } else if (this.state.currentForm === "sell") {
       content = (
         <SellForm
-          coolTokenName={this.props.coolTokenName}
+          aTokenName={this.props.aTokenName}
           ethBalance={this.props.ethBalance}
-          coolTokenBalance={this.props.coolTokenBalance}
-          sellCoolTokens={this.props.sellCoolTokens}
+          aTokenBalance={this.props.aTokenBalance}
+          sellATokens={this.props.sellATokens}
           isLimitOrder={this.state.limitOrder}
-          limitSellCoolTokens={this.props.limitSellCoolTokens}
-          coolTokenRate={this.props.coolTokenRate}
+          limitSellATokens={this.props.limitSellATokens}
+          aTokenRate={this.props.aTokenRate}
         />
       );
       sellButtonStyle = "btn-success";
@@ -67,19 +67,17 @@ class Main extends Component {
             buyorsell="buy"
             placeBuyOrder={this.props.placeBuyOrder}
             placeSellOrder={this.props.placeSellOrder}
-            coolTokenBalance={this.props.coolTokenBalance}
-            secondTokenBalance={this.props.secondTokenBalance}
+            aTokenBalance={this.props.aTokenBalance}
+            bTokenBalance={this.props.bTokenBalance}
           />
 
           <NewSellForm
             buyorsell="sell"
             placeBuyOrder={this.props.placeBuyOrder}
             placeSellOrder={this.props.placeSellOrder}
-            coolTokenBalance={this.props.coolTokenBalance}
-            secondTokenBalance={this.props.secondTokenBalance}
+            aTokenBalance={this.props.aTokenBalance}
+            bTokenBalance={this.props.bTokenBalance}
           />
-          <div>Max Buy Price: {this.props.maxBuyPrice}</div>
-          <div>Min Sell Price: {this.props.minSellPrice}</div>
         </div>
       );
     }

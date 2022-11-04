@@ -3,9 +3,9 @@
 
 pragma solidity >=0.6.8;
 
-contract SecondToken {
-    string public name = "Second Token";
-    string public symbol = "SECOND";
+contract BToken {
+    string public name = "B Token";
+    string public symbol = "B";
     uint256 public totalSupply = 10000000000000000000000000; // 10 million tokens
     uint8 public decimals = 18; // 1.000000...18decimal palces
     // wei = 1000000000000000000

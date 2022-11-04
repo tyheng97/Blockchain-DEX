@@ -2,9 +2,9 @@
 
 pragma solidity >=0.6.8;
 
-contract CoolToken {
-    string public name = "Cool Token";
-    string public symbol = "COOL";
+contract AToken {
+    string public name = "A Token";
+    string public symbol = "A";
     uint256 public totalSupply = 1000000000000000000000000; // 1 million tokens
     uint8 public decimals = 18; // 1.000000...18decimal palces
     // wei = 1000000000000000000
