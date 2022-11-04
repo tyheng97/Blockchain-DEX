@@ -70,10 +70,13 @@ class App extends Component {
 
       let sellrateid = await tokenSwap.methods.getsellrate.call();
       let buyrateid = await tokenSwap.methods.getbuyrate.call();
+      let sellrateidInv = await tokenSwap.methods.getsellrateInv.call();
+      let buyrateidInv = await tokenSwap.methods.getbuyrateInv.call();
 
       console.log("sellrateid", sellrateid);
-
       console.log("buyrateid", buyrateid);
+      console.log("INVsellrateid", sellrateidInv);
+      console.log("INVbuyrateid", buyrateidInv);
 
       let buyBook = [];
       let getBuyOrderBook = await tokenSwap.methods
