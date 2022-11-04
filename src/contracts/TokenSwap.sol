@@ -105,27 +105,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);
     }
 
-    function limitBuyATokens(uint256 _rate) public payable {
-        uint256 testrate = random();
-
-        require(testrate >= _rate, "fail");
-        // Calculate the number of tokens to buy
-        uint256 tokenAmount = msg.value * testrate; //msg.value = how much ether was sent
-
-        // Require that TokenSwap has enough tokens
-        require(aToken.balanceOf(address(this)) >= tokenAmount);
-
-        // Transfer tokens to the user
-        aToken.transfer(msg.sender, tokenAmount);
-
-        // Emit an event
-        emit TokensPurchased(
-            msg.sender,
-            address(aToken),
-            tokenAmount,
-            testrate
-        );
-    }
+ 
 
     function sellATokens(uint256 _amount) public {
         // User can't sell more tokens than they have
@@ -145,122 +125,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         emit TokensSold(msg.sender, address(aToken), _amount, aRate);
     }
 
-    // function limitSellATokens(uint256 _amount, uint256 _rate) public {
-    //     uint256 testrate = random();
-
-    //     require(testrate <= _rate, "fail");
-    //     // User can't sell more tokens than they have
-    //     require(aToken.balanceOf(msg.sender) >= _amount);
-
-    //     // // Calculate the amount of Ether to redeem
-    //     uint256 etherAmount = _amount / testrate;
-
-    //     // Require that TokenSwap has enough Ether
-    //     require(address(this).balance >= etherAmount);
-
-    //     // Perform sale
-    //     aToken.transferFrom(msg.sender, address(this), _amount);
-    //     msg.sender.transfer(etherAmount);
-
-    //     // // Emit an event
-    //     emit TokensSold(msg.sender, address(aToken), _amount, aRate);
-    // }
-
-    // function buyBTokensFromCool(uint256 _aAmount) public {
-    //     // Check if there is sufficient a token in buyer acc
-    //     require(aToken.balanceOf(msg.sender) >= _aAmount);
-    //     // Calculate the amount of a token to redeem
-    //     uint256 bAmount = _aAmount * bRate;
-    //     // Check that there is enough seocond Token in ethSwap
-    //     require(bToken.balanceOf(address(this)) >= bAmount);
-
-    //     // Perform sale (this 2 method might be the problem)
-    //     // bToken.transferFrom(address(this), msg.sender, bAmount);
-    //     bToken.transfer(msg.sender, bAmount);
-    //     aToken.transferFrom(msg.sender, address(this), _aAmount);
-    //     // Emit an event
-    //     emit BTokensPurchased(
-    //         msg.sender,
-    //         address(bToken),
-    //         bAmount,
-    //         bRate
-    //     );
-    // }
-
-    // function limitBuyBTokens(uint256 _aAmount, uint256 _bRate)
-    //     public
-    // {
-    //     uint256 testrate = random();
-    //     require(testrate >= _bRate, "fail");
-    //     // Check if there is sufficient a token in buyer acc
-    //     require(aToken.balanceOf(msg.sender) >= _aAmount);
-    //     // Calculate the amount of a token to redeem
-    //     uint256 bAmount = _aAmount * testrate;
-    //     // Check that there is enough seocond Token in ethSwap
-    //     require(bToken.balanceOf(address(this)) >= bAmount);
-
-    //     // Perform sale (this 2 method might be the problem)
-    //     // bToken.transferFrom(address(this), msg.sender, bAmount);
-    //     bToken.transfer(msg.sender, bAmount);
-    //     aToken.transferFrom(msg.sender, address(this), _aAmount);
-    //     // Emit an event
-    //     emit BTokensPurchased(
-    //         msg.sender,
-    //         address(bToken),
-    //         bAmount,
-    //         testrate
-    //     );
-    // }
-
-    // function sellBTokensFromCool(uint256 _bAmount) public {
-    //     // Calculate the amount of a token to redeem
-    //     uint256 aAmount = _bAmount / bRate;
-
-    //     // Check that there is enough a Token in ethSwap
-    //     require(aToken.balanceOf(address(this)) >= aAmount);
-
-    //     // Check if there is sufficient b token in buyer acc
-    //     require(bToken.balanceOf(msg.sender) >= _bAmount);
-
-    //     // Perform sale
-    //     bToken.transferFrom(msg.sender, address(this), _bAmount);
-    //     aToken.transfer(msg.sender, aAmount);
-
-    //     // Emit an event
-    //     emit BTokensSold(
-    //         msg.sender,
-    //         address(bToken),
-    //         _bAmount,
-    //         bRate
-    //     );
-    // }
-
-    // function limitSellBTokens(uint256 _bAmount, uint256 _bRate)
-    //     public
-    // {
-    //     uint256 testrate = random();
-    //     require(testrate <= _bRate, "fail");
-    //     // Calculate the amount of a token to redeem
-    //     uint256 aAmount = _bAmount / testrate;
-
-    //     // Check that there is enough a Token in ethSwap
-    //     require(aToken.balanceOf(address(this)) >= aAmount);
-
-    //     // Check if there is sufficient b token in buyer acc
-    //     require(bToken.balanceOf(msg.sender) >= _bAmount);
-
-    //     // Perform sale
-    //     bToken.transferFrom(msg.sender, address(this), _bAmount);
-    //     aToken.transfer(msg.sender, aAmount);
-
-    //     // Emit an event
-    //     emit BTokensSold(
-    //         msg.sender,
-    //         address(bToken),
-    //         _bAmount,
-    //         testrate
-    //     );
-    // }
+  
 
     function buyBTokens() public payable {
         // Calculate the number of tokens to buy
@@ -295,15 +160,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
     }
 
     ///////////////////////////////////////////////////////////////////////// ORDERBOOK //////////////////////////////////////////////////////////////////////////////////////////
-    // price = number of b u want
-    // amount of baseToken = aToken
-    // buying b using a
 
-    // dont gwei in frontend
-    // use price * 1 ether
-
-    //b = a
-    //a = b
     uint256[] public sellrateid;
     uint256[] public buyrateid;
 
@@ -466,262 +323,262 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         // emit DrawToSellBook(msg.sender, rate, amountSold);
     }
 
-    function placeBuyOrder(
-        uint256 price,
-        uint256 amountOfBaseToken,
-        uint256 amount
-    ) external override nonReentrant {
-        require(aToken.balanceOf(msg.sender) >= amountOfBaseToken);
+    // function placeBuyOrder(
+    //     uint256 price,
+    //     uint256 amountOfBaseToken,
+    //     uint256 amount
+    // ) external override nonReentrant {
+    //     require(aToken.balanceOf(msg.sender) >= amountOfBaseToken);
 
-        aToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
-        emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
+    //     aToken.transferFrom(msg.sender, address(this), amountOfBaseToken);
+    //     emit PlaceBuyOrder(msg.sender, price, amountOfBaseToken);
 
-        /**
-         * @notice if has order in sell book, and price >= min sell price
-         */
-        //minSellPrice
-        //
-        uint256 sellPricePointer = minSellPrice;
-        uint256 amountReflect = amountOfBaseToken;
-        if (minSellPrice > 0 && price >= minSellPrice) {
-            while (
-                amountReflect > 0 &&
-                sellPricePointer <= price &&
-                sellPricePointer != 0
-            ) {
-                uint8 i = 1;
-                uint256 higherPrice = sellSteps[sellPricePointer].higherPrice;
-                while (
-                    i <= sellOrdersInStepCounter[sellPricePointer] &&
-                    amountReflect > 0
-                ) {
-                    if (
-                        amountReflect >=
-                        sellOrdersInStep[sellPricePointer][i].amount
-                    ) {
-                        //if the last order has been matched, delete the step
-                        if (i == sellOrdersInStepCounter[sellPricePointer]) {
-                            if (higherPrice > 0)
-                                sellSteps[higherPrice].lowerPrice = 0;
-                            delete sellSteps[sellPricePointer];
-                            minSellPrice = higherPrice;
-                        }
+    //     /**
+    //      * @notice if has order in sell book, and price >= min sell price
+    //      */
+    //     //minSellPrice
+    //     //
+    //     uint256 sellPricePointer = minSellPrice;
+    //     uint256 amountReflect = amountOfBaseToken;
+    //     if (minSellPrice > 0 && price >= minSellPrice) {
+    //         while (
+    //             amountReflect > 0 &&
+    //             sellPricePointer <= price &&
+    //             sellPricePointer != 0
+    //         ) {
+    //             uint8 i = 1;
+    //             uint256 higherPrice = sellSteps[sellPricePointer].higherPrice;
+    //             while (
+    //                 i <= sellOrdersInStepCounter[sellPricePointer] &&
+    //                 amountReflect > 0
+    //             ) {
+    //                 if (
+    //                     amountReflect >=
+    //                     sellOrdersInStep[sellPricePointer][i].amount
+    //                 ) {
+    //                     //if the last order has been matched, delete the step
+    //                     if (i == sellOrdersInStepCounter[sellPricePointer]) {
+    //                         if (higherPrice > 0)
+    //                             sellSteps[higherPrice].lowerPrice = 0;
+    //                         delete sellSteps[sellPricePointer];
+    //                         minSellPrice = higherPrice;
+    //                     }
 
-                        amountReflect = amountReflect.sub(
-                            sellOrdersInStep[sellPricePointer][i].amount
-                        );
-                        //send before delete order
+    //                     amountReflect = amountReflect.sub(
+    //                         sellOrdersInStep[sellPricePointer][i].amount
+    //                     );
+    //                     //send before delete order
 
-                        aToken.transfer(
-                            sellOrdersInStep[sellPricePointer][i].maker,
-                            sellOrdersInStep[sellPricePointer][i].amount
-                        );
-                        // delete order from storage
-                        delete sellOrdersInStep[sellPricePointer][i];
-                        sellOrdersInStepCounter[sellPricePointer] -= 1;
-                        ///////////////////////////////
-                        bToken.transfer(msg.sender, sellPricePointer);
+    //                     aToken.transfer(
+    //                         sellOrdersInStep[sellPricePointer][i].maker,
+    //                         sellOrdersInStep[sellPricePointer][i].amount
+    //                     );
+    //                     // delete order from storage
+    //                     delete sellOrdersInStep[sellPricePointer][i];
+    //                     sellOrdersInStepCounter[sellPricePointer] -= 1;
+    //                     ///////////////////////////////
+    //                     bToken.transfer(msg.sender, sellPricePointer);
 
-                        //token.transferFrom(ethswap to other party)
-                    } else {
-                        sellSteps[sellPricePointer].amount = sellSteps[
-                            sellPricePointer
-                        ].amount.sub(amountReflect);
-                        sellOrdersInStep[sellPricePointer][i]
-                            .amount = sellOrdersInStep[sellPricePointer][i]
-                            .amount
-                            .sub(amountReflect);
-                        amountReflect = 0;
-                    }
-                    i += 1;
-                }
-                sellPricePointer = higherPrice;
-            }
-        }
-        /**
-         * @notice draw to buy book the rest
-         */
-        if (amountReflect > 0) {
-            _drawToBuyBook(price, amountReflect);
-        }
-    }
+    //                     //token.transferFrom(ethswap to other party)
+    //                 } else {
+    //                     sellSteps[sellPricePointer].amount = sellSteps[
+    //                         sellPricePointer
+    //                     ].amount.sub(amountReflect);
+    //                     sellOrdersInStep[sellPricePointer][i]
+    //                         .amount = sellOrdersInStep[sellPricePointer][i]
+    //                         .amount
+    //                         .sub(amountReflect);
+    //                     amountReflect = 0;
+    //                 }
+    //                 i += 1;
+    //             }
+    //             sellPricePointer = higherPrice;
+    //         }
+    //     }
+    //     /**
+    //      * @notice draw to buy book the rest
+    //      */
+    //     if (amountReflect > 0) {
+    //         _drawToBuyBook(price, amountReflect);
+    //     }
+    // }
 
-    /**
-     * @notice Place buy order.
-     */
-    function placeSellOrder(
-        uint256 price,
-        uint256 amountOfTradeToken,
-        uint256 amount
-    ) external override nonReentrant {
-        bToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
-        emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
+    // /**
+    //  * @notice Place buy order.
+    //  */
+    // function placeSellOrder(
+    //     uint256 price,
+    //     uint256 amountOfTradeToken,
+    //     uint256 amount
+    // ) external override nonReentrant {
+    //     bToken.transferFrom(msg.sender, address(this), amountOfTradeToken);
+    //     emit PlaceSellOrder(msg.sender, price, amountOfTradeToken);
 
-        /**
-         * @notice if has order in buy book, and price <= max buy price
-         */
-        uint256 buyPricePointer = maxBuyPrice;
-        uint256 amountReflect = amountOfTradeToken;
-        if (maxBuyPrice > 0 && price <= maxBuyPrice) {
-            while (
-                amountReflect > 0 &&
-                buyPricePointer >= price &&
-                buyPricePointer != 0
-            ) {
-                uint8 i = 1;
-                uint256 lowerPrice = buySteps[buyPricePointer].lowerPrice;
-                while (
-                    i <= buyOrdersInStepCounter[buyPricePointer] &&
-                    amountReflect > 0
-                ) {
-                    if (
-                        amountReflect >=
-                        buyOrdersInStep[buyPricePointer][i].amount
-                    ) {
-                        //if the last order has been matched, delete the step
-                        if (i == buyOrdersInStepCounter[buyPricePointer]) {
-                            if (lowerPrice > 0)
-                                buySteps[lowerPrice].higherPrice = 0;
-                            delete buySteps[buyPricePointer];
-                            maxBuyPrice = lowerPrice;
-                        }
+    //     /**
+    //      * @notice if has order in buy book, and price <= max buy price
+    //      */
+    //     uint256 buyPricePointer = maxBuyPrice;
+    //     uint256 amountReflect = amountOfTradeToken;
+    //     if (maxBuyPrice > 0 && price <= maxBuyPrice) {
+    //         while (
+    //             amountReflect > 0 &&
+    //             buyPricePointer >= price &&
+    //             buyPricePointer != 0
+    //         ) {
+    //             uint8 i = 1;
+    //             uint256 lowerPrice = buySteps[buyPricePointer].lowerPrice;
+    //             while (
+    //                 i <= buyOrdersInStepCounter[buyPricePointer] &&
+    //                 amountReflect > 0
+    //             ) {
+    //                 if (
+    //                     amountReflect >=
+    //                     buyOrdersInStep[buyPricePointer][i].amount
+    //                 ) {
+    //                     //if the last order has been matched, delete the step
+    //                     if (i == buyOrdersInStepCounter[buyPricePointer]) {
+    //                         if (lowerPrice > 0)
+    //                             buySteps[lowerPrice].higherPrice = 0;
+    //                         delete buySteps[buyPricePointer];
+    //                         maxBuyPrice = lowerPrice;
+    //                     }
 
-                        amountReflect =
-                            amountReflect -
-                            (buyOrdersInStep[buyPricePointer][i].amount);
-                        //send before delete order
-                        bToken.transfer(
-                            buyOrdersInStep[buyPricePointer][i].maker,
-                            buyOrdersInStep[buyPricePointer][i].amount
-                        );
-                        // delete order from storage
+    //                     amountReflect =
+    //                         amountReflect -
+    //                         (buyOrdersInStep[buyPricePointer][i].amount);
+    //                     //send before delete order
+    //                     bToken.transfer(
+    //                         buyOrdersInStep[buyPricePointer][i].maker,
+    //                         buyOrdersInStep[buyPricePointer][i].amount
+    //                     );
+    //                     // delete order from storage
 
-                        delete buyOrdersInStep[buyPricePointer][i];
-                        buyOrdersInStepCounter[buyPricePointer] -= 1;
+    //                     delete buyOrdersInStep[buyPricePointer][i];
+    //                     buyOrdersInStepCounter[buyPricePointer] -= 1;
 
-                        ///////
-                        aToken.transfer(msg.sender, buyPricePointer);
-                    } else {
-                        buySteps[buyPricePointer].amount =
-                            buySteps[buyPricePointer].amount -
-                            (amountReflect);
-                        buyOrdersInStep[buyPricePointer][i].amount =
-                            buyOrdersInStep[buyPricePointer][i].amount -
-                            (amountReflect);
-                        amountReflect = 0;
-                    }
-                    i += 1;
-                }
-                buyPricePointer = lowerPrice;
-            }
-        }
-        /**
-         * @notice draw to buy book the rest
-         */
-        if (amountReflect > 0) {
-            _drawToSellBook(price, amountReflect);
-        }
-    }
+    //                     ///////
+    //                     aToken.transfer(msg.sender, buyPricePointer);
+    //                 } else {
+    //                     buySteps[buyPricePointer].amount =
+    //                         buySteps[buyPricePointer].amount -
+    //                         (amountReflect);
+    //                     buyOrdersInStep[buyPricePointer][i].amount =
+    //                         buyOrdersInStep[buyPricePointer][i].amount -
+    //                         (amountReflect);
+    //                     amountReflect = 0;
+    //                 }
+    //                 i += 1;
+    //             }
+    //             buyPricePointer = lowerPrice;
+    //         }
+    //     }
+    //     /**
+    //      * @notice draw to buy book the rest
+    //      */
+    //     if (amountReflect > 0) {
+    //         _drawToSellBook(price, amountReflect);
+    //     }
+    // }
 
-    /**
-     * @notice draw buy order.
-     */
-    function _drawToBuyBook(uint256 price, uint256 amount) internal {
-        require(price > 0, "Can not place order with price equal 0");
+    // /**
+    //  * @notice draw buy order.
+    //  */
+    // function _drawToBuyBook(uint256 price, uint256 amount) internal {
+    //     require(price > 0, "Can not place order with price equal 0");
 
-        buyOrdersInStepCounter[price] += 1;
-        // order creation here
-        buyOrdersInStep[price][buyOrdersInStepCounter[price]] = Order(
-            msg.sender,
-            amount
-        );
-        buySteps[price].amount = buySteps[price].amount + (amount);
-        emit DrawToBuyBook(msg.sender, price, amount);
+    //     buyOrdersInStepCounter[price] += 1;
+    //     // order creation here
+    //     buyOrdersInStep[price][buyOrdersInStepCounter[price]] = Order(
+    //         msg.sender,
+    //         amount
+    //     );
+    //     buySteps[price].amount = buySteps[price].amount + (amount);
+    //     emit DrawToBuyBook(msg.sender, price, amount);
 
-        if (maxBuyPrice == 0) {
-            maxBuyPrice = price;
-            return;
-        }
+    //     if (maxBuyPrice == 0) {
+    //         maxBuyPrice = price;
+    //         return;
+    //     }
 
-        if (price > maxBuyPrice) {
-            buySteps[maxBuyPrice].higherPrice = price;
-            buySteps[price].lowerPrice = maxBuyPrice;
-            maxBuyPrice = price;
-            return;
-        }
+    //     if (price > maxBuyPrice) {
+    //         buySteps[maxBuyPrice].higherPrice = price;
+    //         buySteps[price].lowerPrice = maxBuyPrice;
+    //         maxBuyPrice = price;
+    //         return;
+    //     }
 
-        if (price == maxBuyPrice) {
-            return;
-        }
+    //     if (price == maxBuyPrice) {
+    //         return;
+    //     }
 
-        uint256 buyPricePointer = maxBuyPrice;
-        while (price <= buyPricePointer) {
-            buyPricePointer = buySteps[buyPricePointer].lowerPrice;
-        }
+    //     uint256 buyPricePointer = maxBuyPrice;
+    //     while (price <= buyPricePointer) {
+    //         buyPricePointer = buySteps[buyPricePointer].lowerPrice;
+    //     }
 
-        if (price < buySteps[buyPricePointer].higherPrice) {
-            buySteps[price].higherPrice = buySteps[buyPricePointer].higherPrice;
-            buySteps[price].lowerPrice = buyPricePointer;
+    //     if (price < buySteps[buyPricePointer].higherPrice) {
+    //         buySteps[price].higherPrice = buySteps[buyPricePointer].higherPrice;
+    //         buySteps[price].lowerPrice = buyPricePointer;
 
-            buySteps[buySteps[buyPricePointer].higherPrice].lowerPrice = price;
-            buySteps[buyPricePointer].higherPrice = price;
-        }
-    }
+    //         buySteps[buySteps[buyPricePointer].higherPrice].lowerPrice = price;
+    //         buySteps[buyPricePointer].higherPrice = price;
+    //     }
+    // }
 
-    /**
-     * @notice draw sell order.
-     */
-    function _drawToSellBook(uint256 price, uint256 amount) internal {
-        require(price > 0, "Can not place order with price equal 0");
+    // /**
+    //  * @notice draw sell order.
+    //  */
+    // function _drawToSellBook(uint256 price, uint256 amount) internal {
+    //     require(price > 0, "Can not place order with price equal 0");
 
-        sellOrdersInStepCounter[price] += 1;
-        sellOrdersInStep[price][sellOrdersInStepCounter[price]] = Order(
-            msg.sender,
-            amount
-        );
-        sellSteps[price].amount += amount;
-        emit DrawToSellBook(msg.sender, price, amount);
+    //     sellOrdersInStepCounter[price] += 1;
+    //     sellOrdersInStep[price][sellOrdersInStepCounter[price]] = Order(
+    //         msg.sender,
+    //         amount
+    //     );
+    //     sellSteps[price].amount += amount;
+    //     emit DrawToSellBook(msg.sender, price, amount);
 
-        if (minSellPrice == 0) {
-            minSellPrice = price;
-            return;
-        }
+    //     if (minSellPrice == 0) {
+    //         minSellPrice = price;
+    //         return;
+    //     }
 
-        if (price < minSellPrice) {
-            sellSteps[minSellPrice].lowerPrice = price;
-            sellSteps[price].higherPrice = minSellPrice;
-            minSellPrice = price;
-            return;
-        }
+    //     if (price < minSellPrice) {
+    //         sellSteps[minSellPrice].lowerPrice = price;
+    //         sellSteps[price].higherPrice = minSellPrice;
+    //         minSellPrice = price;
+    //         return;
+    //     }
 
-        if (price == minSellPrice) {
-            return;
-        }
+    //     if (price == minSellPrice) {
+    //         return;
+    //     }
 
-        uint256 sellPricePointer = minSellPrice;
-        while (
-            price >= sellPricePointer &&
-            sellSteps[sellPricePointer].higherPrice != 0
-        ) {
-            sellPricePointer = sellSteps[sellPricePointer].higherPrice;
-        }
+    //     uint256 sellPricePointer = minSellPrice;
+    //     while (
+    //         price >= sellPricePointer &&
+    //         sellSteps[sellPricePointer].higherPrice != 0
+    //     ) {
+    //         sellPricePointer = sellSteps[sellPricePointer].higherPrice;
+    //     }
 
-        if (sellPricePointer < price) {
-            sellSteps[price].lowerPrice = sellPricePointer;
-            sellSteps[sellPricePointer].higherPrice = price;
-        }
+    //     if (sellPricePointer < price) {
+    //         sellSteps[price].lowerPrice = sellPricePointer;
+    //         sellSteps[sellPricePointer].higherPrice = price;
+    //     }
 
-        if (
-            sellPricePointer > price &&
-            price > sellSteps[sellPricePointer].lowerPrice
-        ) {
-            sellSteps[price].lowerPrice = sellSteps[sellPricePointer]
-                .lowerPrice;
-            sellSteps[price].higherPrice = sellPricePointer;
+    //     if (
+    //         sellPricePointer > price &&
+    //         price > sellSteps[sellPricePointer].lowerPrice
+    //     ) {
+    //         sellSteps[price].lowerPrice = sellSteps[sellPricePointer]
+    //             .lowerPrice;
+    //         sellSteps[price].higherPrice = sellPricePointer;
 
-            sellSteps[sellSteps[sellPricePointer].lowerPrice]
-                .higherPrice = price;
-            sellSteps[sellPricePointer].lowerPrice = price;
-        }
-    }
+    //         sellSteps[sellSteps[sellPricePointer].lowerPrice]
+    //             .higherPrice = price;
+    //         sellSteps[sellPricePointer].lowerPrice = price;
+    //     }
+    // }
 }

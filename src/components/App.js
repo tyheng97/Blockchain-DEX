@@ -75,30 +75,9 @@ class App extends Component {
       let sellrateid = await tokenSwap.methods.getsellrate.call();
       let buyrateid = await tokenSwap.methods.getbuyrate.call();
 
-      let getamountbuy = await tokenSwap.methods.getamountbuy.call();
-
-      console.log("getamountbuy", getamountbuy);
-
       console.log("sellrateid", sellrateid);
 
       console.log("buyrateid", buyrateid);
-
-      // let buyOrdersInStepCounter = await tokenSwap.methods.buyOrdersInStepCounter.call();
-
-      // tokenSwap.methods.buyOrdersInStepCounter.call(0).then(function(tester) {
-      //   console.log("tester", tester);
-      // });
-
-      // this.setState({
-      //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
-      // });
-
-      // let buySteps = await tokenSwap.methods.buySteps.call();
-      // this.setState({ buySteps: buySteps.toString() });
-      // let buyOrdersInStepCounter = await tokenSwap.methods.buyOrdersInStepCounter.call();
-      // this.setState({
-      //   buyOrdersInStepCounter: buyOrdersInStepCounter.toString(),
-      // });
     } else {
       window.alert("TokenSwap contract not deployed to detected network.");
     }
@@ -136,7 +115,7 @@ class App extends Component {
           })
           .on("error", (err) => {
             console.log(err);
-            this.setState({ limitError: true });
+            this.setState({ FailError: true });
           });
       });
   };
@@ -156,7 +135,7 @@ class App extends Component {
           })
           .on("error", (err) => {
             console.log(err);
-            this.setState({ limitError: true });
+            this.setState({ FailError: true });
           });
       });
   };
@@ -173,7 +152,7 @@ class App extends Component {
         })
         .on("error", (err) => {
           console.log("inside here", err);
-          this.setState({ limitError: true });
+          this.setState({ FailError: true });
         });
     } catch (err) {
       console.log("here is the errrr look heree", err);
@@ -207,25 +186,6 @@ class App extends Component {
       });
   };
 
-  limitBuyATokens = (rate, etherAmount) => {
-    this.setState({ loading: true });
-    try {
-      this.state.tokenSwap.methods
-        .limitBuyATokens(rate)
-        .send({ value: etherAmount, from: this.state.account })
-        .on("transactionHash", (hash) => {
-          this.setState({ loading: false });
-        })
-        .on("error", (err) => {
-          console.log("inside here", err);
-          this.setState({ limitError: true });
-        });
-    } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
-    }
-  };
-
   sellATokens = (tokenAmount) => {
     this.setState({ loading: true });
     this.state.token.methods
@@ -241,33 +201,9 @@ class App extends Component {
       });
   };
 
-  limitSellATokens = (rate, tokenAmount) => {
-    this.setState({ loading: true });
-    try {
-      this.state.token.methods
-        .approve(this.state.tokenSwap.address, tokenAmount)
-        .send({ from: this.state.account })
-        .on("transactionHash", (hash) => {
-          this.state.tokenSwap.methods
-            .limitSellATokens(tokenAmount, rate)
-            .send({ from: this.state.account })
-            .on("transactionHash", (hash) => {
-              this.setState({ loading: false });
-            })
-            .on("error", (err) => {
-              console.log("inside here", err);
-              this.setState({ limitError: true });
-            });
-        });
-    } catch (err) {
-      console.log("here is the errrr look heree", err);
-      this.setState({ loading: false });
-    }
-  };
-
   //////////////////// Error handling /////////////////////////////
-  retryLimitOrder = () => {
-    this.setState({ limitError: false });
+  retryFailOrder = () => {
+    this.setState({ FailError: false });
     this.setState({ loading: false });
   };
 
@@ -281,24 +217,24 @@ class App extends Component {
       aTokenBalance: "0",
       bTokenBalance: "0",
       loading: true,
-      limitError: false,
+      FailError: false,
     };
   }
 
   render() {
     let content;
-    if (this.state.loading && this.state.limitError === false) {
+    if (this.state.loading && this.state.FailError === false) {
       content = (
         <p id="loader" className="text-center">
           Loading...
         </p>
       );
-    } else if (this.state.limitError) {
+    } else if (this.state.FailError) {
       content = (
         <div>
-          <p className="text-center">Limit Order Failed</p>
+          <p className="text-center">Fail Order Failed</p>
           <button
-            onClick={this.retryLimitOrder}
+            onClick={this.retryFailOrder}
             className="btn btn-primary btn-block btn-lg"
           >
             Click to Retry again
@@ -314,8 +250,6 @@ class App extends Component {
             aTokenBalance={this.state.aTokenBalance}
             buyATokens={this.buyATokens}
             sellATokens={this.sellATokens}
-            limitBuyATokens={this.limitBuyATokens}
-            limitSellATokens={this.limitSellATokens}
             aTokenRate={this.state.aTokenRate}
             bTokenRate={this.state.bTokenRate}
             bTokenName={this.state.bTokenName}

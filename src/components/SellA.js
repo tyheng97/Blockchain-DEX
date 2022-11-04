@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import tokenLogo from "../token-logo.png";
 import ethLogo from "../eth-logo.png";
 
-class SellForm extends Component {
+class SellA extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,14 +20,9 @@ class SellForm extends Component {
           event.preventDefault();
           let etherAmount;
           etherAmount = this.state.input.toString();
-          const rate = this.state.rate;
           etherAmount = window.web3.utils.toWei(etherAmount, "Ether");
 
-          if (this.props.isLimitOrder) {
-            this.props.limitSellATokens(rate, etherAmount);
-          } else {
-            this.props.sellATokens(etherAmount);
-          }
+          this.props.sellATokens(etherAmount);
         }}
       >
         <div>
@@ -35,6 +30,7 @@ class SellForm extends Component {
             <b>Input</b>
           </label>
           <span className="float-right text-muted">
+            {this.props.aTokenName}
             Balance:{" "}
             {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
           </span>
@@ -63,35 +59,7 @@ class SellForm extends Component {
             required
           />
         </div>
-        <>
-          {this.props.isLimitOrder && (
-            <>
-              {" "}
-              <div>
-                <label className="float-left">
-                  <b>Rate</b>
-                </label>
-              </div>
-              <div className="input-group mb-4">
-                <input
-                  type="text"
-                  onChange={(e) => {
-                    const newRate = e.target.value.toString();
-                    console.log(newRate);
-                    this.setState({
-                      rate: newRate,
-                    });
-                  }}
-                  ref={(rate) => {
-                    this.rate = rate;
-                  }}
-                  className="form-control form-control-lg"
-                  placeholder="10"
-                />
-              </div>
-            </>
-          )}
-        </>
+        <></>
         <div>
           <label className="float-left">
             <b>Output</b>
@@ -115,14 +83,7 @@ class SellForm extends Component {
             disabled
           />
         </div>
-        {!this.props.isLimitOrder && (
-          <div className="mb-5">
-            <span className="float-left text-muted">Exchange Rate</span>
-            <span className="float-right text-muted">
-              1 ETH = {this.props.aTokenRate} Coins
-            </span>
-          </div>
-        )}
+
         <button type="submit" className="btn btn-primary btn-block btn-lg">
           Swap
         </button>
@@ -131,4 +92,4 @@ class SellForm extends Component {
   }
 }
 
-export default SellForm;
+export default SellA;

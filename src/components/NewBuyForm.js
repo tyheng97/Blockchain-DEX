@@ -52,13 +52,12 @@ class NewBuyForm extends Component {
               <b>Input</b>
             </label>
             <span className="float-right text-muted">
-              ABalance:{" "}
-              {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
-            </span>
-            <span>{"  "}</span>
-            <span className="float-right text-muted">
-              BBalance:{" "}
+              B Balance:{" "}
               {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
+            </span>{" "}
+            <span className="float-right text-muted">
+              A Balance:{" "}
+              {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
             </span>
           </div>
           <div className="input-group mb-4">

@@ -1,28 +1,25 @@
 import React, { Component } from "react";
-import BuyForm from "./BuyForm";
+import BuyA from "./BuyA";
+import BuyB from "./BuyB";
+
 import NewSellForm from "./NewSellForm";
 import NewBuyForm from "./NewBuyForm";
 
-import SellForm from "./SellForm";
+import SellA from "./SellA";
+import SellB from "./SellB";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentForm: "orderbook",
-      limitOrder: false,
     };
   }
 
   render() {
-    let buttonStyle = "btn-light";
     let buyButtonStyle = "btn-light";
     let sellButtonStyle = "btn-light";
     let orderBookButtonStyle = "btn-light";
-
-    if (this.state.limitOrder) {
-      buttonStyle = "btn-success";
-    }
 
     if (this.state.currentForm === "orderbook") {
       orderBookButtonStyle = "btn-success";
@@ -31,33 +28,42 @@ class Main extends Component {
     let content;
     if (this.state.currentForm === "buy") {
       content = (
-        <BuyForm
-          aTokenName={this.props.aTokenName}
-          ethBalance={this.props.ethBalance}
-          aTokenBalance={this.props.aTokenBalance}
-          buyATokens={this.props.buyATokens}
-          isLimitOrder={this.state.limitOrder}
-          limitBuyATokens={this.props.limitBuyATokens}
-          aTokenRate={this.props.aTokenRate}
-          bTokenName={this.props.bTokenName}
-          bTokenRate={this.props.bTokenRate}
-          bTokenBalance={this.props.bTokenBalance}
-          buyBTokens={this.props.buyBTokens}
-          sellBTokens={this.props.sellBTokens}
-        />
+        <>
+          <BuyA
+            ethBalance={this.props.ethBalance}
+            aTokenName={this.props.aTokenName}
+            aTokenBalance={this.props.aTokenBalance}
+            buyATokens={this.props.buyATokens}
+            aTokenRate={this.props.aTokenRate}
+          />
+          <BuyB
+            ethBalance={this.props.ethBalance}
+            bTokenName={this.props.bTokenName}
+            bTokenBalance={this.props.bTokenBalance}
+            buyBTokens={this.props.buyBTokens}
+            bTokenRate={this.props.bTokenRate}
+          />
+        </>
       );
       buyButtonStyle = "btn-success";
     } else if (this.state.currentForm === "sell") {
       content = (
-        <SellForm
-          aTokenName={this.props.aTokenName}
-          ethBalance={this.props.ethBalance}
-          aTokenBalance={this.props.aTokenBalance}
-          sellATokens={this.props.sellATokens}
-          isLimitOrder={this.state.limitOrder}
-          limitSellATokens={this.props.limitSellATokens}
-          aTokenRate={this.props.aTokenRate}
-        />
+        <>
+          <SellA
+            aTokenName={this.props.aTokenName}
+            ethBalance={this.props.ethBalance}
+            aTokenBalance={this.props.aTokenBalance}
+            sellATokens={this.props.sellATokens}
+            aTokenRate={this.props.aTokenRate}
+          />
+          <SellB
+            bTokenName={this.props.bTokenName}
+            ethBalance={this.props.ethBalance}
+            bTokenBalance={this.props.bTokenBalance}
+            sellBTokens={this.props.sellBTokens}
+            bTokenRate={this.props.bTokenRate}
+          />
+        </>
       );
       sellButtonStyle = "btn-success";
     } else {
@@ -92,15 +98,6 @@ class Main extends Component {
             }}
           >
             Buy
-          </button>
-
-          <button
-            className={`btn ${buttonStyle}`}
-            onClick={(event) => {
-              this.setState({ limitOrder: !this.state.limitOrder });
-            }}
-          >
-            Limit Order
           </button>
 
           <button

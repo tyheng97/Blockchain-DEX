@@ -191,7 +191,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n\n\npragma solidity >=0.6.8;\n\ninterface IOrderBook {\n    struct Order {\n        address maker;\n        uint256 amount;\n    }\n\n    struct NewOrder{\n        address maker;\n        uint256 amount;\n        uint256 rate;\n    }\n\n    struct Step {\n        uint256 higherPrice;\n        uint256 lowerPrice;\n        uint256 amount;\n    }\n\n    function placeBuyOrder (\n        uint256 price,\n        uint256 amountOfBaseToken,\n        uint256 amount\n    ) external; \n/////////////////////////////////////////////\n    function atob (\n        uint256 b,\n        uint256 a\n    ) external;\n    function btoa (\n        uint256 a,\n        uint256 b\n    ) external;\n/////////////////////////////////////////////\n    function placeSellOrder (\n        uint256 price,\n        uint256 amountOfTradeToken,\n        uint256 amount\n\n    ) external;\n\n    event PlaceBuyOrder(address sender, uint256 price, uint256 amountOfBaseToken);\n    event PlaceSellOrder(address sender, uint256 price, uint256 amountOfTradeToken);\n    event DrawToBuyBook(address sender, uint256 price, uint256 amountOfBaseToken);\n    event DrawToSellBook(address sender, uint256 price, uint256 amountOfTradeToken);\n\n}\n\n    // BOB\n    // sell buy rate\n    // 10 5 2\n    // 10 2 5\n    // 10 10 1 \n\n    // ALICE\n    // sell buy rate\n    // 5 10 0.5->2\n\n    // 2 5 rate 10\n    // 3 2 rate 6\n\n    // limitorder\n    // rate always a/b\n    // Alice\n    // A B\n    // 10 5 2\n    // 8  5 1.6\n    // 9  5\n\n    // highest buy rate >= seller rate : execute\n\n    // Bob\n    // B A\n    // 5 9 1.8\n\n    // outcome\n    // Bob -5B +10A\n    // Alice -10A+5B\n\n\n    // lowest sell rate <= buyer rate: execute\n    // Bob\n    // B A\n    // 10 5 0.5\n    // 9  5 0.55\n    // 8  5 0.62\n    // Alice\n    // A B \n    // 5 9 0.55\n",
-  "sourcePath": "/Users/weerenteo/Desktop/foruse/Blockchain-DEX/src/contracts/interfaces/IOrderBook.sol",
+  "sourcePath": "/Users/yiheng/Documents/NTU/Y4S2/CZ4153 Blockchain/crypto_exchange/Blockchain-DEX/src/contracts/interfaces/IOrderBook.sol",
   "ast": {
     "absolutePath": "project:/src/contracts/interfaces/IOrderBook.sol",
     "exportedSymbols": {
@@ -2530,7 +2530,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-04T03:37:10.319Z",
+  "updatedAt": "2022-11-04T03:49:17.693Z",
   "devdoc": {
     "methods": {}
   },
