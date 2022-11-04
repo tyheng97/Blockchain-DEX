@@ -163,6 +163,9 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
     uint256[] public amountsell;
     uint256[] public amountbuy;
 
+    uint256[] buyorderbookArrary;
+    uint256[] sellorderbookArrary;
+
     function getbuyrate() public returns (uint256[] memory) {
         return buyrateid;
     }
@@ -347,6 +350,38 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
                 i--;
             }
         }
+    }
+
+    function getBuyOrderBook(address account)
+        public
+        returns (uint256[] memory)
+    {
+        for (uint256 i = 0; i < buyrateid.length; i++) {
+            uint256 key = buyrateid[i];
+            if (account == newBuyOrderBook[key].maker) {
+                buyorderbookArrary.push(
+                    newBuyOrderBook[key].amount / newBuyOrderBook[key].rate
+                );
+            }
+        }
+
+        return buyorderbookArrary;
+    }
+
+    function getSellOrderBook(address account)
+        public
+        returns (uint256[] memory)
+    {
+        for (uint256 i = 0; i < sellrateid.length; i++) {
+            uint256 key = sellrateid[i];
+            if (account == newSellOrderBook[key].maker) {
+                sellorderbookArrary.push(
+                    newSellOrderBook[key].amount * newSellOrderBook[key].rate
+                );
+            }
+        }
+
+        return sellorderbookArrary;
     }
 
     // function placeBuyOrder(
