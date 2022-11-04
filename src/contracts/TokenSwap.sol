@@ -7,7 +7,6 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 import {SafeMath} from "@openzeppelin/contracts/math/SafeMath.sol";
 import {Math} from "@openzeppelin/contracts/math/Math.sol";
 
-
 contract TokenSwap is ITokenSwap, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeMath for uint8;
@@ -124,8 +123,9 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
     uint256 public sellCounterInv = 0;
     mapping(uint256 => NewOrder) public newSellOrderBookInv;
     uint256 public minBuyRate;
+
     ////////////////////////////////////
-    
+
     function getbuyrate() public returns (uint256[] memory) {
         return buyrateid;
     }
@@ -141,7 +141,6 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
     function getsellrateInv() public returns (uint256[] memory) {
         return sellrateidInv;
     }
-
 
     //buy B using A
     function atob(uint256 b, uint256 a) external override nonReentrant {
@@ -173,7 +172,7 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                     aToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     bToken.transfer(msg.sender, a / minSellRate);
                     // emit ATokensSent( address(this), newSellOrderBook[idOfSellRate].maker, a);
-                    // emit BTokensSent( address(this), msg.sender,a / minSellRate);                    
+                    // emit BTokensSent( address(this), msg.sender,a / minSellRate);
                     // update the minSellRate
                     delete newSellOrderBook[idOfSellRate];
                     for (uint256 j = i; j < sellrateid.length - 1; j++) {
@@ -208,7 +207,11 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
         }
     }
 
- function atobInverseRate(uint256 b, uint256 a) external override nonReentrant {
+    function atobInverseRate(uint256 b, uint256 a)
+        external
+        override
+        nonReentrant
+    {
         require(aToken.balanceOf(msg.sender) >= a, "hello error here atob");
 
         aToken.transferFrom(msg.sender, address(this), a);
@@ -225,18 +228,18 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                 //give best order
                 toAdd = false;
                 if (newSellOrderBookInv[idOfSellRate].amount > b) {
-                    uint256 newAmount = newSellOrderBookInv[idOfSellRate].amount -
-                        b;
+                    uint256 newAmount = newSellOrderBookInv[idOfSellRate]
+                        .amount - b;
                     newSellOrderBookInv[idOfSellRate].amount = newAmount; //replace old amount with new
                     // transfer
                     aToken.transfer(newSellOrderBookInv[idOfSellRate].maker, a);
-                    bToken.transfer(msg.sender, a / maxSellRate);
+                    bToken.transfer(msg.sender, a * maxSellRate);
                     // emit ATokensSent( address(this), newSellOrderBookInv[idOfSellRate].maker, a);
                     // emit BTokensSent( address(this), msg.sender,a / maxSellRate);
                 } else if (newSellOrderBookInv[idOfSellRate].amount == b) {
                     // transfer
                     aToken.transfer(newSellOrderBookInv[idOfSellRate].maker, a);
-                    bToken.transfer(msg.sender, a / maxSellRate);
+                    bToken.transfer(msg.sender, a * maxSellRate);
                     // emit ATokensSent( address(this), newSellOrderBookInv[idOfSellRate].maker, a);
                     // emit BTokensSent( address(this), msg.sender,a / maxSellRate);
 
@@ -252,7 +255,7 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                     );
                     bToken.transfer(
                         msg.sender,
-                        newSellOrderBookInv[idOfSellRate].amount / maxSellRate
+                        newSellOrderBookInv[idOfSellRate].amount * maxSellRate
                     );
                     // emit ATokensSent( address(this), newSellOrderBookInv[idOfSellRate].maker, newSellOrderBookInv[idOfSellRate].amount);
                     // emit BTokensSent( address(this), msg.sender,newSellOrderBookInv[idOfSellRate].amount / maxSellRate);
@@ -262,7 +265,10 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                         sellrateidInv[j] = sellrateidInv[j + 1];
                     }
                     sellrateidInv.pop();
-                    _atobBookInv(rate, a - newSellOrderBookInv[idOfSellRate].amount);
+                    _atobBookInv(
+                        rate,
+                        a - newSellOrderBookInv[idOfSellRate].amount
+                    );
                 }
                 break;
             }
@@ -273,14 +279,13 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
         }
     }
 
-
     function _atobBook(uint256 rate, uint256 a) internal {
         require(rate > 0);
         buyCounter += 1;
         buyrateid.push(buyCounter);
         newBuyOrderBook[buyCounter] = NewOrder(msg.sender, a, rate);
     }
-    
+
     function _atobBookInv(uint256 rate, uint256 a) internal {
         require(rate > 0);
         buyCounterInv += 1;
@@ -316,8 +321,6 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                     aToken.transfer(msg.sender, b * maxBuyRate);
                     // emit BTokensSent( address(this), newBuyOrderBook[idOfBuyRate].maker,b);
                     // emit ATokensSent( address(this), msg.sender,b * maxBuyRate);
-
-
                 } else if (newBuyOrderBook[idOfBuyRate].amount == a) {
                     // transfer
                     bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
@@ -356,7 +359,12 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             _btoaBook(rate, b);
         }
     }
-    function btoaInverseRate(uint256 a, uint256 b) external override nonReentrant {
+
+    function btoaInverseRate(uint256 a, uint256 b)
+        external
+        override
+        nonReentrant
+    {
         require(bToken.balanceOf(msg.sender) >= b);
         amountbuy.push(b);
         amountbuy.push(a);
@@ -370,25 +378,25 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             idOfBuyRate = buyrateidInv[i];
             minBuyRate = newBuyOrderBookInv[idOfBuyRate].rate;
 
-            if (rate <= minBuyRate && maxBuyRate > 0) {
+            if (rate <= minBuyRate && minBuyRate > 0) {
                 toAdd = false;
                 if (newBuyOrderBookInv[idOfBuyRate].amount > a) {
                     amountbuy.push(newBuyOrderBookInv[idOfBuyRate].amount);
                     amountbuy.push(b);
-                    uint256 newAmount = newBuyOrderBookInv[idOfBuyRate].amount - a;
+                    uint256 newAmount = newBuyOrderBookInv[idOfBuyRate].amount -
+                        a;
                     newBuyOrderBookInv[idOfBuyRate].amount = newAmount; //replace old amount with new
                     amountbuy.push(newBuyOrderBookInv[idOfBuyRate].amount);
                     // transfer
                     bToken.transfer(newBuyOrderBookInv[idOfBuyRate].maker, b);
-                    aToken.transfer(msg.sender, b * maxBuyRate);
+                    aToken.transfer(msg.sender, b / minBuyRate);
 
                     // emit BTokensSent( address(this), newBuyOrderBookInv[idOfBuyRate].maker,b);
                     // emit ATokensSent( address(this), msg.sender,b * maxBuyRate);
-
                 } else if (newBuyOrderBookInv[idOfBuyRate].amount == a) {
                     // transfer
                     bToken.transfer(newBuyOrderBookInv[idOfBuyRate].maker, b);
-                    aToken.transfer(msg.sender, b * maxBuyRate);
+                    aToken.transfer(msg.sender, b / minBuyRate);
 
                     // emit BTokensSent( address(this), newBuyOrderBookInv[idOfBuyRate].maker,b);
                     // emit ATokensSent( address(this), msg.sender,b * maxBuyRate);
@@ -405,7 +413,7 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                     );
                     aToken.transfer(
                         msg.sender,
-                        newBuyOrderBookInv[idOfBuyRate].amount * maxBuyRate
+                        newBuyOrderBookInv[idOfBuyRate].amount / minBuyRate
                     );
                     // emit BTokensSent( address(this), newBuyOrderBookInv[idOfBuyRate].maker, newBuyOrderBookInv[idOfBuyRate].amount);
                     // emit ATokensSent( address(this), msg.sender,newBuyOrderBookInv[idOfBuyRate].amount * maxBuyRate);
@@ -415,7 +423,8 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
                         buyrateidInv[j] = buyrateidInv[j + 1];
                     }
                     buyrateidInv.pop();
-                    _btoaBookInv(rate, b);(rate, b - newBuyOrderBookInv[idOfBuyRate].amount);
+                    _btoaBookInv(rate, b);
+                    (rate, b - newBuyOrderBookInv[idOfBuyRate].amount);
                 }
                 break;
             }
@@ -425,13 +434,15 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             _btoaBookInv(rate, b);
         }
     }
-    function _btoaBookInv (uint256 rate, uint256 b) internal {
+
+    function _btoaBookInv(uint256 rate, uint256 b) internal {
         require(rate > 0);
         sellCounterInv += 1;
         sellrateidInv.push(sellCounterInv);
         newSellOrderBookInv[sellCounterInv] = NewOrder(msg.sender, b, rate);
         // // emit DrawToSellBook(msg.sender, rate, amountSold);
     }
+
     function _btoaBook(uint256 rate, uint256 b) internal {
         require(rate > 0);
         sellCounter += 1;
@@ -439,7 +450,8 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
         newSellOrderBook[sellCounter] = NewOrder(msg.sender, b, rate);
         // // emit DrawToSellBook(msg.sender, rate, amountSold);
     }
-////////////////////////////////////////////////////////////////////////////////////////////// delete orders  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////// delete orders  ///////////////////////////////////////////////////////////////////////////////////////////////
 
     function deleteBuyOrders() public {
         for (uint256 i = 0; i < buyrateid.length; i++) {
@@ -470,6 +482,7 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
             }
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////// display orderbooks ///////////////////////////////////////////////////////////////////////////////////////////////
     function getBuyOrderBook(address account)
         public
@@ -504,6 +517,4 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
 
         return sellorderbookArray;
     }
-
- 
 }
