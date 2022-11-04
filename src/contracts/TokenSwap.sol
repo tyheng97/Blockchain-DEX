@@ -102,12 +102,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         aToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
-        emit TokensPurchased(
-            msg.sender,
-            address(aToken),
-            tokenAmount,
-            aRate
-        );
+        emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);
     }
 
     function limitBuyATokens(uint256 _rate) public payable {
@@ -278,12 +273,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         bToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
-        emit TokensPurchased(
-            msg.sender,
-            address(bToken),
-            tokenAmount,
-            bRate
-        );
+        emit TokensPurchased(msg.sender, address(bToken), tokenAmount, bRate);
     }
 
     function sellBTokens(uint256 _amount) public {
@@ -350,14 +340,14 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
             if (rate >= minSellRate && minSellRate > 0) {
                 //give best order
                 toAdd = false;
-                if (newSellOrderBook[idOfSellRate].amount > a) {
+                if (newSellOrderBook[idOfSellRate].amount > b) {
                     uint256 newAmount = newSellOrderBook[idOfSellRate].amount -
-                        a;
+                        b;
                     newSellOrderBook[idOfSellRate].amount = newAmount; //replace old amount with new
                     // transfer
                     aToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     bToken.transfer(msg.sender, a / minSellRate);
-                } else if (newSellOrderBook[idOfSellRate].amount == a) {
+                } else if (newSellOrderBook[idOfSellRate].amount == b) {
                     // transfer
                     aToken.transfer(newSellOrderBook[idOfSellRate].maker, a);
                     bToken.transfer(msg.sender, a / minSellRate);
@@ -367,7 +357,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
                         sellrateid[j] = sellrateid[j + 1];
                     }
                     sellrateid.pop();
-                } else if (newSellOrderBook[idOfSellRate].amount < a) {
+                } else if (newSellOrderBook[idOfSellRate].amount < b) {
                     aToken.transfer(
                         newSellOrderBook[idOfSellRate].maker,
                         newSellOrderBook[idOfSellRate].amount
@@ -409,10 +399,7 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
 
     // buy A using b
     function btoa(uint256 a, uint256 b) external override nonReentrant {
-        require(
-            bToken.balanceOf(msg.sender) >= b,
-            "Hello error here btoa"
-        );
+        require(bToken.balanceOf(msg.sender) >= b, "Hello error here btoa");
         amountbuy.push(b);
         amountbuy.push(a);
         bToken.transferFrom(msg.sender, address(this), b);
