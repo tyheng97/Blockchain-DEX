@@ -67,10 +67,6 @@ class App extends Component {
       this.setState({ bTokenRate: bTokenRate.toString() });
       let aTokenRate = await tokenSwap.methods.aRate.call();
       this.setState({ aTokenRate: aTokenRate.toString() });
-      let maxBuyPrice = await tokenSwap.methods.maxBuyPrice.call();
-      this.setState({ maxBuyPrice: maxBuyPrice.toString() });
-      let minSellPrice = await tokenSwap.methods.minSellPrice.call();
-      this.setState({ minSellPrice: minSellPrice.toString() });
 
       let sellrateid = await tokenSwap.methods.getsellrate.call();
       let buyrateid = await tokenSwap.methods.getbuyrate.call();
@@ -98,7 +94,7 @@ class App extends Component {
     }
   }
 
-  /////////////////////// Order book placeBuyOrder TokenSwap ///////////////////////
+  /////////////////////// Order book TokenSwap ///////////////////////
 
   placeBuyOrder = (price, quantity) => {
     this.setState({ loading: true });
@@ -109,6 +105,25 @@ class App extends Component {
       .on("transactionHash", (hash) => {
         this.state.tokenSwap.methods
           .atob(price, quantity)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          })
+          .on("error", (err) => {
+            console.log(err);
+            this.setState({ FailError: true });
+          });
+      });
+  };
+  placeBuyOrderInverse = (price, quantity) => {
+    this.setState({ loading: true });
+
+    this.state.token.methods
+      .approve(this.state.tokenSwap.address, quantity)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.tokenSwap.methods
+          .atobInverseRate(price, quantity)
           .send({ from: this.state.account })
           .on("transactionHash", (hash) => {
             this.setState({ loading: false });
@@ -139,6 +154,27 @@ class App extends Component {
           });
       });
   };
+
+  placeSellOrderInverse = (price, quantity) => {
+    this.setState({ loading: true });
+
+    this.state.bToken.methods
+      .approve(this.state.tokenSwap.address, quantity)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.state.tokenSwap.methods
+          .btoaInverseRate(price, quantity)
+          .send({ from: this.state.account })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+          })
+          .on("error", (err) => {
+            console.log(err);
+            this.setState({ FailError: true });
+          });
+      });
+  };
+
   /////////////////////// bToken TokenSwap ///////////////////////
 
   buyBTokens = (etherAmount) => {
@@ -200,6 +236,8 @@ class App extends Component {
           });
       });
   };
+
+  /////////////////////// Delete Orders that were unfulfilled ///////////////////////
 
   deleteBuyOrders = () => {
     this.setState({ loading: true });
@@ -295,14 +333,13 @@ class App extends Component {
             buyBTokens={this.buyBTokens}
             sellBTokens={this.sellBTokens}
             placeBuyOrder={this.placeBuyOrder}
+            placeBuyOrderInverse={this.placeBuyOrderInverse}
             placeSellOrder={this.placeSellOrder}
+            placeSellOrderInverse={this.placeSellOrderInverse}
             maxBuyPrice={this.state.maxBuyPrice}
             minSellPrice={this.state.minSellPrice}
             deleteSellOrders={this.deleteSellOrders}
             deleteBuyOrders={this.deleteBuyOrders}
-            // buyOrdersInStep={this.state.buyOrdersInStep}
-            // buySteps={this.state.buySteps}
-            // buyOrdersInStepCounter={this.state.buyOrdersInStepCounter}
           />
         </>
       );

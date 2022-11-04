@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import BuyA from "./BuyA";
 import BuyB from "./BuyB";
 
-import NewSellForm from "./NewSellForm";
-import NewBuyForm from "./NewBuyForm";
+import SwapBoA from "./SwapBoA";
+import SwapAtoB from "./SwapAtoB";
 
 import SellA from "./SellA";
 import SellB from "./SellB";
@@ -69,24 +69,24 @@ class Main extends Component {
     } else {
       content = (
         <div>
-          <NewBuyForm
+          <SwapAtoB
             buyorsell="buy"
             placeBuyOrder={this.props.placeBuyOrder}
-            placeSellOrder={this.props.placeSellOrder}
             aTokenBalance={this.props.aTokenBalance}
             bTokenBalance={this.props.bTokenBalance}
             deleteBuyOrders={this.props.deleteBuyOrders}
             deleteSellOrders={this.props.deleteSellOrders}
+            placeBuyOrderInverse={this.props.placeBuyOrderInverse}
           />
 
-          <NewSellForm
+          <SwapBoA
             buyorsell="sell"
-            placeBuyOrder={this.props.placeBuyOrder}
             placeSellOrder={this.props.placeSellOrder}
             aTokenBalance={this.props.aTokenBalance}
             bTokenBalance={this.props.bTokenBalance}
             deleteBuyOrders={this.props.deleteBuyOrders}
             deleteSellOrders={this.props.deleteSellOrders}
+            placeSellOrderInverse={this.props.placeSellOrderInverse}
           />
         </div>
       );

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class NewSellForm extends Component {
+class SwapBoA extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,7 +13,7 @@ class NewSellForm extends Component {
   checkdisable = () => {
     let price = this.state.price;
     let quantity = this.state.input;
-    if (price % quantity != 0) {
+    if (quantity % price !== 0 && price % quantity !== 0) {
       this.setState({ disable: true });
     } else {
       this.setState({ disable: false });
@@ -33,12 +33,11 @@ class NewSellForm extends Component {
             let price = this.state.price;
             quantity = window.web3.utils.toWei(quantity, "Ether");
             price = window.web3.utils.toWei(price, "Ether");
-            if (this.props.buyorsell === "buy") {
-              console.log("BUY", price, quantity);
-              this.props.placeBuyOrder(price, quantity);
-            } else {
-              console.log("SELL", price, quantity);
+
+            if (price / quantity >= 1) {
               this.props.placeSellOrder(price, quantity);
+            } else {
+              this.props.placeSellOrderInverse(price, quantity);
             }
           }}
         >
@@ -47,14 +46,9 @@ class NewSellForm extends Component {
               <b>Input</b>
             </label>
             <span className="float-right text-muted">
-              ABalance:{" "}
-              {window.web3.utils.fromWei(this.props.aTokenBalance, "Ether")}
+              {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")} B
             </span>
-            <span>{"  "}</span>
-            <span className="float-right text-muted">
-              BBalance:{" "}
-              {window.web3.utils.fromWei(this.props.bTokenBalance, "Ether")}
-            </span>
+            <span className="float-right text-muted">Balance:</span>
           </div>
           <div className="input-group mb-4">
             <div>B Tokens you want to sell</div>
@@ -82,7 +76,7 @@ class NewSellForm extends Component {
             <>
               <div>
                 <label className="float-left">
-                  <b>Number of A you want</b>
+                  <b>Number of A Tokens you want</b>
                 </label>
               </div>
               <div className="input-group mb-4">
@@ -136,4 +130,4 @@ class NewSellForm extends Component {
   }
 }
 
-export default NewSellForm;
+export default SwapBoA;
