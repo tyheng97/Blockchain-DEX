@@ -126,6 +126,18 @@ class SwapAtoB extends Component {
           >
             Cancel Order
           </button>
+          {this.props.buyBook.length != 0 && (
+            <label className="float-left mr-2">
+              <b>Orders: </b>
+            </label>
+          )}
+          {this.props.buyBook.map((element) => {
+            return (
+              <span className="mr-2" key={element}>
+                Swap for {element} Token B{" "}
+              </span>
+            );
+          })}
         </form>
         <></>
       </>

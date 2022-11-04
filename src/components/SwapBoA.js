@@ -123,6 +123,18 @@ class SwapBoA extends Component {
           >
             Cancel Order
           </button>
+          {this.props.sellBook.length != 0 && (
+            <label className="float-left mr-2">
+              <b>Orders: </b>
+            </label>
+          )}
+          {this.props.sellBook.map((element) => {
+            return (
+              <span className="mr-2" key={element}>
+                Swap for {element} Token A{" "}
+              </span>
+            );
+          })}
         </form>
         <></>
       </>

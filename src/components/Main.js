@@ -77,6 +77,8 @@ class Main extends Component {
             deleteBuyOrders={this.props.deleteBuyOrders}
             deleteSellOrders={this.props.deleteSellOrders}
             placeBuyOrderInverse={this.props.placeBuyOrderInverse}
+            sellBook={this.props.sellBook}
+            buyBook={this.props.buyBook}
           />
 
           <SwapBoA
@@ -87,6 +89,8 @@ class Main extends Component {
             deleteBuyOrders={this.props.deleteBuyOrders}
             deleteSellOrders={this.props.deleteSellOrders}
             placeSellOrderInverse={this.props.placeSellOrderInverse}
+            sellBook={this.props.sellBook}
+            buyBook={this.props.buyBook}
           />
         </div>
       );

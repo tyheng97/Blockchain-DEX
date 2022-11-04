@@ -74,6 +74,30 @@ class App extends Component {
       console.log("sellrateid", sellrateid);
 
       console.log("buyrateid", buyrateid);
+
+      let buyBook = [];
+      let getBuyOrderBook = await tokenSwap.methods
+        .getBuyOrderBook(this.state.account)
+        .call();
+      getBuyOrderBook.forEach((element) => {
+        element = window.web3.utils.fromWei(element.toString());
+        buyBook.push(element);
+      });
+      console.log("buy orders", buyBook);
+      this.setState({ buyBook: buyBook });
+      console.log("buy orders state", this.state.buyBook);
+
+      let sellBook = [];
+      let getSellOrderBook = await tokenSwap.methods
+        .getSellOrderBook(this.state.account)
+        .call();
+      getSellOrderBook.forEach((element) => {
+        element = window.web3.utils.fromWei(element.toString());
+        sellBook.push(element);
+      });
+      console.log("sell orders", sellBook);
+      this.setState({ sellBook: sellBook });
+      console.log("sell orders state", this.state.sellBook);
     } else {
       window.alert("TokenSwap contract not deployed to detected network.");
     }
@@ -294,6 +318,8 @@ class App extends Component {
       bTokenBalance: "0",
       loading: true,
       FailError: false,
+      buyBook: [],
+      sellBook: [],
     };
   }
 
@@ -340,6 +366,8 @@ class App extends Component {
             minSellPrice={this.state.minSellPrice}
             deleteSellOrders={this.deleteSellOrders}
             deleteBuyOrders={this.deleteBuyOrders}
+            sellBook={this.state.sellBook}
+            buyBook={this.state.buyBook}
           />
         </>
       );
