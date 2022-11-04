@@ -430,6 +430,7 @@ class App extends Component {
               style={{ maxWidth: "600px" }}
             >
               <div className="ml-auto mr-auto content">{content}</div>
+
             </main>
           </div>
         </div>
