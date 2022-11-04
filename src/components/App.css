@@ -1,5 +1,9 @@
 /* Styles go here */
-button:hover {
+.cancel{
+  background-color: red;
+}
+
+.cancel:hover {
   background-color: red;
 }
 .change {

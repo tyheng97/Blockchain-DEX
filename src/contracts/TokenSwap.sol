@@ -105,8 +105,6 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);
     }
 
- 
-
     function sellATokens(uint256 _amount) public {
         // User can't sell more tokens than they have
         require(aToken.balanceOf(msg.sender) >= _amount);
@@ -124,8 +122,6 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
         // Emit an event
         emit TokensSold(msg.sender, address(aToken), _amount, aRate);
     }
-
-  
 
     function buyBTokens() public payable {
         // Calculate the number of tokens to buy
@@ -321,6 +317,36 @@ contract TokenSwap is IOrderBook, ReentrancyGuard {
 
         newSellOrderBook[sellCounter] = NewOrder(msg.sender, b, rate);
         // emit DrawToSellBook(msg.sender, rate, amountSold);
+    }
+
+    function deleteBuyOrders() public {
+        for (uint256 i = 0; i < buyrateid.length; i++) {
+            uint256 key = buyrateid[i];
+            if (msg.sender == newBuyOrderBook[key].maker) {
+                aToken.transfer(msg.sender, newBuyOrderBook[key].amount);
+                delete newBuyOrderBook[key];
+                for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                    buyrateid[j] = buyrateid[j + 1];
+                }
+                buyrateid.pop();
+                i--;
+            }
+        }
+    }
+
+    function deleteSellOrders() public {
+        for (uint256 i = 0; i < sellrateid.length; i++) {
+            uint256 key = sellrateid[i];
+            if (msg.sender == newSellOrderBook[key].maker) {
+                bToken.transfer(msg.sender, newSellOrderBook[key].amount);
+                delete newSellOrderBook[key];
+                for (uint256 j = i; j < sellrateid.length - 1; j++) {
+                    sellrateid[j] = sellrateid[j + 1];
+                }
+                sellrateid.pop();
+                i--;
+            }
+        }
     }
 
     // function placeBuyOrder(

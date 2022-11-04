@@ -75,6 +75,8 @@ class Main extends Component {
             placeSellOrder={this.props.placeSellOrder}
             aTokenBalance={this.props.aTokenBalance}
             bTokenBalance={this.props.bTokenBalance}
+            deleteBuyOrders={this.props.deleteBuyOrders}
+            deleteSellOrders={this.props.deleteSellOrders}
           />
 
           <NewSellForm
@@ -83,6 +85,8 @@ class Main extends Component {
             placeSellOrder={this.props.placeSellOrder}
             aTokenBalance={this.props.aTokenBalance}
             bTokenBalance={this.props.bTokenBalance}
+            deleteBuyOrders={this.props.deleteBuyOrders}
+            deleteSellOrders={this.props.deleteSellOrders}
           />
         </div>
       );

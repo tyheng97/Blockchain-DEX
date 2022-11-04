@@ -23,6 +23,8 @@ class NewBuyForm extends Component {
     }
   };
 
+  cancelOrder = () => this.props.deleteBuyOrders();
+
   render() {
     return (
       <>
@@ -125,6 +127,13 @@ class NewBuyForm extends Component {
               Swap
             </button>
           )}
+          <button
+            type="button"
+            onClick={this.cancelOrder}
+            className="btn btn-primary btn-block btn-lg cancel"
+          >
+            Cancel Order
+          </button>
         </form>
         <></>
       </>

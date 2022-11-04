@@ -201,6 +201,44 @@ class App extends Component {
       });
   };
 
+  deleteBuyOrders = () => {
+    this.setState({ loading: true });
+    try {
+      this.state.tokenSwap.methods
+        .deleteBuyOrders()
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("inside here", err);
+          this.setState({ limitError: true });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
+  };
+
+  deleteSellOrders = () => {
+    this.setState({ loading: true });
+    try {
+      this.state.tokenSwap.methods
+        .deleteSellOrders()
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("inside here", err);
+          this.setState({ limitError: true });
+        });
+    } catch (err) {
+      console.log("here is the errrr look heree", err);
+      this.setState({ loading: false });
+    }
+  };
+
   //////////////////// Error handling /////////////////////////////
   retryFailOrder = () => {
     this.setState({ FailError: false });
@@ -260,6 +298,8 @@ class App extends Component {
             placeSellOrder={this.placeSellOrder}
             maxBuyPrice={this.state.maxBuyPrice}
             minSellPrice={this.state.minSellPrice}
+            deleteSellOrders={this.deleteSellOrders}
+            deleteBuyOrders={this.deleteBuyOrders}
             // buyOrdersInStep={this.state.buyOrdersInStep}
             // buySteps={this.state.buySteps}
             // buyOrdersInStepCounter={this.state.buyOrdersInStepCounter}
