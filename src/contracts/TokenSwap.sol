@@ -18,6 +18,7 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
     AToken public aToken;
     // uint256 public aRate = 1000;
     BToken public bToken;
+
     // uint256 public bRate = 1000;
 
     constructor(AToken _aToken, BToken _bToken) public {
@@ -309,49 +310,86 @@ contract TokenSwap is ITokenSwap, ReentrancyGuard {
         for (uint256 i = 0; i < buyrateid.length; i++) {
             idOfBuyRate = buyrateid[i];
             maxBuyRate = newBuyOrderBook[idOfBuyRate].rate;
-
             if (rate <= maxBuyRate && maxBuyRate > 0) {
                 toAdd = false;
                 if (newBuyOrderBook[idOfBuyRate].amount > a) {
-                    amountbuy.push(newBuyOrderBook[idOfBuyRate].amount);
-                    amountbuy.push(b);
-                    uint256 newAmount = newBuyOrderBook[idOfBuyRate].amount - a;
-                    newBuyOrderBook[idOfBuyRate].amount = newAmount; //replace old amount with new
-                    amountbuy.push(newBuyOrderBook[idOfBuyRate].amount);
-                    // transfer
-                    bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    aToken.transfer(msg.sender, b * maxBuyRate);
-                    // emit BTokensSent( address(this), newBuyOrderBook[idOfBuyRate].maker,b);
-                    // emit ATokensSent( address(this), msg.sender,b * maxBuyRate);
+                    //calculate new b amount
+                    uint256 brequired = newBuyOrderBook[idOfBuyRate].amount /
+                        newBuyOrderBook[idOfBuyRate].rate;
+                    if (brequired < b) {
+                        bToken.transfer(
+                            newBuyOrderBook[idOfBuyRate].maker,
+                            brequired
+                        );
+                        aToken.transfer(msg.sender, brequired * maxBuyRate);
+                        delete newBuyOrderBook[idOfBuyRate];
+                        for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                            buyrateid[j] = buyrateid[j + 1];
+                        }
+                        buyrateid.pop();
+                        _btoaBook(rate, b - brequired);
+                    } else if (brequired > b) {
+                        bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                        aToken.transfer(msg.sender, b * maxBuyRate);
+                        //calculate new a amount
+                        uint256 newAmount = newBuyOrderBook[idOfBuyRate]
+                            .amount - b * maxBuyRate;
+                        newBuyOrderBook[idOfBuyRate].amount = newAmount; //replace old amount with new
+                    } else {
+                        bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                        aToken.transfer(msg.sender, b * maxBuyRate);
+
+                        delete newBuyOrderBook[idOfBuyRate];
+                        for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                            buyrateid[j] = buyrateid[j + 1];
+                        }
+                        buyrateid.pop();
+                    }
                 } else if (newBuyOrderBook[idOfBuyRate].amount == a) {
-                    // transfer
-                    bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
-                    aToken.transfer(msg.sender, b * maxBuyRate);
-                    // emit BTokensSent( address(this), newBuyOrderBook[idOfBuyRate].maker,b);
-                    // emit ATokensSent( address(this), msg.sender,b * maxBuyRate);
-                    // update the minSellRate
-                    delete newBuyOrderBook[idOfBuyRate];
-                    for (uint256 j = i; j < buyrateid.length - 1; j++) {
-                        buyrateid[j] = buyrateid[j + 1];
+                    uint256 brequired = newBuyOrderBook[idOfBuyRate].amount /
+                        newBuyOrderBook[idOfBuyRate].rate;
+
+                    if (brequired < b) {
+                        bToken.transfer(
+                            newBuyOrderBook[idOfBuyRate].maker,
+                            brequired
+                        );
+                        aToken.transfer(msg.sender, brequired * maxBuyRate);
+                        _btoaBook(rate, b - brequired);
+                        delete newBuyOrderBook[idOfBuyRate];
+                        for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                            buyrateid[j] = buyrateid[j + 1];
+                        }
+                        buyrateid.pop();
+                    } else if (b == brequired) {
+                        bToken.transfer(newBuyOrderBook[idOfBuyRate].maker, b);
+                        aToken.transfer(msg.sender, b * maxBuyRate);
+
+                        delete newBuyOrderBook[idOfBuyRate];
+                        for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                            buyrateid[j] = buyrateid[j + 1];
+                        }
+                        buyrateid.pop();
                     }
-                    buyrateid.pop();
                 } else if (newBuyOrderBook[idOfBuyRate].amount < a) {
-                    bToken.transfer(
-                        newBuyOrderBook[idOfBuyRate].maker,
-                        newBuyOrderBook[idOfBuyRate].amount
-                    );
-                    aToken.transfer(
-                        msg.sender,
-                        newBuyOrderBook[idOfBuyRate].amount * maxBuyRate
-                    );
-                    // emit BTokensSent( address(this), newBuyOrderBook[idOfBuyRate].maker, newBuyOrderBook[idOfBuyRate].amount);
-                    // emit ATokensSent( address(this), msg.sender,newBuyOrderBook[idOfBuyRate].amount * maxBuyRate);
-                    delete newBuyOrderBook[idOfBuyRate];
-                    for (uint256 j = i; j < buyrateid.length - 1; j++) {
-                        buyrateid[j] = buyrateid[j + 1];
+                    uint256 brequired = newBuyOrderBook[idOfBuyRate].amount /
+                        newBuyOrderBook[idOfBuyRate].rate;
+
+                    if (brequired < b) {
+                        if (brequired < b) {
+                            bToken.transfer(
+                                newBuyOrderBook[idOfBuyRate].maker,
+                                brequired
+                            );
+                            aToken.transfer(msg.sender, brequired * maxBuyRate);
+                            _btoaBook(rate, b - brequired);
+                            delete newBuyOrderBook[idOfBuyRate];
+                            for (uint256 j = i; j < buyrateid.length - 1; j++) {
+                                buyrateid[j] = buyrateid[j + 1];
+                            }
+                            buyrateid.pop();
+                        }
                     }
-                    buyrateid.pop();
-                    _btoaBook(rate, b - newBuyOrderBook[idOfBuyRate].amount);
                 }
                 break;
             }
