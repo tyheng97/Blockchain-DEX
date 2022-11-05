@@ -194,32 +194,6 @@ contract("OrderBook", ([investorA, investorB]) => {
     });
   });
 
-  //Buy token B
-  //   describe("buyBTokens()", async () => {
-  //     before(async () => {
-  //       // Purchase tokens before each example
-  //       result = await ethSwap.buyBTokens({
-  //         from: investorB,
-  //         value: web3.utils.toWei("1", "ether"),
-  //       });
-  //       await ethSwap.buyATokens({
-  //         from: investorA,
-  //         value: web3.utils.toWei("1", "ether"),
-  //       });
-  //     });
-
-  //     it("Allows User to buy token B using eth", async () => {
-  //       // check if the investor has the token A
-  //       let investorBalanceB = await b.balanceOf(investorB);
-  //       assert.equal(investorBalanceB.toString(), tokens("1000"));
-
-  //       let investorBalanceA = await a.balanceOf(investorA);
-  //       assert.equal(investorBalanceA.toString(), tokens("1000"));
-  //     });
-  //   });
-
-  //InvestorA do a atob(1,1) InvestorB do a btoa(1,1)
-
   describe("atob(1,1) then btoa(1,1)", async () => {
     before(async () => {
       // Purchase tokens before each example
