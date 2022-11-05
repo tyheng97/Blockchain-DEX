@@ -311,7 +311,7 @@
   "sourceMap": "369:2684:5:-:0;;;512:39;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;606:4;583:27;;665:4;642:27;;676:153;5:9:-1;2:2;;;27:1;24;17:12;2:2;676:153:5;;;;;;;;;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;676:153:5;;;;;;;;;;;;;;;;;;;;;;;;;1645:1:2;1760:7;:22;;;;789:7:5;780:6;;:16;;;;;;;;;;;;;;;;;;815:7;806:6;;:16;;;;;;;;;;;;;;;;;;676:153;;369:2684;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
   "deployedSourceMap": "369:2684:5:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;512:39:5;;5:9:-1;2:2;;;27:1;24;17:12;2:2;512:39:5;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;512:39:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;616:20;;5:9:-1;2:2;;;27:1;24;17:12;2:2;616:20:5;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;583:27;;5:9:-1;2:2;;;27:1;24;17:12;2:2;583:27:5;;;:::i;:::-;;;;;;;;;;;;;;;;;;;1338:602;;5:9:-1;2:2;;;27:1;24;17:12;2:2;1338:602:5;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;1338:602:5;;;;;;;;;;;;;;;;;:::i;:::-;;557:20;;5:9:-1;2:2;;;27:1;24;17:12;2:2;557:20:5;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;642:27;;5:9:-1;2:2;;;27:1;24;17:12;2:2;642:27:5;;;:::i;:::-;;;;;;;;;;;;;;;;;;;835:497;;;:::i;:::-;;1946;;;:::i;:::-;;2449:602;;5:9:-1;2:2;;;27:1;24;17:12;2:2;2449:602:5;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;2449:602:5;;;;;;;;;;;;;;;;;:::i;:::-;;512:39;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;616:20::-;;;;;;;;;;;;;:::o;583:27::-;;;;:::o;1338:602::-;1487:7;1455:6;;;;;;;;;;;:16;;;1472:10;1455:28;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;1455:28:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1455:28:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;1455:28:5;;;;;;;;;;;;;;;;:39;;1447:48;;12:1:-1;9;2:12;1447:48:5;1557:19;1589:5;;1579:7;:15;;;;;;1557:37;;1687:11;1670:4;1662:21;;;:36;;1654:45;;12:1:-1;9;2:12;1654:45:5;1734:6;;;;;;;;;;;:19;;;1754:10;1774:4;1781:7;1734:55;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;1734:55:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1734:55:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;1734:55:5;;;;;;;;;;;;;;;;;1799:10;:19;;:32;1819:11;1799:32;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1799:32:5;1338:602;;:::o;557:20::-;;;;;;;;;;;;;:::o;642:27::-;;;;:::o;835:497::-;931:19;965:5;;953:9;:17;931:39;;1112:11;1077:6;;;;;;;;;;;:16;;;1102:4;1077:31;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;1077:31:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1077:31:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;1077:31:5;;;;;;;;;;;;;;;;:46;;1069:55;;12:1:-1;9;2:12;1069:55:5;1174:6;;;;;;;;;;;:15;;;1190:10;1202:11;1174:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;1174:40:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1174:40:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;1174:40:5;;;;;;;;;;;;;;;;;835:497;:::o;1946:::-;2042:19;2076:5;;2064:9;:17;2042:39;;2223:11;2188:6;;;;;;;;;;;:16;;;2213:4;2188:31;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;2188:31:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2188:31:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;2188:31:5;;;;;;;;;;;;;;;;:46;;2180:55;;12:1:-1;9;2:12;2180:55:5;2285:6;;;;;;;;;;;:15;;;2301:10;2313:11;2285:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;2285:40:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2285:40:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;2285:40:5;;;;;;;;;;;;;;;;;1946:497;:::o;2449:602::-;2598:7;2566:6;;;;;;;;;;;:16;;;2583:10;2566:28;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;2566:28:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2566:28:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;2566:28:5;;;;;;;;;;;;;;;;:39;;2558:48;;12:1:-1;9;2:12;2558:48:5;2668:19;2700:5;;2690:7;:15;;;;;;2668:37;;2798:11;2781:4;2773:21;;;:36;;2765:45;;12:1:-1;9;2:12;2765:45:5;2845:6;;;;;;;;;;;:19;;;2865:10;2885:4;2892:7;2845:55;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;2845:55:5;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2845:55:5;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;2845:55:5;;;;;;;;;;;;;;;;;2910:10;:19;;:32;2930:11;2910:32;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2910:32:5;2449:602;;:::o",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.6.8;\n\nimport \"./AToken.sol\";\nimport \"./BToken.sol\";\nimport {IEthSwap} from \"./interfaces/IEthSwap.sol\";\nimport {ReentrancyGuard} from \"@openzeppelin/contracts/utils/ReentrancyGuard.sol\";\nimport {SafeMath} from \"@openzeppelin/contracts/math/SafeMath.sol\";\nimport {Math} from \"@openzeppelin/contracts/math/Math.sol\";\n\ncontract EthSwap is IEthSwap, ReentrancyGuard {\n    using SafeMath for uint256;\n    using SafeMath for uint8;\n    using Math for uint256;\n\n    string public name = \"EthSwap Exchange\";\n    AToken public aToken;\n    uint256 public aRate = 1000;\n    BToken public bToken;\n    uint256 public bRate = 1000;\n\n    constructor(AToken _aToken, BToken _bToken) public {\n        //pass the address of the Token in\n        aToken = _aToken;\n        bToken = _bToken;\n    }\n\n    function buyATokens() public payable {\n        // Calculate the number of tokens to buy\n        uint256 tokenAmount = msg.value * aRate; //msg.value = how much ether was sent\n\n        // Require that EthSwap has enough tokens\n        require(aToken.balanceOf(address(this)) >= tokenAmount);\n\n        // Transfer tokens to the user\n        aToken.transfer(msg.sender, tokenAmount);\n\n        // // emit an event\n        // emit TokensPurchased(msg.sender, address(aToken), tokenAmount, aRate);\n    }\n\n    function sellATokens(uint256 _amount) public {\n        // User can't sell more tokens than they have\n        require(aToken.balanceOf(msg.sender) >= _amount);\n\n        // Calculate the amount of Ether to redeem\n        uint256 etherAmount = _amount / aRate;\n\n        // Require that EthSwap has enough Ether\n        require(address(this).balance >= etherAmount);\n\n        // Perform sale\n        aToken.transferFrom(msg.sender, address(this), _amount);\n        msg.sender.transfer(etherAmount);\n\n        // // emit an event\n        // emit TokensSold(msg.sender, address(aToken), _amount, aRate);\n    }\n\n    function buyBTokens() public payable {\n        // Calculate the number of tokens to buy\n        uint256 tokenAmount = msg.value * bRate; //msg.value = how much ether was sent\n\n        // Require that EthSwap has enough tokens\n        require(bToken.balanceOf(address(this)) >= tokenAmount);\n\n        // Transfer tokens to the user\n        bToken.transfer(msg.sender, tokenAmount);\n\n        // // emit an event\n        // emit TokensPurchased(msg.sender, address(bToken), tokenAmount, bRate);\n    }\n\n    function sellBTokens(uint256 _amount) public {\n        // User can't sell more tokens than they have\n        require(bToken.balanceOf(msg.sender) >= _amount);\n\n        // Calculate the amount of Ether to redeem\n        uint256 etherAmount = _amount / bRate;\n\n        // Require that EthSwap has enough Ether\n        require(address(this).balance >= etherAmount);\n\n        // Perform sale\n        bToken.transferFrom(msg.sender, address(this), _amount);\n        msg.sender.transfer(etherAmount);\n\n        // // emit an event\n        // emit TokensSold(msg.sender, address(bToken), _amount, bRate);\n    }\n}\n",
-  "sourcePath": "/Users/weerenteo/Desktop/Dex/Blockchain-DEX/src/contracts/EthSwap.sol",
+  "sourcePath": "/Users/yiheng/Documents/NTU/Y4S2/CZ4153 Blockchain/crypto_exchange/Blockchain-DEX/src/contracts/EthSwap.sol",
   "ast": {
     "absolutePath": "project:/src/contracts/EthSwap.sol",
     "exportedSymbols": {
@@ -362,7 +362,7 @@
         "id": 835,
         "nodeType": "ImportDirective",
         "scope": 1051,
-        "sourceUnit": 3182,
+        "sourceUnit": 3019,
         "src": "105:51:5",
         "symbolAliases": [
           {
@@ -478,10 +478,10 @@
               "id": 842,
               "name": "IEthSwap",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3181,
+              "referencedDeclaration": 3018,
               "src": "389:8:5",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IEthSwap_$3181",
+                "typeIdentifier": "t_contract$_IEthSwap_$3018",
                 "typeString": "contract IEthSwap"
               }
             },
@@ -510,7 +510,7 @@
         ],
         "contractDependencies": [
           467,
-          3181
+          3018
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -519,7 +519,7 @@
         "linearizedBaseContracts": [
           1050,
           467,
-          3181
+          3018
         ],
         "name": "EthSwap",
         "nodeType": "ContractDefinition",
@@ -3345,7 +3345,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 3182,
+          "SourceUnit": 3019,
           "absolutePath": "project:/src/contracts/interfaces/IEthSwap.sol",
           "file": "./interfaces/IEthSwap.sol",
           "scope": 1051,
@@ -3472,7 +3472,7 @@
           "abstract": false,
           "contractDependencies": [
             467,
-            3181
+            3018
           ],
           "contractKind": "contract",
           "documentation": null,
@@ -3480,7 +3480,7 @@
           "linearizedBaseContracts": [
             1050,
             467,
-            3181
+            3018
           ],
           "name": "EthSwap",
           "scope": 1051
@@ -3495,7 +3495,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "IEthSwap",
-                  "referencedDeclaration": 3181,
+                  "referencedDeclaration": 3018,
                   "type": "contract IEthSwap"
                 },
                 "id": 842,
@@ -6588,12 +6588,12 @@
         }
       },
       "links": {},
-      "address": "0x10AF2fF10f84dF754e4445d635E48266847280B2",
-      "transactionHash": "0xe5e83c46ae6e29430b47ad1e703b87e01552fc4febc6f7a2ed13a4f59adf395d"
+      "address": "0x76505B066F9aC73a8bAD2f4f693b0e30A917B67d",
+      "transactionHash": "0xe36b15677372a669dec7722a83494dc2acec0e79ce6f722aae29fd691677702c"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-05T12:18:32.670Z",
+  "updatedAt": "2022-11-05T16:18:04.916Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

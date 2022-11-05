@@ -2,15 +2,15 @@
 
 pragma solidity >=0.6.8;
 
-interface ITokenSwap {
+interface ITokenSwapInv {
     struct NewOrder {
         address maker;
         uint256 amount;
         uint256 rate;
     }
 
-    function atob(uint256 b, uint256 a) external;
-    function btoa(uint256 a, uint256 b) external;
+    function atobInverseRate(uint256 b, uint256 a) external;
+    function btoaInverseRate(uint256 a, uint256 b) external;
 
     event TokensPurchased(
         address account,

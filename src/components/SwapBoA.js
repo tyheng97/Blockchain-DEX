@@ -107,7 +107,7 @@ class SwapBoA extends Component {
                     this.price = price;
                   }}
                   className="form-control form-control-lg"
-                  placeholder="10"
+                  placeholder="0"
                 />
               </div>
             </>
@@ -136,12 +136,20 @@ class SwapBoA extends Component {
           >
             Cancel Order
           </button>
-          {this.props.sellBook.length != 0 && (
+          {(this.props.sellBook.length != 0 ||
+            this.props.sellBookInv.length != 0) && (
             <label className="float-left mr-2">
               <b>Orders: </b>
             </label>
           )}
           {this.props.sellBook.map((element) => {
+            return (
+              <span className="mr-2" key={uuidv4()}>
+                Swap for {element} Token A{" "}
+              </span>
+            );
+          })}
+          {this.props.sellBookInv.map((element) => {
             return (
               <span className="mr-2" key={uuidv4()}>
                 Swap for {element} Token A{" "}
