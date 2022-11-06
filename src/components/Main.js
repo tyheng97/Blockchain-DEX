@@ -83,6 +83,8 @@ class Main extends Component {
             placeBuyOrderInverse={this.props.placeBuyOrderInverse}
             sellBook={this.props.sellBook}
             buyBook={this.props.buyBook}
+            sellBookInv={this.props.sellBookInv}
+            buyBookInv={this.props.buyBookInv}
           />
           <br />
           <br />
@@ -96,6 +98,8 @@ class Main extends Component {
             placeSellOrderInverse={this.props.placeSellOrderInverse}
             sellBook={this.props.sellBook}
             buyBook={this.props.buyBook}
+            sellBookInv={this.props.sellBookInv}
+            buyBookInv={this.props.buyBookInv}
           />
         </div>
       );

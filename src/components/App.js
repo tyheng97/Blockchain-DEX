@@ -3,6 +3,8 @@ import Web3 from "web3"; // import web3
 import AToken from "../abis/AToken.json";
 import BToken from "../abis/BToken.json";
 import TokenSwap from "../abis/TokenSwap.json";
+import TokenSwapInv from "../abis/TokenSwapInv.json";
+
 import EthSwap from "../abis/EthSwap.json";
 
 import Navbar from "./Navbar";
@@ -67,13 +69,9 @@ class App extends Component {
       this.setState({ tokenSwap });
       let sellrateid = await tokenSwap.methods.getsellrate.call();
       let buyrateid = await tokenSwap.methods.getbuyrate.call();
-      let sellrateidInv = await tokenSwap.methods.getsellrateInv.call();
-      let buyrateidInv = await tokenSwap.methods.getbuyrateInv.call();
 
       console.log("sellrateid", sellrateid);
       console.log("buyrateid", buyrateid);
-      console.log("INVsellrateid", sellrateidInv);
-      console.log("INVbuyrateid", buyrateidInv);
 
       let buyBook = [];
       let getBuyOrderBook = await tokenSwap.methods
@@ -101,8 +99,50 @@ class App extends Component {
     } else {
       window.alert("TokenSwap contract not deployed to detected network.");
     }
+    ////////////////////////////////////////////////
+    const tokenSwapInvData = TokenSwapInv.networks[networkId];
+    if (tokenSwapInvData) {
+      const tokenSwapInv = new web3.eth.Contract(
+        TokenSwapInv.abi,
+        tokenSwapInvData.address
+      );
+      this.setState({ tokenSwapInv });
 
-    /////////////////////// Load TokenSwap ///////////////////////
+      let sellrateidInv = await tokenSwapInv.methods.getsellrateInv.call();
+      let buyrateidInv = await tokenSwapInv.methods.getbuyrateInv.call();
+
+      console.log("INVsellrateid", sellrateidInv);
+      console.log("INVbuyrateid", buyrateidInv);
+
+      let buyBookInv = [];
+
+      let getBuyOrderBookInv = await tokenSwapInv.methods
+        .getBuyOrderBook(this.state.account)
+        .call();
+      getBuyOrderBookInv.forEach((element) => {
+        element = window.web3.utils.fromWei(element.toString());
+        buyBookInv.push(element);
+      });
+      console.log("buy ordersInv", buyBookInv);
+      this.setState({ buyBookInv: buyBookInv });
+      console.log("buy orders stateInv", this.state.buyBookInv);
+
+      let sellBookInv = [];
+      let getSellOrderBookInv = await tokenSwapInv.methods
+        .getSellOrderBook(this.state.account)
+        .call();
+      getSellOrderBookInv.forEach((element) => {
+        element = window.web3.utils.fromWei(element.toString());
+        sellBookInv.push(element);
+      });
+      console.log("sell ordersInv", sellBookInv);
+      this.setState({ sellBookInv: sellBookInv });
+      console.log("sell orders stateInv", this.state.sellBookInv);
+    } else {
+      window.alert("TokenSwap contract not deployed to detected network.");
+    }
+
+    /////////////////////// Load EthSwap ///////////////////////
     const ethSwapData = EthSwap.networks[networkId];
     if (tokenSwapData) {
       const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address);
@@ -152,7 +192,7 @@ class App extends Component {
             });
         });
     } catch (err) {
-      console.log("placeBuyOrderInverse", err);
+      console.log("placeBuyOrder", err);
       this.setState({ FailError: true });
     }
   };
@@ -160,10 +200,10 @@ class App extends Component {
     this.setState({ loading: true });
     try {
       this.state.token.methods
-        .approve(this.state.tokenSwap.address, quantity)
+        .approve(this.state.tokenSwapInv.address, quantity)
         .send({ from: this.state.account })
         .on("transactionHash", (hash) => {
-          this.state.tokenSwap.methods
+          this.state.tokenSwapInv.methods
             .atobInverseRate(price, quantity)
             .send({ from: this.state.account })
             .on("transactionHash", (hash) => {
@@ -208,10 +248,10 @@ class App extends Component {
     this.setState({ loading: true });
     try {
       this.state.bToken.methods
-        .approve(this.state.tokenSwap.address, quantity)
+        .approve(this.state.tokenSwapInv.address, quantity)
         .send({ from: this.state.account })
         .on("transactionHash", (hash) => {
-          this.state.tokenSwap.methods
+          this.state.tokenSwapInv.methods
             .btoaInverseRate(price, quantity)
             .send({ from: this.state.account })
             .on("transactionHash", (hash) => {
@@ -320,6 +360,16 @@ class App extends Component {
           console.log("deleteBuyOrders", err);
           this.setState({ FailError: true });
         });
+      this.state.tokenSwapInv.methods
+        .deleteBuyOrders()
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("deleteBuyOrders", err);
+          this.setState({ FailError: true });
+        });
     } catch (err) {
       console.log("deleteBuyOrders", err);
       this.setState({ loading: true });
@@ -330,6 +380,16 @@ class App extends Component {
     this.setState({ loading: true });
     try {
       this.state.tokenSwap.methods
+        .deleteSellOrders()
+        .send({ from: this.state.account })
+        .on("transactionHash", (hash) => {
+          this.setState({ loading: false });
+        })
+        .on("error", (err) => {
+          console.log("deleteSellOrders", err);
+          this.setState({ FailError: true });
+        });
+      this.state.tokenSwapInv.methods
         .deleteSellOrders()
         .send({ from: this.state.account })
         .on("transactionHash", (hash) => {
@@ -363,7 +423,9 @@ class App extends Component {
       loading: true,
       FailError: false,
       buyBook: [],
+      buyBookInv: [],
       sellBook: [],
+      sellBookInv: [],
     };
   }
 
@@ -414,6 +476,8 @@ class App extends Component {
             deleteBuyOrders={this.deleteBuyOrders}
             sellBook={this.state.sellBook}
             buyBook={this.state.buyBook}
+            sellBookInv={this.state.sellBookInv}
+            buyBookInv={this.state.buyBookInv}
           />
         </>
       );
@@ -430,7 +494,6 @@ class App extends Component {
               style={{ maxWidth: "600px" }}
             >
               <div className="ml-auto mr-auto content">{content}</div>
-
             </main>
           </div>
         </div>
