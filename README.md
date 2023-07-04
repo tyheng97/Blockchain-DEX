@@ -9,3 +9,6 @@ Steps to deploy and run the project
 5. Run npm i to install all the required node packages
 6. Run truffle migrate --reset
 7. Run npm start to start up the website on http://localhost:3000
+
+## Architecture
+![alt text]([http://url/to/img.png](https://github.com/tyheng97/Blockchain-DEX/blob/main/architecture.png)https://github.com/tyheng97/Blockchain-DEX/blob/main/architecture.png)
